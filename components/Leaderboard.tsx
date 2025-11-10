@@ -346,41 +346,48 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   </div>
                   <div className="text-xs text-gray-500 font-medium mt-1">Score</div>
                 </div>
-                {user.reward_amount > 0 && (
-                  <div className="text-right">
-                    {tokenPrice !== null && tokenInfo ? (
-                      <>
-                        <div className="text-xl font-bold text-green-600">
-                          ${formatNumber(user.reward_amount * tokenPrice)}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {formatNumber(user.reward_amount)} {tokenInfo.symbol}
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="text-xl font-bold text-green-600">
-                          {formatNumber(user.reward_amount)} {tokenInfo?.symbol || "TOKEN"}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          Loading USD...
-                        </div>
-                      </>
-                    )}
-                    <div className="text-xs text-gray-500 mt-1 font-medium">Earnings</div>
-                    {user.reward_transaction_hash && (
-                      <a
-                        href={`https://etherscan.io/tx/${user.reward_transaction_hash}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-500 hover:text-blue-600 font-medium"
-                        title="View transaction"
-                      >
-                        View TX
-                      </a>
-                    )}
-                  </div>
-                )}
+                {(() => {
+                  // Handle reward_amount as string or number
+                  const rewardAmount = typeof user.reward_amount === 'string' 
+                    ? parseFloat(user.reward_amount) 
+                    : user.reward_amount;
+                  
+                  return rewardAmount > 0 ? (
+                    <div className="text-right">
+                      {tokenPrice !== null && tokenInfo ? (
+                        <>
+                          <div className="text-xl font-bold text-green-600">
+                            ${formatNumber(rewardAmount * tokenPrice)}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {formatNumber(rewardAmount)} {tokenInfo.symbol}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-xl font-bold text-green-600">
+                            {formatNumber(rewardAmount)} {tokenInfo?.symbol || "TOKEN"}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            Loading USD...
+                          </div>
+                        </>
+                      )}
+                      <div className="text-xs text-gray-500 mt-1 font-medium">Earnings</div>
+                      {user.reward_transaction_hash && (
+                        <a
+                          href={`https://etherscan.io/tx/${user.reward_transaction_hash}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-500 hover:text-blue-600 font-medium"
+                          title="View transaction"
+                        >
+                          View TX
+                        </a>
+                      )}
+                    </div>
+                  ) : null;
+                })()}
                 {user.ranking_change !== 0 && (
                   <div
                     className={`text-sm font-bold px-3 py-1 rounded-full ${

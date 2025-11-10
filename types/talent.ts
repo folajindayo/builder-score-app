@@ -84,7 +84,7 @@ export interface LeaderboardUser {
   profile: UserProfile;
   ranking_change: number;
   recipient_wallet: string | null;
-  reward_amount: number;
+  reward_amount: number | string; // API returns as string, but we'll parse it
   reward_transaction_hash: string | null;
   summary: string | null;
 }
