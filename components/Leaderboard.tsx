@@ -802,6 +802,19 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                               {user.profile.location}
                             </p>
                           )}
+                          {isAllSponsors && (user as UserWithEarningsBreakdown).sponsors && (user as UserWithEarningsBreakdown).sponsors!.length > 0 && (
+                            <div className="mt-1.5 flex flex-wrap gap-1">
+                              {(user as UserWithEarningsBreakdown).sponsors!.map((sponsor) => (
+                                <span
+                                  key={sponsor}
+                                  className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 capitalize"
+                                  title={`Appears in ${sponsor.replace("-", " ")}`}
+                                >
+                                  {sponsor.replace("-", " ")}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
