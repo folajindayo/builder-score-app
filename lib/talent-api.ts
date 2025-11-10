@@ -33,19 +33,33 @@ async function fetchAPI<T>(
 
 export async function getBuilderScore(address: string): Promise<BuilderScore> {
   try {
-    return await fetchAPI<BuilderScore>(`/builders/${address}/score`);
+    // Talent Protocol API uses /score endpoint with id query parameter
+    // API returns: { score: { points: number, rank_position: number, ... } }
+    // We transform it to match our BuilderScore type: { score: number, rank?: number, ... }
+    const response = await fetchAPI<{ score: { points: number; rank_position: number; last_calculated_at: string; slug: string } }>(`/score?id=${encodeURIComponent(address)}`);
+    
+    return {
+      score: response.score.points,
+      rank: response.score.rank_position,
+      updatedAt: response.score.last_calculated_at,
+    };
   } catch (error) {
     console.error("Error fetching builder score:", error);
     throw error;
   }
 }
 
-export async function getBuilderProfile(address: string): Promise<BuilderProfile> {
+export async function getBuilderProfile(address: string): Promise<BuilderProfile | null> {
   try {
-    return await fetchAPI<BuilderProfile>(`/builders/${address}`);
+    // Note: Profile endpoint may not be available in Talent Protocol API
+    // The /score endpoint works, but profile endpoints need to be verified
+    // Returning null for now until the correct endpoint is found
+    // TODO: Check Talent Protocol API docs for correct profile endpoint
+    console.warn("Profile endpoint not yet implemented - returning null");
+    return null;
   } catch (error) {
     console.error("Error fetching builder profile:", error);
-    throw error;
+    return null;
   }
 }
 
