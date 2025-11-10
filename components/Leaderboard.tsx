@@ -219,16 +219,19 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     );
 
     // Fetch data from all sponsors
-    // Fetch all pages (page=1, 2, 3, ...) until no more data
-    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors (all pages)...");
+    // Fetch all pages sequentially for each sponsor (page=1, 2, 3, ...) until no more data
+    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors (all pages, sequentially)...");
     
     const fetchAllPagesForSponsor = async (slug: string): Promise<LeaderboardUser[]> => {
       const allUsers: LeaderboardUser[] = [];
       let currentPage = 1;
       let hasMorePages = true;
       
+      console.log(`\n📦 [All Sponsors] Starting to fetch ${slug}...`);
+      
       while (hasMorePages) {
         try {
+          console.log(`   📄 Fetching ${slug} - Page ${currentPage}...`);
           const response = await getLeaderboard({
             ...filters,
             sponsor_slug: slug,
@@ -238,13 +241,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           });
           
           if (response.users.length === 0) {
+            console.log(`   ✓ ${slug} - Page ${currentPage}: No more data`);
             hasMorePages = false;
           } else {
             allUsers.push(...response.users);
-            console.log(`   ✓ ${slug} - Page ${currentPage}: ${response.users.length} builders (Total: ${allUsers.length})`);
+            console.log(`   ✓ ${slug} - Page ${currentPage}: ${response.users.length} builders (Total so far: ${allUsers.length})`);
             
             // Check if we've reached the last page
             if (currentPage >= response.pagination.last_page) {
+              console.log(`   ✅ ${slug}: Reached last page (${response.pagination.last_page})`);
               hasMorePages = false;
             } else {
               currentPage++;
@@ -256,11 +261,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         }
       }
       
-      console.log(`   ✅ ${slug}: Fetched ${allUsers.length} builders across ${currentPage} page(s)`);
+      console.log(`   ✅ ${slug}: Completed - Fetched ${allUsers.length} builders across ${currentPage} page(s)`);
       return allUsers;
     };
     
-    // Fetch all pages for each sponsor
+    // Fetch all pages for each sponsor sequentially (one sponsor at a time)
     const allSponsorData = await Promise.allSettled(
       ALL_SPONSOR_SLUGS.map((slug) => fetchAllPagesForSponsor(slug))
     );
