@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 
 // Sponsor slugs - ordered list
 const SPONSOR_SLUGS = [
+  { value: "all", label: "All Sponsors" },
   { value: "walletconnect", label: "WalletConnect" },
   { value: "celo", label: "Celo" },
   { value: "base", label: "Base" },
@@ -45,9 +46,15 @@ export function LeaderboardFilters({
 
   const handleSponsorSlugChange = (value: string) => {
     setSponsorSlug(value);
-    // Reset to "thisWeek" when sponsor changes
-    if (value && GRANT_IDS[value]) {
+    // If "all" sponsors selected, force "allTime" duration
+    if (value === "all") {
+      setGrantDuration("allTime");
+    } else if (value && GRANT_IDS[value]) {
+      // Reset to "thisWeek" when sponsor changes (if it has grant IDs)
       setGrantDuration("thisWeek");
+    } else {
+      // For sponsors without grant IDs, default to "allTime"
+      setGrantDuration("allTime");
     }
   };
 
@@ -61,17 +68,27 @@ export function LeaderboardFilters({
 
   const handleApplyFilters = () => {
     const filters: LeaderboardFilters = {
-      sponsor_slug: sponsorSlug || undefined,
       per_page: perPage ? Number(perPage) : undefined,
       page: 1,
     };
 
-    // Auto-set grant ID based on sponsor and duration (controlled from code)
-    // All time has no grant_id
-    if (sponsorSlug && GRANT_IDS[sponsorSlug] && grantDuration !== "allTime") {
-      filters.grant_id = GRANT_IDS[sponsorSlug][grantDuration];
+    // Handle "all sponsors" - don't set sponsor_slug, only works with allTime
+    if (sponsorSlug === "all") {
+      // For "all sponsors", don't set sponsor_slug (API will return all)
+      // Only works with "allTime" (no grant_id)
+      if (grantDuration !== "allTime") {
+        // Force allTime if somehow not set
+        setGrantDuration("allTime");
+      }
+      // grant_id is undefined (not set) for all sponsors
+    } else if (sponsorSlug) {
+      filters.sponsor_slug = sponsorSlug;
+      // Auto-set grant ID based on sponsor and duration (controlled from code)
+      // All time has no grant_id
+      if (GRANT_IDS[sponsorSlug] && grantDuration !== "allTime") {
+        filters.grant_id = GRANT_IDS[sponsorSlug][grantDuration];
+      }
     }
-    // If allTime, grant_id is undefined (not set)
 
     onFilterChange(filters);
   };
@@ -109,7 +126,7 @@ export function LeaderboardFilters({
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1.5">
-            Duration {sponsorSlug && GRANT_IDS[sponsorSlug] && currentGrantId && (
+            Duration {sponsorSlug && sponsorSlug !== "all" && GRANT_IDS[sponsorSlug] && currentGrantId && (
               <span className="text-xs text-gray-500 ml-1 font-normal">
                 (Grant ID: {currentGrantId})
               </span>
@@ -119,12 +136,15 @@ export function LeaderboardFilters({
             <select
               value={grantDuration}
               onChange={(e) => handleGrantDurationChange(e.target.value as "thisWeek" | "lastWeek" | "allTime")}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              disabled={sponsorSlug === "all"}
+              className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                sponsorSlug === "all" ? "bg-gray-50 cursor-not-allowed" : ""
+              }`}
             >
               <option value="allTime">
-                All Time
+                All Time {sponsorSlug === "all" && "(Only option for All Sponsors)"}
               </option>
-              {GRANT_IDS[sponsorSlug] && (
+              {sponsorSlug !== "all" && GRANT_IDS[sponsorSlug] && (
                 <>
                   <option value="thisWeek">
                     This Week (Grant ID: {GRANT_IDS[sponsorSlug].thisWeek})
