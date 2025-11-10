@@ -231,6 +231,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     }>>();
     const sponsorsMap = new Map<number, Set<string>>(); // Track which sponsors each builder appears in
 
+    // Step 1: Gather all data from each sponsor slug
     allResponses.forEach((result, index) => {
       if (result.status === "fulfilled") {
         const sponsor = ALL_SPONSOR_SLUGS[index];
@@ -241,10 +242,12 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           const rewardAmount = typeof user.reward_amount === 'string' 
             ? parseFloat(user.reward_amount) 
             : user.reward_amount;
+          
+          // Convert token amount to USD immediately
           const earningsUSD = rewardAmount * tokenPrice;
 
           if (!userMap.has(user.id)) {
-            // First time seeing this builder
+            // First time seeing this builder - initialize
             userMap.set(user.id, {
               ...user,
               earningsBreakdown: [],
@@ -262,20 +265,17 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           // Track that this builder appears in this sponsor
           sponsorsSet.add(sponsor);
 
-          // Add earnings from this sponsor
+          // Add earnings from this sponsor (converted to USD)
           if (rewardAmount > 0 && tokenInfo) {
             breakdown.push({
               sponsor,
               amount: rewardAmount,
-              amountUSD: earningsUSD,
+              amountUSD: earningsUSD, // Already in USD
               tokenSymbol: tokenInfo.symbol,
             });
 
-            // Update total earnings
+            // Accumulate total earnings in USD
             existingUser.totalEarningsUSD = (existingUser.totalEarningsUSD || 0) + earningsUSD;
-
-            // Update reward_amount to total USD (for display)
-            existingUser.reward_amount = existingUser.totalEarningsUSD;
           }
 
           // Update other fields (take the best/highest values)
@@ -287,6 +287,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           }
         });
       }
+    });
+
+    // Step 2: After gathering all data, update reward_amount to total USD for display
+    userMap.forEach((user) => {
+      user.reward_amount = user.totalEarningsUSD || 0;
     });
 
     // Attach earnings breakdown and sponsors list to users
