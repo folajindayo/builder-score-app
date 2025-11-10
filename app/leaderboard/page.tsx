@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { WalletButton } from "@/components/WalletButton";
 import { Leaderboard } from "@/components/Leaderboard";
-import type { LeaderboardFilters } from "@/types/talent";
+import { LeaderboardFilters } from "@/components/LeaderboardFilters";
+import type { LeaderboardFilters as LeaderboardFiltersType } from "@/types/talent";
 import Link from "next/link";
 
 export default function LeaderboardPage() {
-  const [filters, setFilters] = useState<LeaderboardFilters>({
+  const [filters, setFilters] = useState<LeaderboardFiltersType>({
     per_page: 20,
     page: 1,
     sponsor_slug: process.env.NEXT_PUBLIC_DEFAULT_SPONSOR_SLUG || undefined,
@@ -15,6 +16,13 @@ export default function LeaderboardPage() {
       ? Number(process.env.NEXT_PUBLIC_DEFAULT_GRANT_ID)
       : undefined,
   });
+  const [loading, setLoading] = useState(false);
+
+  const handleFilterChange = (newFilters: LeaderboardFiltersType) => {
+    setFilters({ ...newFilters, page: 1 }); // Reset to page 1 when filters change
+    setLoading(true);
+    setTimeout(() => setLoading(false), 100);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -52,6 +60,12 @@ export default function LeaderboardPage() {
             Top builders ranked by their onchain reputation score
           </p>
         </div>
+
+        <LeaderboardFilters
+          onFilterChange={handleFilterChange}
+          loading={loading}
+          initialFilters={filters}
+        />
 
         <Leaderboard filters={filters} />
       </main>
