@@ -89,23 +89,16 @@ export function LeaderboardFilters({
     : null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-6 bg-white rounded-xl border border-gray-200 shadow-lg mb-6"
-    >
-      <h3 className="text-xl font-semibold text-gray-900 mb-6">
-        Filter Leaderboard
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">
             Sponsor
           </label>
           <select
             value={sponsorSlug}
             onChange={(e) => handleSponsorSlugChange(e.target.value)}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
           >
             {SPONSOR_SLUGS.map((sponsor) => (
               <option key={sponsor.value} value={sponsor.value}>
@@ -115,9 +108,9 @@ export function LeaderboardFilters({
           </select>
         </div>
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">
             Duration {sponsorSlug && GRANT_IDS[sponsorSlug] && currentGrantId && (
-              <span className="text-xs text-gray-500 ml-2 font-normal">
+              <span className="text-xs text-gray-500 ml-1 font-normal">
                 (Grant ID: {currentGrantId})
               </span>
             )}
@@ -126,7 +119,7 @@ export function LeaderboardFilters({
             <select
               value={grantDuration}
               onChange={(e) => handleGrantDurationChange(e.target.value as "thisWeek" | "lastWeek" | "allTime")}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
             >
               <option value="allTime">
                 All Time
@@ -143,19 +136,19 @@ export function LeaderboardFilters({
               )}
             </select>
           ) : (
-            <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-gray-50 text-gray-400">
+            <div className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-400">
               Select a sponsor to see duration options
             </div>
           )}
         </div>
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">
             Results Per Page
           </label>
           <select
             value={perPage}
             onChange={(e) => handlePerPageChange(e.target.value)}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
           >
             <option value="10">10</option>
             <option value="20">20</option>
@@ -164,31 +157,27 @@ export function LeaderboardFilters({
           </select>
         </div>
       </div>
-      <div className="mt-6 flex justify-end gap-3">
+      <div className="mt-4 flex justify-end gap-2">
         {hasFilters && (
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             type="button"
             onClick={handleClear}
             disabled={loading}
-            className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 rounded-lg font-semibold transition-all shadow-sm hover:shadow"
+            className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 rounded-lg transition-colors"
           >
-            Clear Filters
-          </motion.button>
+            Clear
+          </button>
         )}
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+        <button
           type="button"
           onClick={handleApplyFilters}
           disabled={loading}
-          className="px-8 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+          className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
         >
-          {loading ? "Applying..." : "Apply Filters"}
-        </motion.button>
+          {loading ? "Applying..." : "Apply"}
+        </button>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
