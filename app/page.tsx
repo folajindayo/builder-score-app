@@ -13,6 +13,12 @@ export default function Home() {
             </h1>
             <div className="flex items-center gap-4">
               <Link
+                href="/leaderboard"
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Leaderboard
+              </Link>
+              <Link
                 href="/search"
                 className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
