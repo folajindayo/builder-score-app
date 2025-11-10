@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useDebounce } from "@/lib/hooks";
+import { useState, useEffect } from "react";
 import type { LeaderboardFilters } from "@/types/talent";
 
 // Sponsor slugs - ordered list
@@ -32,59 +31,59 @@ export function LeaderboardFilters({
   initialFilters = {},
 }: LeaderboardFiltersProps) {
   const [sponsorSlug, setSponsorSlug] = useState(initialFilters.sponsor_slug || "");
-  const [grantId, setGrantId] = useState(initialFilters.grant_id?.toString() || "");
+  const [grantDuration, setGrantDuration] = useState<"thisWeek" | "lastWeek">("thisWeek");
   const [perPage, setPerPage] = useState(initialFilters.per_page?.toString() || "20");
 
-  const debouncedFilter = useDebounce((filters: LeaderboardFilters) => {
-    onFilterChange(filters);
-  }, 500);
+  // Auto-set grant ID based on sponsor and duration (controlled from code)
+  useEffect(() => {
+    if (sponsorSlug && GRANT_IDS[sponsorSlug]) {
+      // Grant ID is automatically determined by sponsor and duration
+      // No need to store it in state, it's calculated when applying filters
+    }
+  }, [sponsorSlug, grantDuration]);
 
   const handleSponsorSlugChange = (value: string) => {
     setSponsorSlug(value);
-    // Auto-set grant ID if sponsor has known grant IDs
-    const sponsorGrantIds = GRANT_IDS[value];
-    if (sponsorGrantIds && !grantId) {
-      setGrantId(sponsorGrantIds.thisWeek.toString());
-      debouncedFilter({
-        sponsor_slug: value || undefined,
-        grant_id: sponsorGrantIds.thisWeek,
-        per_page: perPage ? Number(perPage) : undefined,
-      });
-    } else {
-      debouncedFilter({
-        sponsor_slug: value || undefined,
-        grant_id: grantId ? Number(grantId) : undefined,
-        per_page: perPage ? Number(perPage) : undefined,
-      });
+    // Reset to "thisWeek" when sponsor changes
+    if (value && GRANT_IDS[value]) {
+      setGrantDuration("thisWeek");
     }
   };
 
-  const handleGrantIdChange = (value: string) => {
-    setGrantId(value);
-    debouncedFilter({
-      sponsor_slug: sponsorSlug || undefined,
-      grant_id: value ? Number(value) : undefined,
-      per_page: perPage ? Number(perPage) : undefined,
-    });
+  const handleGrantDurationChange = (value: "thisWeek" | "lastWeek") => {
+    setGrantDuration(value);
   };
 
   const handlePerPageChange = (value: string) => {
     setPerPage(value);
-    debouncedFilter({
+  };
+
+  const handleApplyFilters = () => {
+    const filters: LeaderboardFilters = {
       sponsor_slug: sponsorSlug || undefined,
-      grant_id: grantId ? Number(grantId) : undefined,
-      per_page: value ? Number(value) : undefined,
-    });
+      per_page: perPage ? Number(perPage) : undefined,
+      page: 1,
+    };
+
+    // Auto-set grant ID based on sponsor and duration (controlled from code)
+    if (sponsorSlug && GRANT_IDS[sponsorSlug]) {
+      filters.grant_id = GRANT_IDS[sponsorSlug][grantDuration];
+    }
+
+    onFilterChange(filters);
   };
 
   const handleClear = () => {
     setSponsorSlug("");
-    setGrantId("");
+    setGrantDuration("thisWeek");
     setPerPage("20");
     onFilterChange({ per_page: 20, page: 1 });
   };
 
-  const hasFilters = sponsorSlug || grantId || (perPage && perPage !== "20");
+  const hasFilters = sponsorSlug || (perPage && perPage !== "20");
+  const currentGrantId = sponsorSlug && GRANT_IDS[sponsorSlug] 
+    ? GRANT_IDS[sponsorSlug][grantDuration] 
+    : null;
 
   return (
     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm mb-6">
@@ -110,34 +109,29 @@ export function LeaderboardFilters({
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Grant ID {sponsorSlug && GRANT_IDS[sponsorSlug] && (
+            Duration {sponsorSlug && GRANT_IDS[sponsorSlug] && currentGrantId && (
               <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                (Duration)
+                (Grant ID: {currentGrantId})
               </span>
             )}
           </label>
           {sponsorSlug && GRANT_IDS[sponsorSlug] ? (
             <select
-              value={grantId}
-              onChange={(e) => handleGrantIdChange(e.target.value)}
+              value={grantDuration}
+              onChange={(e) => handleGrantDurationChange(e.target.value as "thisWeek" | "lastWeek")}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value={GRANT_IDS[sponsorSlug].thisWeek.toString()}>
-                This Week ({GRANT_IDS[sponsorSlug].thisWeek})
+              <option value="thisWeek">
+                This Week (Grant ID: {GRANT_IDS[sponsorSlug].thisWeek})
               </option>
-              <option value={GRANT_IDS[sponsorSlug].lastWeek.toString()}>
-                Last Week ({GRANT_IDS[sponsorSlug].lastWeek})
+              <option value="lastWeek">
+                Last Week (Grant ID: {GRANT_IDS[sponsorSlug].lastWeek})
               </option>
             </select>
           ) : (
-            <input
-              type="number"
-              value={grantId}
-              onChange={(e) => handleGrantIdChange(e.target.value)}
-              placeholder="Enter Grant ID"
-              min="0"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <div className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+              Select a sponsor to see duration options
+            </div>
           )}
         </div>
         <div>
@@ -156,8 +150,8 @@ export function LeaderboardFilters({
           </select>
         </div>
       </div>
-      {hasFilters && (
-        <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex justify-end gap-3">
+        {hasFilters && (
           <button
             type="button"
             onClick={handleClear}
@@ -166,8 +160,16 @@ export function LeaderboardFilters({
           >
             Clear Filters
           </button>
-        </div>
-      )}
+        )}
+        <button
+          type="button"
+          onClick={handleApplyFilters}
+          disabled={loading}
+          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
+        >
+          {loading ? "Applying..." : "Apply Filters"}
+        </button>
+      </div>
     </div>
   );
 }
