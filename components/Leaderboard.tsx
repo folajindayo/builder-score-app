@@ -266,7 +266,147 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Top Builders by Category Table */}
+      {!activeSearchQuery && topBuildersByCategory.length > 0 && (
+        <div className="mb-6 bg-white rounded-lg border border-gray-200">
+          <div className="p-6 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+              Top Builders by Category
+            </h3>
+            <p className="text-xs text-gray-500">
+              Leading builders across different categories
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Category
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Builder
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Score
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Earnings
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    MCAP
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Position
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {topBuildersByCategory.map((item, idx) => {
+                  const user = item.builder!;
+                  const rewardAmount = typeof user.reward_amount === 'string' 
+                    ? parseFloat(user.reward_amount) 
+                    : user.reward_amount;
+                  const mcap = tokenPrice ? calculateMCAP(user, tokenPrice) : 0;
+                  
+                  const categoryColors = {
+                    sought_after: "bg-green-100 text-green-800 border-green-200",
+                    trending: "bg-orange-100 text-orange-800 border-orange-200",
+                    highest_score: "bg-blue-100 text-blue-800 border-blue-200",
+                    featured: "bg-purple-100 text-purple-800 border-purple-200",
+                    most_earnings: "bg-yellow-100 text-yellow-800 border-yellow-200",
+                  };
+
+                  return (
+                    <motion.tr
+                      key={`${item.category}-${user.id}`}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${categoryColors[item.category]}`}>
+                          <TrophyIcon category={item.category} className="w-4 h-4" />
+                          {getCategoryLabel(item.category)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          {user.profile.image_url ? (
+                            <img
+                              src={user.profile.image_url}
+                              alt={user.profile.display_name || user.profile.name}
+                              className="w-10 h-10 rounded-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                              <span className="text-xs font-medium text-gray-500">
+                                {user.leaderboard_position}
+                              </span>
+                            </div>
+                          )}
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {user.profile.display_name || user.profile.name || "Anonymous"}
+                            </div>
+                            {user.profile.bio && (
+                              <div className="text-xs text-gray-500 truncate max-w-xs">
+                                {user.profile.bio}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-semibold text-gray-900">
+                          {user.profile.builder_score?.points !== undefined
+                            ? formatNumber(user.profile.builder_score.points)
+                            : "N/A"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {rewardAmount > 0 && tokenPrice && tokenInfo ? (
+                          <div>
+                            <div className="text-sm font-semibold text-gray-900">
+                              ${formatNumber(rewardAmount * tokenPrice)}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {formatNumber(rewardAmount)} {tokenInfo.symbol}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">—</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-semibold text-gray-900">
+                          ${formatNumber(mcap)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">
+                          #{user.leaderboard_position}
+                        </div>
+                        {user.ranking_change !== 0 && (
+                          <div className={`text-xs ${user.ranking_change > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {user.ranking_change > 0 ? '↑' : '↓'} {Math.abs(user.ranking_change)}
+                          </div>
+                        )}
+                      </td>
+                    </motion.tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Main Leaderboard Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
