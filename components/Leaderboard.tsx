@@ -1293,23 +1293,23 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2 min-w-0">
-                        {user.profile.image_url ? (
-                          <img
-                            src={user.profile.image_url}
-                            alt={user.profile.display_name || user.profile.name}
-                            className="w-8 h-8 rounded-lg object-cover flex-shrink-0 shadow-sm"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        ) : (
-                          <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
-                            <span className="text-xs font-medium text-gray-500">
-                              {user.leaderboard_position}
-                            </span>
-                          </div>
-                        )}
-                        <div className="min-w-0">
+                      {user.profile.image_url ? (
+                        <img
+                          src={user.profile.image_url}
+                          alt={user.profile.display_name || user.profile.name}
+                          className="w-8 h-8 rounded-lg object-cover flex-shrink-0 shadow-sm"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
+                          <span className="text-xs font-medium text-gray-500">
+                            {user.leaderboard_position}
+                          </span>
+                        </div>
+                      )}
+                      <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
                             <p className="text-sm font-medium text-gray-900 truncate">
                               {user.profile.display_name || user.profile.name || "Anonymous"}
