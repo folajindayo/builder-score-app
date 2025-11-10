@@ -219,8 +219,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     );
 
     // Fetch data from all sponsors
-    // Fetch all pages sequentially for each sponsor (page=1, 2, 3, ...) until no more data
-    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors (all pages, sequentially)...");
+    // Fetch all pages sequentially for each sponsor (page=1, 2, 3, ...) with 100 per page
+    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors (all pages, 100 per page, sequentially)...");
     
     const fetchAllPagesForSponsor = async (slug: string): Promise<LeaderboardUser[]> => {
       const allUsers: LeaderboardUser[] = [];
@@ -231,7 +231,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       
       while (hasMorePages) {
         try {
-          console.log(`   📄 Fetching ${slug} - Page ${currentPage}...`);
+          console.log(`   📄 Fetching ${slug} - Page ${currentPage} (100 per page)...`);
           const response = await getLeaderboard({
             ...filters,
             sponsor_slug: slug,
