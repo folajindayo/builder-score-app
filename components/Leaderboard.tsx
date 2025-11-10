@@ -703,6 +703,41 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       </div>
                     )}
                   </td>
+                  {!filters.sponsor_slug && (
+                    <td className="px-4 py-4">
+                      {loadingSponsors ? (
+                        <div className="text-xs text-gray-400">Loading...</div>
+                      ) : (
+                        <div className="flex flex-col gap-1">
+                          <div className="text-xs font-medium text-gray-900">
+                            {builderSponsors.get(user.id)?.length || 0} sponsor{builderSponsors.get(user.id)?.length !== 1 ? 's' : ''}
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {builderSponsors.get(user.id)?.map((sponsor) => {
+                              const sponsorLabels: Record<string, string> = {
+                                walletconnect: "WCT",
+                                celo: "CELO",
+                                base: "BASE",
+                                "base-summer": "BASE-S",
+                                syndicate: "SYN",
+                                "talent-protocol": "TALENT",
+                              };
+                              return (
+                                <span
+                                  key={sponsor}
+                                  className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200"
+                                >
+                                  {sponsorLabels[sponsor] || sponsor}
+                                </span>
+                              );
+                            }) || (
+                              <span className="text-xs text-gray-400">—</span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </td>
+                  )}
                   <td className="px-4 py-4">
                     <button
                       onClick={() => handleViewProfile(user)}
