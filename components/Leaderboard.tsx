@@ -275,9 +275,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           // Convert token amount to USD immediately
           const earningsUSD = rewardAmount * tokenPrice;
 
+          const builderName = user.profile.display_name || user.profile.name || 'Anonymous';
+          const isExampleBuilder = builderName.toLowerCase().includes('defidevrel') || 
+                                   builderName.toLowerCase().includes('defidevrel.base.eth');
+
           if (!userMap.has(user.id)) {
             // First time seeing this builder - initialize
-            console.log(`   🆕 New builder found: ${user.profile.display_name || user.profile.name || user.id} (ID: ${user.id})`);
+            if (isExampleBuilder) {
+              console.log(`   🎯 EXAMPLE BUILDER FOUND: ${builderName} (ID: ${user.id}) in ${sponsor}`);
+            }
             userMap.set(user.id, {
               ...user,
               earningsBreakdown: [],
@@ -286,11 +292,13 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             });
             earningsBreakdownMap.set(user.id, []);
             sponsorsMap.set(user.id, new Set());
+            builderTracking.set(user.id, []);
           }
 
           const existingUser = userMap.get(user.id)!;
           const breakdown = earningsBreakdownMap.get(user.id)!;
           const sponsorsSet = sponsorsMap.get(user.id)!;
+          const tracking = builderTracking.get(user.id)!;
 
           // Track that this builder appears in this sponsor
           sponsorsSet.add(sponsor);
@@ -298,14 +306,19 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           // Add earnings from this sponsor (converted to USD)
           // Include ALL earnings from ALL sponsors, even if 0
           if (tokenInfo) {
-            breakdown.push({
+            const breakdownItem = {
               sponsor,
               amount: rewardAmount,
               amountUSD: earningsUSD, // Already in USD
               tokenSymbol: tokenInfo.symbol,
-            });
+            };
+            
+            breakdown.push(breakdownItem);
+            tracking.push(breakdownItem);
 
-            console.log(`   💵 Builder ${user.id} (${user.profile.display_name || user.profile.name || 'Anonymous'}): ${rewardAmount} ${tokenInfo.symbol} × $${tokenPrice} = $${earningsUSD.toFixed(2)}`);
+            if (isExampleBuilder) {
+              console.log(`   🎯 EXAMPLE BUILDER EARNINGS: ${builderName} from ${sponsor}: ${rewardAmount} ${tokenInfo.symbol} × $${tokenPrice} = $${earningsUSD.toFixed(2)}`);
+            }
 
             // Accumulate total earnings in USD from ALL sponsors
             // This sums the entire amount made from all sponsors
@@ -313,7 +326,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             existingUser.totalEarningsUSD = previousTotal + earningsUSD;
             totalEarningsCalculated += earningsUSD;
 
-            console.log(`      Previous total: $${previousTotal.toFixed(2)} → New total: $${existingUser.totalEarningsUSD.toFixed(2)}`);
+            if (isExampleBuilder) {
+              console.log(`   🎯 EXAMPLE BUILDER TOTAL UPDATE: Previous: $${previousTotal.toFixed(2)} → New: $${existingUser.totalEarningsUSD.toFixed(2)} (Added $${earningsUSD.toFixed(2)} from ${sponsor})`);
+            }
           }
 
           // Update other fields (take the best/highest values)
