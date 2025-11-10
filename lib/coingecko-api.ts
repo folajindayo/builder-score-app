@@ -41,9 +41,9 @@ export const SPONSOR_TOKENS: Record<string, TokenInfo> = {
     fallbackPrice: 0.1, // Approximate fallback
   },
   syndicate: {
-    symbol: "ETH",
-    name: "Ethereum",
-    fallbackPrice: 3000, // Approximate fallback
+    symbol: "SYND",
+    name: "Syndicate",
+    fallbackPrice: 0.24, // Approximate fallback based on current price
   },
 };
 
@@ -145,8 +145,8 @@ export async function getTokenPrice(sponsorSlug: string | undefined): Promise<{
               price = tokenInfo.fallbackPrice;
               break;
             case "syndicate":
-              // Syndicate uses ETH
-              price = await getTokenPriceById("ethereum", tokenInfo.fallbackPrice);
+              // SYND token - Syndicate Network
+              price = await getTokenPriceById("syndicate", tokenInfo.fallbackPrice);
               break;
             default:
               price = tokenInfo.fallbackPrice;
