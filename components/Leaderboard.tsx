@@ -318,6 +318,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           )}
         </div>
       </div>
+      </div>
 
       {/* Top Builders by Category Table */}
       {!activeSearchQuery && topBuildersByCategory.length > 0 && (
