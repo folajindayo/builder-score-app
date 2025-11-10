@@ -143,8 +143,20 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
   const filteredUsers = data.users;
 
+  // Categorize builders and calculate MCAP
+  const categories = useMemo(() => {
+    if (!filteredUsers.length || !tokenPrice) return new Map<number, BuilderCategory>();
+    return categorizeBuilders(filteredUsers, tokenPrice);
+  }, [filteredUsers, tokenPrice]);
+
+  const handleViewProfile = (user: LeaderboardUser) => {
+    setSelectedBuilder(user);
+    setShowProfileModal(true);
+  };
+
   return (
-    <div className="bg-white rounded-lg border border-gray-200">
+    <>
+      <div className="bg-white rounded-lg border border-gray-200">
       {/* Header Section */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
@@ -453,6 +465,18 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           </div>
         </div>
       )}
-    </div>
+      </div>
+
+      {selectedBuilder && (
+        <BuilderProfileModal
+          builder={selectedBuilder}
+          isOpen={showProfileModal}
+          onClose={() => {
+            setShowProfileModal(false);
+            setSelectedBuilder(null);
+          }}
+        />
+      )}
+    </>
   );
 }
