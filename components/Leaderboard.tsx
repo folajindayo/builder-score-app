@@ -21,6 +21,60 @@ import { TrophyIcon } from "@/components/TrophyIcon";
 import { BuilderProfileModal } from "@/components/BuilderProfileModal";
 import type { LeaderboardUser } from "@/types/talent";
 
+/**
+ * Get the reason/explanation for why a builder was categorized
+ */
+function getCategoryReason(user: LeaderboardUser, category: Exclude<BuilderCategory, null>, tokenPrice: number): string {
+  const rewardAmount = typeof user.reward_amount === 'string' 
+    ? parseFloat(user.reward_amount) 
+    : user.reward_amount;
+  const score = user.profile.builder_score?.points || 0;
+  const earningsUSD = rewardAmount * tokenPrice;
+  
+  switch (category) {
+    case "most_earnings":
+      return `Highest earnings: ${formatNumber(rewardAmount)} tokens ($${formatNumber(earningsUSD)})`;
+    
+    case "trending":
+      const changeText = user.ranking_change > 0 
+        ? `↑${user.ranking_change} positions` 
+        : user.ranking_change < 0 
+        ? `↓${Math.abs(user.ranking_change)} positions`
+        : "stable";
+      return `Ranking change: ${changeText} | Position: #${user.leaderboard_position} | Score: ${formatNumber(score)}`;
+    
+    case "highest_score":
+      return `Builder score: ${formatNumber(score)} points (highest among all builders)`;
+    
+    case "featured":
+      const mcap = calculateMCAP(user, tokenPrice);
+      const verificationBonus = (user.profile.human_checkmark ? 150 : 0) + (user.profile.verified_nationality ? 75 : 0);
+      const positionBonus = user.leaderboard_position <= 10 ? 100 : user.leaderboard_position <= 50 ? 50 : 0;
+      return `MCAP: $${formatNumber(mcap)} | Verified: ${verificationBonus > 0 ? 'Yes' : 'No'} | Top ${user.leaderboard_position <= 10 ? '10' : user.leaderboard_position <= 50 ? '50' : '100+'} position`;
+    
+    case "sought_after":
+      const completenessScore = 
+        (user.profile.human_checkmark ? 150 : 0) +
+        (user.profile.verified_nationality ? 75 : 0) +
+        (user.profile.bio ? 40 : 0) +
+        (user.profile.location ? 30 : 0) +
+        (user.profile.tags?.length || 0) * 15 +
+        score * 0.8 +
+        (user.profile.image_url ? 20 : 0);
+      const factors = [];
+      if (user.profile.human_checkmark) factors.push("Verified");
+      if (user.profile.verified_nationality) factors.push("Nationality verified");
+      if (user.profile.bio) factors.push("Bio");
+      if (user.profile.location) factors.push("Location");
+      if (user.profile.tags?.length) factors.push(`${user.profile.tags.length} tags`);
+      if (user.profile.image_url) factors.push("Profile image");
+      return `Completeness score: ${Math.round(completenessScore)} | Factors: ${factors.join(", ") || "None"} | Score: ${formatNumber(score)}`;
+    
+    default:
+      return "";
+  }
+}
+
 interface LeaderboardProps {
   filters?: LeaderboardFilters;
 }
@@ -299,6 +353,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Position
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Reason
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -397,6 +454,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                             {user.ranking_change > 0 ? '↑' : '↓'} {Math.abs(user.ranking_change)}
                           </div>
                         )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div 
+                          className="text-xs text-gray-600 max-w-xs"
+                          title={getCategoryReason(user, category, tokenPrice)}
+                        >
+                          <div className="truncate" title={getCategoryReason(user, category, tokenPrice)}>
+                            {getCategoryReason(user, category, tokenPrice)}
+                          </div>
+                        </div>
                       </td>
                     </motion.tr>
                   );
