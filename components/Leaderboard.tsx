@@ -367,7 +367,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         targetBuilderFound = true;
         console.log(`\n🎯🎯🎯 FOUND TARGET BUILDER: ${builderName} (ID: ${id}) 🎯🎯🎯`);
         console.log(`   Sponsors: ${user.sponsors.join(', ')} (${user.sponsors.length} sponsors)`);
-        console.log(`   Total Earnings: $${user.totalEarningsUSD.toFixed(2)}`);
+        console.log(`   Total Earnings: $${(user.totalEarningsUSD || 0).toFixed(2)}`);
         console.log(`   Earnings Breakdown:`);
         user.earningsBreakdown.forEach((b, idx) => {
           console.log(`      ${idx + 1}. ${b.sponsor}: ${b.amount} ${b.tokenSymbol} = $${b.amountUSD.toFixed(2)}`);
