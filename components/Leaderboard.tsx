@@ -33,6 +33,7 @@ interface UserWithEarningsBreakdown extends LeaderboardUser {
     tokenSymbol: string;
   }>;
   totalEarningsUSD?: number;
+  sponsors?: string[]; // List of sponsors this builder appears in
 }
 
 /**
@@ -228,6 +229,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       amountUSD: number;
       tokenSymbol: string;
     }>>();
+    const sponsorsMap = new Map<number, Set<string>>(); // Track which sponsors each builder appears in
 
     allResponses.forEach((result, index) => {
       if (result.status === "fulfilled") {
@@ -247,12 +249,18 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               ...user,
               earningsBreakdown: [],
               totalEarningsUSD: 0,
+              sponsors: [],
             });
             earningsBreakdownMap.set(user.id, []);
+            sponsorsMap.set(user.id, new Set());
           }
 
           const existingUser = userMap.get(user.id)!;
           const breakdown = earningsBreakdownMap.get(user.id)!;
+          const sponsorsSet = sponsorsMap.get(user.id)!;
+
+          // Track that this builder appears in this sponsor
+          sponsorsSet.add(sponsor);
 
           // Add earnings from this sponsor
           if (rewardAmount > 0 && tokenInfo) {
@@ -281,9 +289,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       }
     });
 
-    // Attach earnings breakdown to users
+    // Attach earnings breakdown and sponsors list to users
     userMap.forEach((user, id) => {
       user.earningsBreakdown = earningsBreakdownMap.get(id) || [];
+      user.sponsors = Array.from(sponsorsMap.get(id) || []);
     });
 
     // Convert to array and sort by total earnings USD (descending)
@@ -591,6 +600,19 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                             {user.profile.bio && (
                               <div className="text-xs text-gray-500 truncate">
                                 {user.profile.bio}
+                              </div>
+                            )}
+                            {isAllSponsors && (user as UserWithEarningsBreakdown).sponsors && (user as UserWithEarningsBreakdown).sponsors!.length > 0 && (
+                              <div className="mt-1.5 flex flex-wrap gap-1">
+                                {(user as UserWithEarningsBreakdown).sponsors!.map((sponsor) => (
+                                  <span
+                                    key={sponsor}
+                                    className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 capitalize"
+                                    title={`Appears in ${sponsor.replace("-", " ")}`}
+                                  >
+                                    {sponsor.replace("-", " ")}
+                                  </span>
+                                ))}
                               </div>
                             )}
                           </div>
