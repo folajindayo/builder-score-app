@@ -940,7 +940,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                 >
                   <td className="px-4 py-4">
                     <div className="text-sm font-semibold text-gray-600">
-                      {user.leaderboard_position || ((data.pagination.current_page - 1) * (data.pagination.total / data.pagination.last_page) + idx + 1)}
+                      {user.leaderboard_position || ((data.pagination.current_page - 1) * 30 + idx + 1)}
                     </div>
                   </td>
                   <td className="px-4 py-4">
