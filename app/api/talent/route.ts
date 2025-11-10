@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
+  // Debug logging
+  console.log("Talent API route accessed");
+  
   const API_BASE_URL = process.env.NEXT_PUBLIC_TALENT_API_URL;
   const API_KEY = process.env.TALENT_PROTOCOL_API_KEY || "";
+
+  console.log("API_BASE_URL:", API_BASE_URL ? "set" : "missing");
+  console.log("API_KEY:", API_KEY ? "set" : "missing");
 
   if (!API_BASE_URL) {
     return NextResponse.json(
@@ -18,16 +24,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Build query string from remaining params (excluding endpoint)
-    const queryParams = new URLSearchParams();
-    searchParams.forEach((value, key) => {
-      if (key !== "endpoint") {
-        queryParams.append(key, value);
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = `${API_BASE_URL}${endpoint}${queryString ? `?${queryString}` : ""}`;
+    // The endpoint may already contain query parameters (e.g., /score?id=...)
+    // So we just append it directly to the base URL
+    const url = `${API_BASE_URL}${endpoint}`;
     
     const headers: HeadersInit = {
       "Content-Type": "application/json",
