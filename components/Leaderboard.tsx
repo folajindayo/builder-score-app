@@ -15,6 +15,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(filters.page || 1);
 
+  // Reset page when filters change (except page filter)
+  useEffect(() => {
+    if (filters.page !== undefined) {
+      setPage(filters.page);
+    } else {
+      setPage(1);
+    }
+  }, [JSON.stringify({ sponsor_slug: filters.sponsor_slug, grant_id: filters.grant_id, per_page: filters.per_page })]);
+
   useEffect(() => {
     fetchLeaderboard({ ...filters, page });
   }, [page, JSON.stringify(filters)]);
