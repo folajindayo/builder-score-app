@@ -72,6 +72,11 @@ export async function GET(request: NextRequest) {
       // Check if response is HTML (error page) instead of JSON
       if (contentType && contentType.includes("text/html")) {
         const text = await response.text();
+        console.error("Talent Protocol API returned HTML:", {
+          status: response.status,
+          url,
+          preview: text.substring(0, 200)
+        });
         return NextResponse.json(
           { 
             error: `API returned HTML instead of JSON. This usually means authentication failed or the endpoint is incorrect. Status: ${response.status}`,
@@ -82,10 +87,26 @@ export async function GET(request: NextRequest) {
         );
       }
       
-      const error = await response.json().catch(() => ({ message: "API request failed" }));
+      // Try to parse error response
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { message: `API request failed with status ${response.status}` };
+      }
+      
+      console.error("Talent Protocol API error:", {
+        status: response.status,
+        url,
+        error: errorData
+      });
+      
       return NextResponse.json(
-        { error: error.message || error.error || `API error: ${response.statusText}` },
-        { status: response.status }
+        { 
+          error: errorData.message || errorData.error || `API error: ${response.statusText}`,
+          status: response.status 
+        },
+        { status: response.status >= 500 ? 500 : response.status }
       );
     }
 
