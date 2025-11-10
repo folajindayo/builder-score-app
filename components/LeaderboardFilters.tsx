@@ -34,7 +34,7 @@ export function LeaderboardFilters({
 }: LeaderboardFiltersProps) {
   const [sponsorSlug, setSponsorSlug] = useState(initialFilters.sponsor_slug || "");
   const [grantDuration, setGrantDuration] = useState<"thisWeek" | "lastWeek" | "allTime">("thisWeek");
-  const [perPage, setPerPage] = useState(initialFilters.per_page?.toString() || "20");
+  const [perPage, setPerPage] = useState(initialFilters.per_page?.toString() || "1000");
 
   // Auto-set grant ID based on sponsor and duration (controlled from code)
   useEffect(() => {

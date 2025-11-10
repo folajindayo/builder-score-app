@@ -274,17 +274,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           // Convert token amount to USD immediately
           const earningsUSD = rewardAmount * tokenPrice;
 
-          // Check if this is the builder we're looking for
-          const builderName = user.profile.display_name || user.profile.name || '';
-          const isTargetBuilder = builderName.toLowerCase().includes('defidevrel') || 
-                                 builderName.toLowerCase().includes('defidevrel.base.eth');
-
           if (!userMap.has(user.id)) {
             // First time seeing this builder - initialize
-            if (isTargetBuilder) {
-              console.log(`   🎯 TARGET BUILDER FOUND: ${builderName} (ID: ${user.id}) in ${sponsor}`);
-            }
-            console.log(`   🆕 New builder found: ${builderName} (ID: ${user.id})`);
+            console.log(`   🆕 New builder found: ${user.profile.display_name || user.profile.name || user.id} (ID: ${user.id})`);
             userMap.set(user.id, {
               ...user,
               earningsBreakdown: [],
@@ -312,10 +304,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               tokenSymbol: tokenInfo.symbol,
             });
 
-            if (isTargetBuilder) {
-              console.log(`   🎯 TARGET BUILDER EARNINGS: ${builderName} from ${sponsor}: ${rewardAmount} ${tokenInfo.symbol} × $${tokenPrice} = $${earningsUSD.toFixed(2)}`);
-            }
-            console.log(`   💵 Builder ${user.id} (${builderName}): ${rewardAmount} ${tokenInfo.symbol} × $${tokenPrice} = $${earningsUSD.toFixed(2)}`);
+            console.log(`   💵 Builder ${user.id} (${user.profile.display_name || user.profile.name || 'Anonymous'}): ${rewardAmount} ${tokenInfo.symbol} × $${tokenPrice} = $${earningsUSD.toFixed(2)}`);
 
             // Accumulate total earnings in USD from ALL sponsors
             // This sums the entire amount made from all sponsors
@@ -323,9 +312,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             existingUser.totalEarningsUSD = previousTotal + earningsUSD;
             totalEarningsCalculated += earningsUSD;
 
-            if (isTargetBuilder) {
-              console.log(`   🎯 TARGET BUILDER TOTAL UPDATE: Previous: $${previousTotal.toFixed(2)} → New: $${existingUser.totalEarningsUSD.toFixed(2)} (Added $${earningsUSD.toFixed(2)} from ${sponsor})`);
-            }
             console.log(`      Previous total: $${previousTotal.toFixed(2)} → New total: $${existingUser.totalEarningsUSD.toFixed(2)}`);
           }
 
@@ -352,45 +338,43 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
 
     // Attach earnings breakdown and sponsors list to users
-    console.log("\n🔍 [All Sponsors] Searching for defidevrel.base.eth...");
-    let targetBuilderFound = false;
+    console.log("\n🔍 [All Sponsors] Step 2: Analyzing aggregated data...");
+    let exampleBuilderFound = false;
     
     userMap.forEach((user, id) => {
       user.earningsBreakdown = earningsBreakdownMap.get(id) || [];
       user.sponsors = Array.from(sponsorsMap.get(id) || []);
       
-      const builderName = user.profile.display_name || user.profile.name || '';
-      const isTargetBuilder = builderName.toLowerCase().includes('defidevrel') || 
-                             builderName.toLowerCase().includes('defidevrel.base.eth');
+      const builderName = user.profile.display_name || user.profile.name || 'Anonymous';
+      const isExampleBuilder = builderName.toLowerCase().includes('defidevrel') || 
+                               builderName.toLowerCase().includes('defidevrel.base.eth');
       
-      if (isTargetBuilder) {
-        targetBuilderFound = true;
-        console.log(`\n🎯🎯🎯 FOUND TARGET BUILDER: ${builderName} (ID: ${id}) 🎯🎯🎯`);
-        console.log(`   Sponsors: ${user.sponsors.join(', ')} (${user.sponsors.length} sponsors)`);
-        console.log(`   Total Earnings: $${(user.totalEarningsUSD || 0).toFixed(2)}`);
+      if (isExampleBuilder) {
+        exampleBuilderFound = true;
+        const tracking = builderTracking.get(id) || [];
+        const breakdownSum = user.earningsBreakdown.reduce((sum, b) => sum + b.amountUSD, 0);
+        
+        console.log(`\n🎯🎯🎯 EXAMPLE BUILDER ANALYSIS: ${builderName} (ID: ${id}) 🎯🎯🎯`);
+        console.log(`   Sponsors appeared in: ${user.sponsors.join(', ')} (${user.sponsors.length} sponsors)`);
+        console.log(`   Total Earnings (totalEarningsUSD): $${(user.totalEarningsUSD || 0).toFixed(2)}`);
+        console.log(`   Breakdown Sum Verification: $${breakdownSum.toFixed(2)}`);
+        console.log(`   Match: ${Math.abs((user.totalEarningsUSD || 0) - breakdownSum) < 0.01 ? '✅ CORRECT' : '❌ MISMATCH'}`);
         console.log(`   Earnings Breakdown:`);
         user.earningsBreakdown.forEach((b, idx) => {
-          console.log(`      ${idx + 1}. ${b.sponsor}: ${b.amount} ${b.tokenSymbol} = $${b.amountUSD.toFixed(2)}`);
+          console.log(`      ${idx + 1}. ${b.sponsor}: ${b.amount} ${b.tokenSymbol} × $${(b.amountUSD / b.amount || 0).toFixed(4)} = $${b.amountUSD.toFixed(2)}`);
         });
-        console.log(`   Verification: Sum = $${user.earningsBreakdown.reduce((sum, b) => sum + b.amountUSD, 0).toFixed(2)}`);
-      }
-      
-      // Log top 10 builders by earnings
-      if (user.totalEarningsUSD && user.totalEarningsUSD > 0 && !isTargetBuilder) {
-        console.log(`   Builder ${id}: ${builderName}`);
-        console.log(`      Sponsors: ${user.sponsors.join(', ')} (${user.sponsors.length} sponsors)`);
-        console.log(`      Total Earnings: $${user.totalEarningsUSD.toFixed(2)}`);
-        console.log(`      Breakdown:`, user.earningsBreakdown.map(b => `${b.sponsor}: ${b.amount} ${b.tokenSymbol} = $${b.amountUSD.toFixed(2)}`).join(', '));
+        console.log(`   Tracking array length: ${tracking.length}`);
+        console.log(`   Breakdown array length: ${user.earningsBreakdown.length}`);
       }
     });
     
-    if (!targetBuilderFound) {
-      console.log("   ⚠️  Target builder 'defidevrel.base.eth' NOT FOUND in aggregated results");
-      console.log("   Checking all builder names for similar matches...");
+    if (!exampleBuilderFound) {
+      console.log("   ⚠️  Example builder 'defidevrel.base.eth' NOT FOUND in aggregated results");
+      console.log("   Searching for similar names...");
       userMap.forEach((user, id) => {
         const builderName = user.profile.display_name || user.profile.name || '';
         if (builderName.toLowerCase().includes('defi') || builderName.toLowerCase().includes('devrel')) {
-          console.log(`   Similar match: ${builderName} (ID: ${id})`);
+          console.log(`   Similar match: ${builderName} (ID: ${id}) - Sponsors: ${(user.sponsors || []).join(', ')}`);
         }
       });
     }
@@ -416,30 +400,30 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
     console.log(`   Sorted ${combinedUsers.length} builders`);
     
-    // Find target builder's position in sorted list
-    const targetBuilderIndex = combinedUsers.findIndex((user) => {
+    // Find example builder's position in sorted list
+    const exampleBuilderIndex = combinedUsers.findIndex((user) => {
       const builderName = user.profile.display_name || user.profile.name || '';
       return builderName.toLowerCase().includes('defidevrel') || 
              builderName.toLowerCase().includes('defidevrel.base.eth');
     });
     
-    if (targetBuilderIndex !== -1) {
-      const targetBuilder = combinedUsers[targetBuilderIndex];
-      const pageNumber = Math.floor(targetBuilderIndex / (filters.per_page || 20)) + 1;
-      const positionOnPage = (targetBuilderIndex % (filters.per_page || 20)) + 1;
-      console.log(`\n🎯🎯🎯 TARGET BUILDER POSITION IN SORTED LIST 🎯🎯🎯`);
-      console.log(`   Name: ${targetBuilder.profile.display_name || targetBuilder.profile.name || 'Anonymous'}`);
-      console.log(`   Rank: #${targetBuilderIndex + 1} (Position ${positionOnPage} on page ${pageNumber})`);
-      console.log(`   Sponsors: ${(targetBuilder.sponsors || []).length} (${(targetBuilder.sponsors || []).join(', ')})`);
-      console.log(`   Total Earnings: $${(targetBuilder.totalEarningsUSD || 0).toFixed(2)}`);
+    if (exampleBuilderIndex !== -1) {
+      const exampleBuilder = combinedUsers[exampleBuilderIndex];
+      const pageNumber = Math.floor(exampleBuilderIndex / (filters.per_page || 1000)) + 1;
+      const positionOnPage = (exampleBuilderIndex % (filters.per_page || 1000)) + 1;
+      console.log(`\n🎯🎯🎯 EXAMPLE BUILDER POSITION IN SORTED LIST 🎯🎯🎯`);
+      console.log(`   Name: ${exampleBuilder.profile.display_name || exampleBuilder.profile.name || 'Anonymous'}`);
+      console.log(`   Rank: #${exampleBuilderIndex + 1} (Position ${positionOnPage} on page ${pageNumber})`);
+      console.log(`   Sponsors: ${(exampleBuilder.sponsors || []).length} (${(exampleBuilder.sponsors || []).join(', ')})`);
+      console.log(`   Total Earnings: $${(exampleBuilder.totalEarningsUSD || 0).toFixed(2)}`);
       console.log(`   Will appear on page: ${pageNumber}`);
     }
     
     console.log(`   Top 10 builders after sorting:`);
     combinedUsers.slice(0, 10).forEach((user, idx) => {
       const builderName = user.profile.display_name || user.profile.name || 'Anonymous';
-      const isTarget = builderName.toLowerCase().includes('defidevrel');
-      const marker = isTarget ? '🎯' : '';
+      const isExample = builderName.toLowerCase().includes('defidevrel');
+      const marker = isExample ? '🎯' : '';
       console.log(`   ${marker} ${idx + 1}. ${builderName} (ID: ${user.id})`);
       console.log(`      Sponsors: ${(user.sponsors || []).length} (${(user.sponsors || []).join(', ')})`);
       console.log(`      Total Earnings: $${(user.totalEarningsUSD || 0).toFixed(2)}`);
@@ -447,7 +431,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
     // Apply pagination
     console.log("\n🔄 [All Sponsors] Step 4: Applying pagination...");
-    const perPage = filters.per_page || 20;
+    const perPage = filters.per_page || 1000;
     const currentPage = filters.page || 1;
     const startIndex = (currentPage - 1) * perPage;
     const endIndex = startIndex + perPage;
