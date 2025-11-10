@@ -195,13 +195,21 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   };
 
   const fetchAllSponsors = async (filters: LeaderboardFilters): Promise<LeaderboardResponse> => {
+    console.log("🚀 [All Sponsors] Starting fetchAllSponsors");
+    console.log("📋 [All Sponsors] Sponsor slugs:", ALL_SPONSOR_SLUGS);
+    console.log("🔍 [All Sponsors] Filters:", filters);
+
     // Fetch token prices for all sponsors
+    console.log("💰 [All Sponsors] Fetching token prices for all sponsors...");
     const tokenPrices = await Promise.all(
       ALL_SPONSOR_SLUGS.map(async (slug) => {
         const { price, tokenInfo } = await getTokenPrice(slug);
+        console.log(`  ✓ ${slug}: $${price} (${tokenInfo?.symbol || 'N/A'})`);
         return { slug, price, tokenInfo };
       })
     );
+
+    console.log("✅ [All Sponsors] Token prices fetched:", tokenPrices);
 
     const priceMap = new Map(
       tokenPrices.map(({ slug, price }) => [slug, price])
@@ -211,6 +219,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     );
 
     // Fetch data from all sponsors
+    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors...");
     const allResponses = await Promise.allSettled(
       ALL_SPONSOR_SLUGS.map((slug) =>
         getLeaderboard({
@@ -220,6 +229,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         })
       )
     );
+    
+    console.log("📊 [All Sponsors] Responses received:", allResponses.length);
+    allResponses.forEach((result, index) => {
+      const sponsor = ALL_SPONSOR_SLUGS[index];
+      if (result.status === "fulfilled") {
+        console.log(`  ✓ ${sponsor}: ${result.value.users.length} builders`);
+      } else {
+        console.error(`  ✗ ${sponsor}: Failed -`, result.reason);
+      }
+    });
 
     // Combine all users by builder ID
     const userMap = new Map<number, UserWithEarningsBreakdown>();
@@ -232,13 +251,22 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     const sponsorsMap = new Map<number, Set<string>>(); // Track which sponsors each builder appears in
 
     // Step 1: Gather all data from each sponsor slug
+    console.log("🔄 [All Sponsors] Step 1: Gathering and aggregating data from all sponsors...");
+    let totalBuildersProcessed = 0;
+    let totalEarningsCalculated = 0;
+
     allResponses.forEach((result, index) => {
       if (result.status === "fulfilled") {
         const sponsor = ALL_SPONSOR_SLUGS[index];
         const tokenPrice = priceMap.get(sponsor) || 0;
         const tokenInfo = tokenInfoMap.get(sponsor);
 
+        console.log(`\n📦 [All Sponsors] Processing ${sponsor}:`);
+        console.log(`   Token Price: $${tokenPrice}, Symbol: ${tokenInfo?.symbol || 'N/A'}`);
+        console.log(`   Builders in this sponsor: ${result.value.users.length}`);
+
         result.value.users.forEach((user) => {
+          totalBuildersProcessed++;
           const rewardAmount = typeof user.reward_amount === 'string' 
             ? parseFloat(user.reward_amount) 
             : user.reward_amount;
@@ -248,6 +276,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
           if (!userMap.has(user.id)) {
             // First time seeing this builder - initialize
+            console.log(`   🆕 New builder found: ${user.profile.display_name || user.profile.name || user.id} (ID: ${user.id})`);
             userMap.set(user.id, {
               ...user,
               earningsBreakdown: [],
@@ -275,9 +304,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               tokenSymbol: tokenInfo.symbol,
             });
 
+            console.log(`   💵 Builder ${user.id} (${user.profile.display_name || user.profile.name || 'Anonymous'}): ${rewardAmount} ${tokenInfo.symbol} × $${tokenPrice} = $${earningsUSD.toFixed(2)}`);
+
             // Accumulate total earnings in USD from ALL sponsors
             // This sums the entire amount made from all sponsors
-            existingUser.totalEarningsUSD = (existingUser.totalEarningsUSD || 0) + earningsUSD;
+            const previousTotal = existingUser.totalEarningsUSD || 0;
+            existingUser.totalEarningsUSD = previousTotal + earningsUSD;
+            totalEarningsCalculated += earningsUSD;
+
+            console.log(`      Previous total: $${previousTotal.toFixed(2)} → New total: $${existingUser.totalEarningsUSD.toFixed(2)}`);
           }
 
           // Update other fields (take the best/highest values)
@@ -291,7 +326,13 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       }
     });
 
+    console.log(`\n📈 [All Sponsors] Aggregation Summary:`);
+    console.log(`   Total builders processed: ${totalBuildersProcessed}`);
+    console.log(`   Unique builders: ${userMap.size}`);
+    console.log(`   Total earnings calculated: $${totalEarningsCalculated.toFixed(2)}`);
+
     // Step 2: After gathering all data, update reward_amount to total USD for display
+    console.log("\n🔄 [All Sponsors] Step 2: Finalizing user data...");
     userMap.forEach((user) => {
       user.reward_amount = user.totalEarningsUSD || 0;
     });
@@ -300,11 +341,20 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     userMap.forEach((user, id) => {
       user.earningsBreakdown = earningsBreakdownMap.get(id) || [];
       user.sponsors = Array.from(sponsorsMap.get(id) || []);
+      
+      // Log top 10 builders by earnings
+      if (user.totalEarningsUSD && user.totalEarningsUSD > 0) {
+        console.log(`   Builder ${id}: ${user.profile.display_name || user.profile.name || 'Anonymous'}`);
+        console.log(`      Sponsors: ${user.sponsors.join(', ')} (${user.sponsors.length} sponsors)`);
+        console.log(`      Total Earnings: $${user.totalEarningsUSD.toFixed(2)}`);
+        console.log(`      Breakdown:`, user.earningsBreakdown.map(b => `${b.sponsor}: ${b.amount} ${b.tokenSymbol} = $${b.amountUSD.toFixed(2)}`).join(', '));
+      }
     });
 
     // Convert to array and sort:
     // 1. First by number of sponsors (builders in multiple sponsors prioritized)
     // 2. Then by total earnings USD (descending)
+    console.log("\n🔄 [All Sponsors] Step 3: Sorting builders...");
     const combinedUsers = Array.from(userMap.values()).sort((a, b) => {
       const aSponsorCount = (a.sponsors || []).length;
       const bSponsorCount = (b.sponsors || []).length;
@@ -320,19 +370,31 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       return bTotal - aTotal;
     });
 
+    console.log(`   Sorted ${combinedUsers.length} builders`);
+    console.log(`   Top 10 builders after sorting:`);
+    combinedUsers.slice(0, 10).forEach((user, idx) => {
+      console.log(`   ${idx + 1}. ${user.profile.display_name || user.profile.name || 'Anonymous'} (ID: ${user.id})`);
+      console.log(`      Sponsors: ${(user.sponsors || []).length} (${(user.sponsors || []).join(', ')})`);
+      console.log(`      Total Earnings: $${(user.totalEarningsUSD || 0).toFixed(2)}`);
+    });
+
     // Apply pagination
+    console.log("\n🔄 [All Sponsors] Step 4: Applying pagination...");
     const perPage = filters.per_page || 20;
     const currentPage = filters.page || 1;
     const startIndex = (currentPage - 1) * perPage;
     const endIndex = startIndex + perPage;
     const paginatedUsers = combinedUsers.slice(startIndex, endIndex);
 
+    console.log(`   Page: ${currentPage}, Per Page: ${perPage}`);
+    console.log(`   Showing builders ${startIndex + 1} to ${Math.min(endIndex, combinedUsers.length)} of ${combinedUsers.length}`);
+
     // Update leaderboard positions based on sorted order
     paginatedUsers.forEach((user, index) => {
       user.leaderboard_position = startIndex + index + 1;
     });
 
-    return {
+    const result = {
       users: paginatedUsers,
       pagination: {
         current_page: currentPage,
@@ -340,6 +402,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         total: combinedUsers.length,
       },
     };
+
+    console.log("\n✅ [All Sponsors] Final Results:");
+    console.log(`   Total unique builders: ${combinedUsers.length}`);
+    console.log(`   Pagination: Page ${currentPage} of ${result.pagination.last_page}`);
+    console.log(`   Users in this page: ${paginatedUsers.length}`);
+    console.log(`   Total earnings across all builders: $${combinedUsers.reduce((sum, u) => sum + (u.totalEarningsUSD || 0), 0).toFixed(2)}`);
+    console.log("🎉 [All Sponsors] fetchAllSponsors completed!\n");
+
+    return result;
   };
 
   const handlePageChange = (newPage: number) => {
