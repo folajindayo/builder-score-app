@@ -340,7 +340,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
 
     // Attach earnings breakdown and sponsors list to users
-    console.log("\n🔄 [All Sponsors] Step 2: Finalizing user data...");
     let exampleBuilderFound = false;
     
     userMap.forEach((user, id) => {
