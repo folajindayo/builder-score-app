@@ -154,6 +154,25 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     setShowProfileModal(true);
   };
 
+  // Get categorized builders for summary
+  const categorizedBuilders = useMemo(() => {
+    if (!filteredUsers.length || !tokenPrice) return [];
+    
+    const mostEarnings = filteredUsers.reduce((max, user) => {
+      const maxAmount = typeof max.reward_amount === 'string' ? parseFloat(max.reward_amount) : max.reward_amount;
+      const userAmount = typeof user.reward_amount === 'string' ? parseFloat(user.reward_amount) : user.reward_amount;
+      return userAmount > maxAmount ? user : max;
+    }, filteredUsers[0]);
+    
+    const highestScore = filteredUsers.reduce((max, user) => {
+      const maxScore = max.profile.builder_score?.points || 0;
+      const userScore = user.profile.builder_score?.points || 0;
+      return userScore > maxScore ? user : max;
+    }, filteredUsers[0]);
+    
+    return { mostEarnings, highestScore };
+  }, [filteredUsers, tokenPrice]);
+
   return (
     <>
       <div className="bg-white rounded-lg border border-gray-200">
