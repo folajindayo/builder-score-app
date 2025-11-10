@@ -1,5 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// CORS headers helper
+function getCorsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*", // Allow all origins (adjust for production)
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+}
+
+// Handle OPTIONS request for CORS preflight
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: getCorsHeaders() });
+}
+
 export async function GET(request: NextRequest) {
   const API_BASE_URL = process.env.NEXT_PUBLIC_BUILDERSCORE_API_URL;
   const API_KEY = process.env.BUILDERSCORE_API_KEY || "";
@@ -7,14 +21,17 @@ export async function GET(request: NextRequest) {
   if (!API_BASE_URL) {
     return NextResponse.json(
       { error: "NEXT_PUBLIC_BUILDERSCORE_API_URL environment variable is required" },
-      { status: 500 }
+      { status: 500, headers: getCorsHeaders() }
     );
   }
   const searchParams = request.nextUrl.searchParams;
   const endpoint = searchParams.get("endpoint");
 
   if (!endpoint) {
-    return NextResponse.json({ error: "Endpoint parameter is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Endpoint parameter is required" },
+      { status: 400, headers: getCorsHeaders() }
+    );
   }
 
   try {
