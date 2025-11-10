@@ -190,6 +190,25 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Score</div>
                 </div>
+                {user.reward_amount > 0 && (
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                      ${formatNumber(user.reward_amount)}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Earnings</div>
+                    {user.reward_transaction_hash && (
+                      <a
+                        href={`https://etherscan.io/tx/${user.reward_transaction_hash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+                        title="View transaction"
+                      >
+                        View TX
+                      </a>
+                    )}
+                  </div>
+                )}
                 {user.ranking_change !== 0 && (
                   <div
                     className={`text-sm font-medium ${
