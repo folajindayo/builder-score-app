@@ -14,6 +14,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(filters.page || 1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Reset page when filters change (except page filter)
   useEffect(() => {
@@ -82,6 +83,17 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     );
   }
 
+  // Filter users by search query (client-side)
+  const filteredUsers = searchQuery
+    ? data.users.filter((user) => {
+        const query = searchQuery.toLowerCase();
+        const name = (user.profile.display_name || user.profile.name || "").toLowerCase();
+        const wallet = (user.recipient_wallet || "").toLowerCase();
+        const bio = (user.profile.bio || "").toLowerCase();
+        return name.includes(query) || wallet.includes(query) || bio.includes(query);
+      })
+    : data.users;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-6">
@@ -90,13 +102,32 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             Top Builders
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Showing {data.users.length} of {data.pagination.total} builders
+            Showing {filteredUsers.length} of {data.pagination.total} builders
+            {searchQuery && ` (filtered by "${searchQuery}")`}
           </p>
         </div>
       </div>
 
+      <div className="mb-4">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search by name, wallet, or bio..."
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+
+      {filteredUsers.length === 0 && searchQuery && (
+        <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+          <p className="text-gray-600 dark:text-gray-400 text-center">
+            No builders found matching "{searchQuery}"
+          </p>
+        </div>
+      )}
+
       <div className="space-y-3">
-        {data.users.map((user) => (
+        {filteredUsers.map((user) => (
           <div
             key={user.id}
             className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"
