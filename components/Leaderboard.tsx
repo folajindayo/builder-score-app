@@ -883,6 +883,41 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   }
 
   if (!data || data.users.length === 0) {
+    // Show "search not found" if there's an active search query
+    if (activeSearchQuery) {
+      return (
+        <div className="bg-white rounded-lg border border-gray-200 p-8">
+          <div className="text-center">
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <p className="mt-4 text-gray-500 text-center text-sm font-medium">
+              Search not found
+            </p>
+            <p className="mt-2 text-gray-400 text-center text-xs">
+              No builders found matching "{activeSearchQuery}"
+            </p>
+            <button
+              onClick={handleClearSearch}
+              className="mt-4 px-4 py-2 text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+            >
+              Clear search
+            </button>
+          </div>
+        </div>
+      );
+    }
+    
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-8">
         <p className="text-gray-500 text-center text-sm">
