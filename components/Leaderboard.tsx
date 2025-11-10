@@ -447,7 +447,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       users: displayedUsers,
       pagination: {
         current_page: 1,
-        last_page: Math.ceil(combinedUsers.length / perPage),
+        last_page: Math.ceil(combinedUsers.length / 30), // 30 per page for display
         total: combinedUsers.length,
       },
     };
