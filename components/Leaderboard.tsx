@@ -119,6 +119,25 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     return categorizeBuilders(filteredUsers, tokenPrice);
   }, [filteredUsers, tokenPrice]);
 
+  // Get categorized builders for summary (must be before early returns)
+  const categorizedBuilders = useMemo(() => {
+    if (!filteredUsers.length || !tokenPrice) return { mostEarnings: null, highestScore: null };
+    
+    const mostEarnings = filteredUsers.reduce((max, user) => {
+      const maxAmount = typeof max.reward_amount === 'string' ? parseFloat(max.reward_amount) : max.reward_amount;
+      const userAmount = typeof user.reward_amount === 'string' ? parseFloat(user.reward_amount) : user.reward_amount;
+      return userAmount > maxAmount ? user : max;
+    }, filteredUsers[0]);
+    
+    const highestScore = filteredUsers.reduce((max, user) => {
+      const maxScore = max.profile.builder_score?.points || 0;
+      const userScore = user.profile.builder_score?.points || 0;
+      return userScore > maxScore ? user : max;
+    }, filteredUsers[0]);
+    
+    return { mostEarnings, highestScore };
+  }, [filteredUsers, tokenPrice]);
+
   if (loading && !data) {
     return (
       <div className="bg-white rounded-lg border border-gray-200">
@@ -153,25 +172,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     setSelectedBuilder(user);
     setShowProfileModal(true);
   };
-
-  // Get categorized builders for summary
-  const categorizedBuilders = useMemo(() => {
-    if (!filteredUsers.length || !tokenPrice) return [];
-    
-    const mostEarnings = filteredUsers.reduce((max, user) => {
-      const maxAmount = typeof max.reward_amount === 'string' ? parseFloat(max.reward_amount) : max.reward_amount;
-      const userAmount = typeof user.reward_amount === 'string' ? parseFloat(user.reward_amount) : user.reward_amount;
-      return userAmount > maxAmount ? user : max;
-    }, filteredUsers[0]);
-    
-    const highestScore = filteredUsers.reduce((max, user) => {
-      const maxScore = max.profile.builder_score?.points || 0;
-      const userScore = user.profile.builder_score?.points || 0;
-      return userScore > maxScore ? user : max;
-    }, filteredUsers[0]);
-    
-    return { mostEarnings, highestScore };
-  }, [filteredUsers, tokenPrice]);
 
   return (
     <>
@@ -233,12 +233,34 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             )}
           </div>
         </div>
-        {activeSearchQuery && (
-          <p className="text-xs text-gray-500">
-            Showing {filteredUsers.length} of {data.pagination.total} builders
-            {activeSearchQuery && ` • Searching for "${activeSearchQuery}"`}
-          </p>
-        )}
+        <div className="flex items-center justify-between mt-4">
+          {activeSearchQuery && (
+            <p className="text-xs text-gray-500">
+              Showing {filteredUsers.length} of {data.pagination.total} builders
+              {activeSearchQuery && ` • Searching for "${activeSearchQuery}"`}
+            </p>
+          )}
+          {!activeSearchQuery && categorizedBuilders.mostEarnings && categorizedBuilders.highestScore && (
+            <div className="flex items-center gap-4 text-xs">
+              {categorizedBuilders.mostEarnings && (
+                <div className="flex items-center gap-1.5">
+                  <TrophyIcon category="most_earnings" className="w-4 h-4" />
+                  <span className="text-gray-600">
+                    Most Earnings: <span className="font-medium">{categorizedBuilders.mostEarnings.profile.display_name || categorizedBuilders.mostEarnings.profile.name}</span>
+                  </span>
+                </div>
+              )}
+              {categorizedBuilders.highestScore && (
+                <div className="flex items-center gap-1.5">
+                  <TrophyIcon category="highest_score" className="w-4 h-4" />
+                  <span className="text-gray-600">
+                    Highest Score: <span className="font-medium">{categorizedBuilders.highestScore.profile.display_name || categorizedBuilders.highestScore.profile.name}</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Table */}
