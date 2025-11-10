@@ -1349,7 +1349,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                               ))}
                             </div>
                           )}
-                        </div>
                       </div>
                     </div>
                   </td>
