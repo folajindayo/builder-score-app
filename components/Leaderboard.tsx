@@ -680,6 +680,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </colgroup>
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
+                    #
+                  </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Category
                   </th>
@@ -729,6 +732,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       transition={{ delay: idx * 0.1 }}
                       className="hover:bg-gray-50 transition-colors"
                     >
+                      <td className="px-4 py-4">
+                        <div className="text-sm font-semibold text-gray-600">
+                          {idx + 1}
+                        </div>
+                      </td>
                       <td className="px-4 py-4">
                         <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium border ${categoryColors[category]}`}>
                           <TrophyIcon category={category} className="w-3 h-3" />
@@ -865,6 +873,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
+                #
+              </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <div className="flex items-center gap-2">
                   <input type="checkbox" className="rounded border-gray-300" />
