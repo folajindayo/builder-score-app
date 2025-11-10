@@ -219,18 +219,73 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     );
 
     // Fetch data from all sponsors
-    // Use per_page: 100 to get enough data for proper sorting
-    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors (100 per sponsor)...");
-    const allResponses = await Promise.allSettled(
-      ALL_SPONSOR_SLUGS.map((slug) =>
-        getLeaderboard({
-          ...filters,
-          sponsor_slug: slug,
-          grant_id: undefined, // All time only
-          per_page: 100, // Fetch 100 builders per sponsor for comprehensive data
-        })
-      )
+    // Fetch all pages (page=1, 2, 3, ...) until no more data
+    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors (all pages)...");
+    
+    const fetchAllPagesForSponsor = async (slug: string): Promise<LeaderboardUser[]> => {
+      const allUsers: LeaderboardUser[] = [];
+      let currentPage = 1;
+      let hasMorePages = true;
+      
+      while (hasMorePages) {
+        try {
+          const response = await getLeaderboard({
+            ...filters,
+            sponsor_slug: slug,
+            grant_id: undefined, // All time only
+            per_page: 100,
+            page: currentPage,
+          });
+          
+          if (response.users.length === 0) {
+            hasMorePages = false;
+          } else {
+            allUsers.push(...response.users);
+            console.log(`   ✓ ${slug} - Page ${currentPage}: ${response.users.length} builders (Total: ${allUsers.length})`);
+            
+            // Check if we've reached the last page
+            if (currentPage >= response.pagination.last_page) {
+              hasMorePages = false;
+            } else {
+              currentPage++;
+            }
+          }
+        } catch (error) {
+          console.error(`   ✗ ${slug} - Page ${currentPage}: Error -`, error);
+          hasMorePages = false;
+        }
+      }
+      
+      console.log(`   ✅ ${slug}: Fetched ${allUsers.length} builders across ${currentPage} page(s)`);
+      return allUsers;
+    };
+    
+    // Fetch all pages for each sponsor
+    const allSponsorData = await Promise.allSettled(
+      ALL_SPONSOR_SLUGS.map((slug) => fetchAllPagesForSponsor(slug))
     );
+    
+    // Convert to the format expected by the rest of the code
+    const allResponses = allSponsorData.map((result, index) => {
+      if (result.status === "fulfilled") {
+        return {
+          status: "fulfilled" as const,
+          value: {
+            users: result.value,
+            pagination: {
+              current_page: 1,
+              last_page: 1,
+              total: result.value.length,
+            },
+          },
+        };
+      } else {
+        return {
+          status: "rejected" as const,
+          reason: result.reason,
+        };
+      }
+    });
     
     console.log("📊 [All Sponsors] Responses received:", allResponses.length);
     allResponses.forEach((result, index) => {
