@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getLeaderboard } from "@/lib/builderscore-api";
-import { getWCTPrice } from "@/lib/coingecko-api";
+import { getTokenPrice, type TokenInfo } from "@/lib/coingecko-api";
 import type { LeaderboardResponse, LeaderboardFilters } from "@/types/talent";
 import { formatAddress, formatNumber } from "@/lib/utils";
 
@@ -16,17 +16,36 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(filters.page || 1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [wctPrice, setWctPrice] = useState<number | null>(null);
+  const [tokenPrice, setTokenPrice] = useState<number | null>(null);
+  const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
 
-  // Fetch WCT price on component mount
+  // Fetch token price based on sponsor slug
   useEffect(() => {
-    getWCTPrice()
-      .then(setWctPrice)
-      .catch((err) => {
-        console.error("Failed to fetch WCT price:", err);
-        setWctPrice(0.1249); // Fallback price
-      });
-  }, []);
+    if (filters.sponsor_slug) {
+      getTokenPrice(filters.sponsor_slug)
+        .then(({ price, tokenInfo }) => {
+          setTokenPrice(price);
+          setTokenInfo(tokenInfo);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch token price:", err);
+          setTokenPrice(null);
+          setTokenInfo(null);
+        });
+    } else {
+      // Default to WCT if no sponsor selected
+      getTokenPrice("walletconnect")
+        .then(({ price, tokenInfo }) => {
+          setTokenPrice(price);
+          setTokenInfo(tokenInfo);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch token price:", err);
+          setTokenPrice(null);
+          setTokenInfo(null);
+        });
+    }
+  }, [filters.sponsor_slug]);
 
   // Reset page when filters change (except page filter)
   useEffect(() => {
@@ -204,19 +223,19 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                 </div>
                 {user.reward_amount > 0 && (
                   <div className="text-right">
-                    {wctPrice !== null ? (
+                    {tokenPrice !== null && tokenInfo ? (
                       <>
                         <div className="text-lg font-bold text-green-600 dark:text-green-400">
-                          ${formatNumber(user.reward_amount * wctPrice)}
+                          ${formatNumber(user.reward_amount * tokenPrice)}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {formatNumber(user.reward_amount)} WCT
+                          {formatNumber(user.reward_amount)} {tokenInfo.symbol}
                         </div>
                       </>
                     ) : (
                       <>
                         <div className="text-lg font-bold text-green-600 dark:text-green-400">
-                          {formatNumber(user.reward_amount)} WCT
+                          {formatNumber(user.reward_amount)} {tokenInfo?.symbol || "TOKEN"}
                         </div>
                         <div className="text-xs text-gray-400 dark:text-gray-500">
                           Loading USD...
