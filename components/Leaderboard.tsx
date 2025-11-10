@@ -5,6 +5,7 @@ import { getLeaderboard } from "@/lib/builderscore-api";
 import { getTokenPrice, type TokenInfo } from "@/lib/coingecko-api";
 import type { LeaderboardResponse, LeaderboardFilters } from "@/types/talent";
 import { formatAddress, formatNumber } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface LeaderboardProps {
   filters?: LeaderboardFilters;
@@ -255,9 +256,13 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       )}
 
       <div className="space-y-4">
-        {filteredUsers.map((user) => (
-          <div
+        {filteredUsers.map((user, idx) => (
+          <motion.div
             key={user.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.03 }}
+            whileHover={{ y: -3, transition: { duration: 0.2 } }}
             className="p-6 bg-white rounded-xl border-2 border-gray-200 shadow-md hover:shadow-lg transition-all hover:border-blue-300"
           >
             <div className="flex items-center justify-between">
@@ -406,7 +411,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                 )}
               </div>
             )}
-          </div>
+          </motion.div>
         ))}
       </div>
 

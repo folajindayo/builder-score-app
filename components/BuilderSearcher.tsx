@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useDebounce } from "@/lib/hooks";
 import type { SearchFilters } from "@/types/talent";
+import { motion } from "framer-motion";
 
 interface BuilderSearcherProps {
   onSearch: (filters: SearchFilters) => void;
@@ -110,14 +111,18 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
   const hasFilters = address || ensName || minScore || maxScore || skills || credentials;
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="p-6 bg-white rounded-xl border-2 border-gray-200 shadow-lg"
+    >
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">
         Search Builders
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               Wallet Address
             </label>
             <input
@@ -125,11 +130,11 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
               value={address}
               onChange={(e) => handleAddressChange(e.target.value)}
               placeholder="0x..."
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               ENS Name
             </label>
             <input
@@ -137,14 +142,14 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
               value={ensName}
               onChange={(e) => handleEnsChange(e.target.value)}
               placeholder="vitalik.eth"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               Min Score
             </label>
             <input
@@ -153,11 +158,11 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
               onChange={(e) => handleScoreChange("min", e.target.value)}
               placeholder="0"
               min="0"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               Max Score
             </label>
             <input
@@ -166,13 +171,13 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
               onChange={(e) => handleScoreChange("max", e.target.value)}
               placeholder="1000"
               min="0"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
             Skills (comma-separated)
           </label>
           <input
@@ -180,12 +185,12 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
             value={skills}
             onChange={(e) => handleSkillsChange(e.target.value)}
             placeholder="Solidity, React, TypeScript"
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
             Credentials (comma-separated)
           </label>
           <input
@@ -193,31 +198,35 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
             value={credentials}
             onChange={(e) => handleCredentialsChange(e.target.value)}
             placeholder="Ethereum Developer, Open Source Contributor"
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
           />
         </div>
 
         <div className="flex gap-3">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={loading}
-            className="flex-1 md:flex-none px-6 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
+            className="flex-1 md:flex-none px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
           >
             {loading ? "Searching..." : "Search"}
-          </button>
+          </motion.button>
           {hasFilters && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               onClick={handleClear}
               disabled={loading}
-              className="px-6 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors"
+              className="px-6 py-3 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 rounded-lg font-semibold transition-all shadow-sm hover:shadow"
             >
               Clear
-            </button>
+            </motion.button>
           )}
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 }
 
