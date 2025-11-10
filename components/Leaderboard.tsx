@@ -20,6 +20,21 @@ import {
 import { TrophyIcon } from "@/components/TrophyIcon";
 import { BuilderProfileModal } from "@/components/BuilderProfileModal";
 import type { LeaderboardUser } from "@/types/talent";
+import { SPONSOR_TOKENS } from "@/lib/coingecko-api";
+
+// All sponsor slugs
+const ALL_SPONSOR_SLUGS = ["walletconnect", "celo", "base", "base-summer", "syndicate", "talent-protocol"];
+
+// Extended user type with earnings breakdown
+interface UserWithEarningsBreakdown extends LeaderboardUser {
+  earningsBreakdown?: Array<{
+    sponsor: string;
+    amount: number;
+    amountUSD: number;
+    tokenSymbol: string;
+  }>;
+  totalEarningsUSD?: number;
+}
 
 /**
  * Get the reason/explanation for why a builder was categorized
@@ -89,8 +104,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
   const [selectedBuilder, setSelectedBuilder] = useState<LeaderboardUser | null>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [builderSponsors, setBuilderSponsors] = useState<Map<number, string[]>>(new Map());
-  const [loadingSponsors, setLoadingSponsors] = useState(false);
+  const [expandedEarnings, setExpandedEarnings] = useState<Set<number>>(new Set());
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -110,7 +124,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   };
 
   useEffect(() => {
-    if (filters.sponsor_slug) {
+    // For "all sponsors", we don't need a single token price
+    // Earnings are already calculated in USD in fetchAllSponsors
+    if (filters.sponsor_slug && filters.sponsor_slug !== "all") {
       getTokenPrice(filters.sponsor_slug)
         .then(({ price, tokenInfo }) => {
           setTokenPrice(price);
@@ -121,7 +137,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           setTokenPrice(null);
           setTokenInfo(null);
         });
-    } else {
+    } else if (!filters.sponsor_slug) {
+      // Default to walletconnect if no sponsor selected
       getTokenPrice("walletconnect")
         .then(({ price, tokenInfo }) => {
           setTokenPrice(price);
@@ -132,6 +149,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           setTokenPrice(null);
           setTokenInfo(null);
         });
+    } else {
+      // "all sponsors" - no single token price needed
+      setTokenPrice(null);
+      setTokenInfo(null);
     }
   }, [filters.sponsor_slug]);
 
@@ -151,65 +172,149 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
   }, [page, activeSearchQuery, JSON.stringify({ sponsor_slug: filters.sponsor_slug, grant_id: filters.grant_id, per_page: filters.per_page })]);
 
-  // Fetch sponsor information for each builder when "All Sponsors" is selected
-  useEffect(() => {
-    const isAllSponsors = !filters.sponsor_slug;
-    
-    if (isAllSponsors && data && data.users.length > 0 && !loading) {
-      setLoadingSponsors(true);
-      const sponsorSlugs = ["walletconnect", "celo", "base", "base-summer", "syndicate", "talent-protocol"];
-      const sponsorMap = new Map<number, string[]>();
-
-      // Check each builder across all sponsors
-      Promise.allSettled(
-        data.users.map(async (user) => {
-          const userSponsors: string[] = [];
-          
-          await Promise.allSettled(
-            sponsorSlugs.map(async (sponsor) => {
-              try {
-                const response = await getLeaderboard({
-                  sponsor_slug: sponsor,
-                  per_page: 100,
-                  page: 1,
-                });
-                
-                const found = response.users.some((u) => u.id === user.id);
-                if (found) {
-                  userSponsors.push(sponsor);
-                }
-              } catch (error) {
-                // Silently fail for individual sponsor checks
-              }
-            })
-          );
-          
-          if (userSponsors.length > 0) {
-            sponsorMap.set(user.id, userSponsors);
-          }
-        })
-      ).then(() => {
-        setBuilderSponsors(sponsorMap);
-        setLoadingSponsors(false);
-      });
-    } else {
-      setBuilderSponsors(new Map());
-      setLoadingSponsors(false);
-    }
-  }, [data, filters.sponsor_slug, loading]);
-
   const fetchLeaderboard = async (leaderboardFilters: LeaderboardFilters) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await getLeaderboard(leaderboardFilters);
-      setData(response);
+      // Check if "all sponsors" is selected (no sponsor_slug)
+      if (!leaderboardFilters.sponsor_slug) {
+        // Fetch from all sponsors and combine
+        const allSponsorsData = await fetchAllSponsors(leaderboardFilters);
+        setData(allSponsorsData);
+      } else {
+        // Single sponsor fetch
+        const response = await getLeaderboard(leaderboardFilters);
+        setData(response);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch leaderboard");
       console.error("Error fetching leaderboard:", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchAllSponsors = async (filters: LeaderboardFilters): Promise<LeaderboardResponse> => {
+    // Fetch token prices for all sponsors
+    const tokenPrices = await Promise.all(
+      ALL_SPONSOR_SLUGS.map(async (slug) => {
+        const { price, tokenInfo } = await getTokenPrice(slug);
+        return { slug, price, tokenInfo };
+      })
+    );
+
+    const priceMap = new Map(
+      tokenPrices.map(({ slug, price }) => [slug, price])
+    );
+    const tokenInfoMap = new Map(
+      tokenPrices.map(({ slug, tokenInfo }) => [slug, tokenInfo])
+    );
+
+    // Fetch data from all sponsors
+    const allResponses = await Promise.allSettled(
+      ALL_SPONSOR_SLUGS.map((slug) =>
+        getLeaderboard({
+          ...filters,
+          sponsor_slug: slug,
+          grant_id: undefined, // All time only
+        })
+      )
+    );
+
+    // Combine all users by builder ID
+    const userMap = new Map<number, UserWithEarningsBreakdown>();
+    const earningsBreakdownMap = new Map<number, Array<{
+      sponsor: string;
+      amount: number;
+      amountUSD: number;
+      tokenSymbol: string;
+    }>>();
+
+    allResponses.forEach((result, index) => {
+      if (result.status === "fulfilled") {
+        const sponsor = ALL_SPONSOR_SLUGS[index];
+        const tokenPrice = priceMap.get(sponsor) || 0;
+        const tokenInfo = tokenInfoMap.get(sponsor);
+
+        result.value.users.forEach((user) => {
+          const rewardAmount = typeof user.reward_amount === 'string' 
+            ? parseFloat(user.reward_amount) 
+            : user.reward_amount;
+          const earningsUSD = rewardAmount * tokenPrice;
+
+          if (!userMap.has(user.id)) {
+            // First time seeing this builder
+            userMap.set(user.id, {
+              ...user,
+              earningsBreakdown: [],
+              totalEarningsUSD: 0,
+            });
+            earningsBreakdownMap.set(user.id, []);
+          }
+
+          const existingUser = userMap.get(user.id)!;
+          const breakdown = earningsBreakdownMap.get(user.id)!;
+
+          // Add earnings from this sponsor
+          if (rewardAmount > 0 && tokenInfo) {
+            breakdown.push({
+              sponsor,
+              amount: rewardAmount,
+              amountUSD: earningsUSD,
+              tokenSymbol: tokenInfo.symbol,
+            });
+
+            // Update total earnings
+            existingUser.totalEarningsUSD = (existingUser.totalEarningsUSD || 0) + earningsUSD;
+
+            // Update reward_amount to total USD (for display)
+            existingUser.reward_amount = existingUser.totalEarningsUSD;
+          }
+
+          // Update other fields (take the best/highest values)
+          if ((user.profile.builder_score?.points || 0) > (existingUser.profile.builder_score?.points || 0)) {
+            existingUser.profile.builder_score = user.profile.builder_score;
+          }
+          if (user.leaderboard_position < existingUser.leaderboard_position) {
+            existingUser.leaderboard_position = user.leaderboard_position;
+          }
+        });
+      }
+    });
+
+    // Attach earnings breakdown to users
+    userMap.forEach((user, id) => {
+      user.earningsBreakdown = earningsBreakdownMap.get(id) || [];
+    });
+
+    // Convert to array and sort by total earnings USD (descending)
+    const combinedUsers = Array.from(userMap.values()).sort((a, b) => {
+      const aTotal = a.totalEarningsUSD || 0;
+      const bTotal = b.totalEarningsUSD || 0;
+      return bTotal - aTotal;
+    });
+
+    // Apply pagination
+    const perPage = filters.per_page || 20;
+    const currentPage = filters.page || 1;
+    const startIndex = (currentPage - 1) * perPage;
+    const endIndex = startIndex + perPage;
+    const paginatedUsers = combinedUsers.slice(startIndex, endIndex);
+
+    // Update leaderboard positions based on sorted order
+    paginatedUsers.forEach((user, index) => {
+      user.leaderboard_position = startIndex + index + 1;
+    });
+
+    return {
+      users: paginatedUsers,
+      pagination: {
+        current_page: currentPage,
+        last_page: Math.ceil(combinedUsers.length / perPage),
+        per_page: perPage,
+        total: combinedUsers.length,
+      },
+    };
   };
 
   const handlePageChange = (newPage: number) => {
@@ -281,6 +386,20 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     setSelectedBuilder(user);
     setShowProfileModal(true);
   };
+
+  const toggleEarningsBreakdown = (userId: number) => {
+    setExpandedEarnings((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      return newSet;
+    });
+  };
+
+  const isAllSponsors = !filters.sponsor_slug;
 
   return (
     <>
@@ -576,11 +695,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   </svg>
                 </div>
               </th>
-              {!filters.sponsor_slug && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <span>Sponsors</span>
-                </th>
-              )}
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <span>Actions</span>
               </th>
@@ -657,26 +771,80 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                     </div>
                   </td>
                   <td className="px-4 py-4">
-                    {rewardAmount > 0 ? (
-                      <div>
-                        {tokenPrice !== null && tokenInfo ? (
-                          <>
+                    {(() => {
+                      const userWithBreakdown = user as UserWithEarningsBreakdown;
+                      const isExpanded = expandedEarnings.has(user.id);
+                      
+                      if (isAllSponsors && userWithBreakdown.totalEarningsUSD !== undefined) {
+                        // All sponsors mode - show total USD and breakdown
+                        return (
+                          <div>
                             <div className="text-sm font-semibold text-gray-900">
-                              ${formatNumber(rewardAmount * tokenPrice)}
+                              ${formatNumber(userWithBreakdown.totalEarningsUSD)}
                             </div>
-                            <div className="text-xs text-gray-500 truncate">
-                              {formatNumber(rewardAmount)} {tokenInfo.symbol}
-                            </div>
-                          </>
-                        ) : (
-                          <div className="text-sm font-semibold text-gray-900">
-                            {formatNumber(rewardAmount)} {tokenInfo?.symbol || "TOKEN"}
+                            {userWithBreakdown.earningsBreakdown && userWithBreakdown.earningsBreakdown.length > 0 && (
+                              <div className="mt-1">
+                                <button
+                                  onClick={() => toggleEarningsBreakdown(user.id)}
+                                  className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                                >
+                                  {isExpanded ? "Hide" : "Show"} Breakdown
+                                  <svg
+                                    className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                                {isExpanded && (
+                                  <div className="mt-2 space-y-1.5 bg-gray-50 rounded-lg p-2 border border-gray-200">
+                                    {userWithBreakdown.earningsBreakdown.map((breakdown, idx) => (
+                                      <div key={idx} className="flex items-center justify-between text-xs">
+                                        <span className="text-gray-600 capitalize">
+                                          {breakdown.sponsor.replace("-", " ")}:
+                                        </span>
+                                        <div className="text-right">
+                                          <div className="font-medium text-gray-900">
+                                            ${formatNumber(breakdown.amountUSD)}
+                                          </div>
+                                          <div className="text-gray-500">
+                                            {formatNumber(breakdown.amount)} {breakdown.tokenSymbol}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    ) : (
-                      <span className="text-sm text-gray-400">—</span>
-                    )}
+                        );
+                      } else if (rewardAmount > 0) {
+                        // Single sponsor mode
+                        return (
+                          <div>
+                            {tokenPrice !== null && tokenInfo ? (
+                              <>
+                                <div className="text-sm font-semibold text-gray-900">
+                                  ${formatNumber(rewardAmount * tokenPrice)}
+                                </div>
+                                <div className="text-xs text-gray-500 truncate">
+                                  {formatNumber(rewardAmount)} {tokenInfo.symbol}
+                                </div>
+                              </>
+                            ) : (
+                              <div className="text-sm font-semibold text-gray-900">
+                                {formatNumber(rewardAmount)} {tokenInfo?.symbol || "TOKEN"}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      } else {
+                        return <span className="text-sm text-gray-400">—</span>;
+                      }
+                    })()}
                   </td>
                   <td className="px-4 py-4">
                     {user.ranking_change !== 0 ? (
@@ -703,41 +871,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       </div>
                     )}
                   </td>
-                  {!filters.sponsor_slug && (
-                    <td className="px-4 py-4">
-                      {loadingSponsors ? (
-                        <div className="text-xs text-gray-400">Loading...</div>
-                      ) : (
-                        <div className="flex flex-col gap-1">
-                          <div className="text-xs font-medium text-gray-900">
-                            {builderSponsors.get(user.id)?.length || 0} sponsor{builderSponsors.get(user.id)?.length !== 1 ? 's' : ''}
-                          </div>
-                          <div className="flex flex-wrap gap-1">
-                            {builderSponsors.get(user.id)?.map((sponsor) => {
-                              const sponsorLabels: Record<string, string> = {
-                                walletconnect: "WCT",
-                                celo: "CELO",
-                                base: "BASE",
-                                "base-summer": "BASE-S",
-                                syndicate: "SYN",
-                                "talent-protocol": "TALENT",
-                              };
-                              return (
-                                <span
-                                  key={sponsor}
-                                  className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200"
-                                >
-                                  {sponsorLabels[sponsor] || sponsor}
-                                </span>
-                              );
-                            }) || (
-                              <span className="text-xs text-gray-400">—</span>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </td>
-                  )}
                   <td className="px-4 py-4">
                     <button
                       onClick={() => handleViewProfile(user)}
