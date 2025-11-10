@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BUILDERSCORE_API_URL;
-const API_KEY = process.env.BUILDERSCORE_API_KEY || "";
-
-if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_BUILDERSCORE_API_URL environment variable is required");
-}
-
 export async function GET(request: NextRequest) {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_BUILDERSCORE_API_URL;
+  const API_KEY = process.env.BUILDERSCORE_API_KEY || "";
+
+  if (!API_BASE_URL) {
+    return NextResponse.json(
+      { error: "NEXT_PUBLIC_BUILDERSCORE_API_URL environment variable is required" },
+      { status: 500 }
+    );
+  }
   const searchParams = request.nextUrl.searchParams;
   const endpoint = searchParams.get("endpoint");
 
