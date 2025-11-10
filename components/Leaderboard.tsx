@@ -111,7 +111,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [allSponsorsPageMap, setAllSponsorsPageMap] = useState<Map<string, number>>(new Map());
   const [allSponsorsAggregatedUsers, setAllSponsorsAggregatedUsers] = useState<UserWithEarningsBreakdown[]>([]);
   const [allSponsorsHasMore, setAllSponsorsHasMore] = useState(true);
-  const [displayedCount, setDisplayedCount] = useState(100); // Display 100 builders at a time
+  const [displayedCount, setDisplayedCount] = useState(30); // Display 30 builders at a time
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -174,7 +174,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       setAllSponsorsPageMap(new Map());
       setAllSponsorsAggregatedUsers([]);
       setAllSponsorsHasMore(true);
-      setDisplayedCount(100); // Reset to show first 100
+      setDisplayedCount(30); // Reset to show first 30
     }
   }, [JSON.stringify({ sponsor_slug: filters.sponsor_slug, grant_id: filters.grant_id, per_page: filters.per_page })]);
 
@@ -438,10 +438,23 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     // Update aggregated users state
     setAllSponsorsAggregatedUsers(combinedUsers);
 
-    // Display 100 builders at a time (or all if less than 100)
-    const currentDisplayedCount = isLoadMore ? displayedCount + 100 : Math.min(100, combinedUsers.length);
+    // Apply search filter if active
+    let filteredCombinedUsers = combinedUsers;
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      filteredCombinedUsers = combinedUsers.filter((user) => {
+        const name = (user.profile.display_name || user.profile.name || '').toLowerCase();
+        const bio = (user.profile.bio || '').toLowerCase();
+        const wallet = (user.profile.wallet_address || '').toLowerCase();
+        return name.includes(searchLower) || bio.includes(searchLower) || wallet.includes(searchLower);
+      });
+      console.log(`🔍 [All Sponsors Lazy] Search "${filters.search}": ${filteredCombinedUsers.length} results from ${combinedUsers.length} builders`);
+    }
+
+    // Display 30 builders at a time (or all if less than 30)
+    const currentDisplayedCount = isLoadMore ? displayedCount + 30 : Math.min(30, filteredCombinedUsers.length);
     setDisplayedCount(currentDisplayedCount);
-    const displayedUsers = combinedUsers.slice(0, currentDisplayedCount);
+    const displayedUsers = filteredCombinedUsers.slice(0, currentDisplayedCount);
 
     displayedUsers.forEach((user, index) => {
       user.leaderboard_position = index + 1;
@@ -451,12 +464,12 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       users: displayedUsers,
       pagination: {
         current_page: 1,
-        last_page: Math.ceil(combinedUsers.length / 100), // 100 per display chunk
-        total: combinedUsers.length,
+        last_page: Math.ceil(filteredCombinedUsers.length / 30), // 30 per display chunk
+        total: filteredCombinedUsers.length,
       },
     };
 
-    console.log(`✅ [All Sponsors Lazy] Loaded ${combinedUsers.length} unique builders, displaying ${displayedUsers.length} of ${combinedUsers.length}`);
+    console.log(`✅ [All Sponsors Lazy] Loaded ${combinedUsers.length} unique builders, ${filters.search ? `filtered to ${filteredCombinedUsers.length}` : ''}, displaying ${displayedUsers.length} of ${filteredCombinedUsers.length}`);
     return result;
   };
 
@@ -1481,12 +1494,24 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           ) : (
             <button
               onClick={() => {
+                // Apply search filter if active
+                let filteredUsers = allSponsorsAggregatedUsers;
+                if (activeSearchQuery) {
+                  const searchLower = activeSearchQuery.toLowerCase();
+                  filteredUsers = allSponsorsAggregatedUsers.filter((user) => {
+                    const name = (user.profile.display_name || user.profile.name || '').toLowerCase();
+                    const bio = (user.profile.bio || '').toLowerCase();
+                    const wallet = (user.profile.wallet_address || '').toLowerCase();
+                    return name.includes(searchLower) || bio.includes(searchLower) || wallet.includes(searchLower);
+                  });
+                }
+
                 // If we have more loaded data to show, just increase display count
-                if (displayedCount < allSponsorsAggregatedUsers.length) {
-                  const newDisplayedCount = Math.min(displayedCount + 100, allSponsorsAggregatedUsers.length);
+                if (displayedCount < filteredUsers.length) {
+                  const newDisplayedCount = Math.min(displayedCount + 30, filteredUsers.length);
                   setDisplayedCount(newDisplayedCount);
                   // Update displayed users in data
-                  const newDisplayedUsers = allSponsorsAggregatedUsers.slice(0, newDisplayedCount);
+                  const newDisplayedUsers = filteredUsers.slice(0, newDisplayedCount);
                   newDisplayedUsers.forEach((user, index) => {
                     user.leaderboard_position = index + 1;
                   });
@@ -1494,8 +1519,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                     users: newDisplayedUsers,
                     pagination: {
                       current_page: 1,
-                      last_page: Math.ceil(allSponsorsAggregatedUsers.length / 100),
-                      total: allSponsorsAggregatedUsers.length,
+                      last_page: Math.ceil(filteredUsers.length / 30),
+                      total: filteredUsers.length,
                     },
                   });
                 } else {
@@ -1509,9 +1534,22 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               }}
               className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
             >
-              {displayedCount < allSponsorsAggregatedUsers.length 
-                ? `Show More (${Math.min(100, allSponsorsAggregatedUsers.length - displayedCount)} more)` 
-                : "Load More"}
+              {(() => {
+                // Apply search filter to determine available count
+                let filteredUsers = allSponsorsAggregatedUsers;
+                if (activeSearchQuery) {
+                  const searchLower = activeSearchQuery.toLowerCase();
+                  filteredUsers = allSponsorsAggregatedUsers.filter((user) => {
+                    const name = (user.profile.display_name || user.profile.name || '').toLowerCase();
+                    const bio = (user.profile.bio || '').toLowerCase();
+                    const wallet = (user.profile.wallet_address || '').toLowerCase();
+                    return name.includes(searchLower) || bio.includes(searchLower) || wallet.includes(searchLower);
+                  });
+                }
+                return displayedCount < filteredUsers.length 
+                  ? `Show More (${Math.min(30, filteredUsers.length - displayedCount)} more)` 
+                  : "Load More";
+              })()}
             </button>
           )}
         </div>
