@@ -46,17 +46,17 @@ export async function GET(request: NextRequest) {
       const error = await response.json().catch(() => ({ message: "API request failed" }));
       return NextResponse.json(
         { error: error.message || error.error || `API error: ${response.statusText}` },
-        { status: response.status }
+        { status: response.status, headers: getCorsHeaders() }
       );
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data, { headers: getCorsHeaders() });
   } catch (error) {
     console.error("BuilderScore API error:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Internal server error" },
-      { status: 500 }
+      { status: 500, headers: getCorsHeaders() }
     );
   }
 }
