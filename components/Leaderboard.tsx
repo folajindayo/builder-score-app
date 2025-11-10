@@ -219,15 +219,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     );
 
     // Fetch data from all sponsors
-    // Use per_page: 500 to get enough data for proper sorting
-    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors (500 per sponsor)...");
+    // Use per_page: 100 to get enough data for proper sorting
+    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors (100 per sponsor)...");
     const allResponses = await Promise.allSettled(
       ALL_SPONSOR_SLUGS.map((slug) =>
         getLeaderboard({
           ...filters,
           sponsor_slug: slug,
           grant_id: undefined, // All time only
-          per_page: 500, // Fetch 500 builders per sponsor for comprehensive data
+          per_page: 100, // Fetch 100 builders per sponsor for comprehensive data
         })
       )
     );
