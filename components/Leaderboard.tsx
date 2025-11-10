@@ -445,7 +445,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       filteredCombinedUsers = combinedUsers.filter((user) => {
         const name = (user.profile.display_name || user.profile.name || '').toLowerCase();
         const bio = (user.profile.bio || '').toLowerCase();
-        const wallet = (user.wallet_address || '').toLowerCase();
+        const wallet = (user.recipient_wallet || '').toLowerCase();
         return name.includes(searchLower) || bio.includes(searchLower) || wallet.includes(searchLower);
       });
       console.log(`🔍 [All Sponsors Lazy] Search "${filters.search}": ${filteredCombinedUsers.length} results from ${combinedUsers.length} builders`);
