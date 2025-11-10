@@ -266,7 +266,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     );
     
     // Convert to the format expected by the rest of the code
-    const allResponses = allSponsorData.map((result, index) => {
+    const allResponses = allSponsorData.map((result) => {
       if (result.status === "fulfilled") {
         return {
           status: "fulfilled" as const,
