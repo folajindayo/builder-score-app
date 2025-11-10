@@ -96,6 +96,7 @@ interface LeaderboardProps {
 export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [data, setData] = useState<LeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(filters.page || 1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -105,6 +106,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [selectedBuilder, setSelectedBuilder] = useState<LeaderboardUser | null>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [expandedEarnings, setExpandedEarnings] = useState<Set<number>>(new Set());
+  
+  // For "All Sponsors" lazy loading: track loaded pages per sponsor and all aggregated users
+  const [allSponsorsPageMap, setAllSponsorsPageMap] = useState<Map<string, number>>(new Map());
+  const [allSponsorsAggregatedUsers, setAllSponsorsAggregatedUsers] = useState<UserWithEarningsBreakdown[]>([]);
+  const [allSponsorsHasMore, setAllSponsorsHasMore] = useState(true);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -162,6 +168,12 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     } else {
       setPage(1);
     }
+    // Reset lazy loading state when filters change
+    if (!filters.sponsor_slug) {
+      setAllSponsorsPageMap(new Map());
+      setAllSponsorsAggregatedUsers([]);
+      setAllSponsorsHasMore(true);
+    }
   }, [JSON.stringify({ sponsor_slug: filters.sponsor_slug, grant_id: filters.grant_id, per_page: filters.per_page })]);
 
   useEffect(() => {
@@ -172,14 +184,50 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
   }, [page, activeSearchQuery, JSON.stringify({ sponsor_slug: filters.sponsor_slug, grant_id: filters.grant_id, per_page: filters.per_page })]);
 
-  const fetchLeaderboard = async (leaderboardFilters: LeaderboardFilters) => {
-    setLoading(true);
-    setError(null);
+  // Intersection Observer for infinite scroll (All Sponsors mode only)
+  useEffect(() => {
+    if (filters.sponsor_slug || !allSponsorsHasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !loadingMore && allSponsorsHasMore) {
+            fetchLeaderboard({ 
+              ...filters, 
+              page: 1,
+              search: activeSearchQuery || undefined,
+            }, true);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const trigger = document.getElementById("load-more-trigger");
+    if (trigger) {
+      observer.observe(trigger);
+    }
+
+    return () => {
+      if (trigger) {
+        observer.unobserve(trigger);
+      }
+    };
+  }, [filters.sponsor_slug, allSponsorsHasMore, loadingMore, activeSearchQuery]);
+
+  const fetchLeaderboard = async (leaderboardFilters: LeaderboardFilters, isLoadMore = false) => {
+    if (isLoadMore) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+      setError(null);
+    }
+    
     try {
       // Check if "all sponsors" is selected (no sponsor_slug)
       if (!leaderboardFilters.sponsor_slug) {
-        // Fetch from all sponsors and combine
-        const allSponsorsData = await fetchAllSponsors(leaderboardFilters);
+        // Fetch from all sponsors and combine (with lazy loading)
+        const allSponsorsData = await fetchAllSponsorsLazy(leaderboardFilters, isLoadMore);
         setData(allSponsorsData);
       } else {
         // Single sponsor fetch
@@ -190,8 +238,222 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       setError(err instanceof Error ? err.message : "Failed to fetch leaderboard");
       console.error("Error fetching leaderboard:", err);
     } finally {
-      setLoading(false);
+      if (isLoadMore) {
+        setLoadingMore(false);
+      } else {
+        setLoading(false);
+      }
     }
+  };
+
+  // Lazy loading version: fetch one page (100 per page) from each sponsor, then aggregate
+  const fetchAllSponsorsLazy = async (filters: LeaderboardFilters, isLoadMore = false): Promise<LeaderboardResponse> => {
+    console.log(`🚀 [All Sponsors Lazy] ${isLoadMore ? 'Loading more...' : 'Initial load'}`);
+    
+    // Fetch token prices for all sponsors (only on initial load)
+    let priceMap = new Map<string, number>();
+    let tokenInfoMap = new Map<string, TokenInfo>();
+    
+    if (!isLoadMore) {
+      console.log("💰 [All Sponsors Lazy] Fetching token prices for all sponsors...");
+      const tokenPrices = await Promise.all(
+        ALL_SPONSOR_SLUGS.map(async (slug) => {
+          const { price, tokenInfo } = await getTokenPrice(slug);
+          console.log(`  ✓ ${slug}: $${price} (${tokenInfo?.symbol || 'N/A'})`);
+          return { slug, price, tokenInfo };
+        })
+      );
+      priceMap = new Map(tokenPrices.map(({ slug, price }) => [slug, price]));
+      tokenInfoMap = new Map(tokenPrices.filter(({ tokenInfo }) => tokenInfo !== null).map(({ slug, tokenInfo }) => [slug, tokenInfo!]));
+    } else {
+      // Reuse existing token prices (we'll need to store these or fetch again)
+      // For now, fetch them again (could be optimized)
+      const tokenPrices = await Promise.all(
+        ALL_SPONSOR_SLUGS.map(async (slug) => {
+          const { price, tokenInfo } = await getTokenPrice(slug);
+          return { slug, price, tokenInfo };
+        })
+      );
+      priceMap = new Map(tokenPrices.map(({ slug, price }) => [slug, price]));
+      tokenInfoMap = new Map(tokenPrices.filter(({ tokenInfo }) => tokenInfo !== null).map(({ slug, tokenInfo }) => [slug, tokenInfo!]));
+    }
+
+    // Determine which page to fetch for each sponsor
+    const currentPageMap = new Map<string, number>();
+    ALL_SPONSOR_SLUGS.forEach((slug) => {
+      const currentPage = allSponsorsPageMap.get(slug) || 0;
+      currentPageMap.set(slug, currentPage + 1);
+    });
+
+    console.log(`📡 [All Sponsors Lazy] Fetching page 1 (100 per page) from all sponsors...`);
+    
+    // Fetch next page from all sponsors in parallel
+    const allResponses = await Promise.allSettled(
+      ALL_SPONSOR_SLUGS.map((slug) => {
+        const pageToFetch = currentPageMap.get(slug) || 1;
+        console.log(`   📄 Fetching ${slug} - Page ${pageToFetch} (100 per page)...`);
+        return getLeaderboard({
+          ...filters,
+          sponsor_slug: slug,
+          grant_id: undefined,
+          per_page: 100,
+          page: pageToFetch,
+        });
+      })
+    );
+
+    // Update page map
+    const newPageMap = new Map(allSponsorsPageMap);
+    let hasMoreData = false;
+    
+    allResponses.forEach((result, index) => {
+      const slug = ALL_SPONSOR_SLUGS[index];
+      if (result.status === "fulfilled") {
+        const currentPage = currentPageMap.get(slug) || 1;
+        newPageMap.set(slug, currentPage);
+        if (currentPage < result.value.pagination.last_page) {
+          hasMoreData = true;
+        }
+        console.log(`  ✓ ${slug}: Page ${currentPage} - ${result.value.users.length} builders`);
+      } else {
+        console.error(`  ✗ ${slug}: Failed -`, result.reason);
+      }
+    });
+    
+    setAllSponsorsPageMap(newPageMap);
+    setAllSponsorsHasMore(hasMoreData);
+
+    // Helper function to get a unique key for a builder
+    const getBuilderKey = (user: LeaderboardUser): string => {
+      if (user.profile.talent_protocol_id) {
+        return `talent_${user.profile.talent_protocol_id}`;
+      }
+      const normalizedName = (user.profile.display_name || user.profile.name || '').toLowerCase().trim();
+      if (normalizedName) {
+        return `name_${normalizedName}`;
+      }
+      return `id_${user.id}`;
+    };
+
+    // Aggregate new data with existing data
+    const existingUserMap = new Map<string, UserWithEarningsBreakdown>();
+    const existingEarningsBreakdownMap = new Map<string, Array<{
+      sponsor: string;
+      amount: number;
+      amountUSD: number;
+      tokenSymbol: string;
+    }>>();
+    const existingSponsorsMap = new Map<string, Set<string>>();
+
+    // Initialize from existing aggregated users
+    if (isLoadMore && allSponsorsAggregatedUsers.length > 0) {
+      allSponsorsAggregatedUsers.forEach((user) => {
+        const key = getBuilderKey(user);
+        existingUserMap.set(key, { ...user });
+        existingEarningsBreakdownMap.set(key, [...(user.earningsBreakdown || [])]);
+        existingSponsorsMap.set(key, new Set(user.sponsors || []));
+      });
+    }
+
+    // Process new responses
+    allResponses.forEach((result, index) => {
+      if (result.status === "fulfilled") {
+        const sponsor = ALL_SPONSOR_SLUGS[index];
+        const tokenPrice = priceMap.get(sponsor) || 0;
+        const tokenInfo = tokenInfoMap.get(sponsor);
+
+        result.value.users.forEach((user) => {
+          const rewardAmount = typeof user.reward_amount === 'string' 
+            ? parseFloat(user.reward_amount) 
+            : user.reward_amount;
+          
+          const earningsUSD = rewardAmount * tokenPrice;
+          const builderKey = getBuilderKey(user);
+
+          if (!existingUserMap.has(builderKey)) {
+            existingUserMap.set(builderKey, {
+              ...user,
+              earningsBreakdown: [],
+              totalEarningsUSD: 0,
+              sponsors: [],
+            });
+            existingEarningsBreakdownMap.set(builderKey, []);
+            existingSponsorsMap.set(builderKey, new Set());
+          }
+
+          const existingUser = existingUserMap.get(builderKey)!;
+          const breakdown = existingEarningsBreakdownMap.get(builderKey)!;
+          const sponsorsSet = existingSponsorsMap.get(builderKey)!;
+
+          sponsorsSet.add(sponsor);
+
+          if (tokenInfo) {
+            breakdown.push({
+              sponsor,
+              amount: rewardAmount,
+              amountUSD: earningsUSD,
+              tokenSymbol: tokenInfo.symbol,
+            });
+
+            const previousTotal = existingUser.totalEarningsUSD || 0;
+            existingUser.totalEarningsUSD = previousTotal + earningsUSD;
+          }
+
+          if ((user.profile.builder_score?.points || 0) > (existingUser.profile.builder_score?.points || 0)) {
+            existingUser.profile.builder_score = user.profile.builder_score;
+          }
+          if (user.leaderboard_position < existingUser.leaderboard_position) {
+            existingUser.leaderboard_position = user.leaderboard_position;
+          }
+        });
+      }
+    });
+
+    // Update reward_amount to total USD
+    existingUserMap.forEach((user) => {
+      user.reward_amount = user.totalEarningsUSD || 0;
+    });
+
+    // Attach earnings breakdown and sponsors list
+    existingUserMap.forEach((user, builderKey) => {
+      user.earningsBreakdown = existingEarningsBreakdownMap.get(builderKey) || [];
+      user.sponsors = Array.from(existingSponsorsMap.get(builderKey) || []);
+    });
+
+    // Sort: prioritize multi-sponsor builders, then by earnings
+    const combinedUsers = Array.from(existingUserMap.values()).sort((a, b) => {
+      const aSponsorCount = (a.sponsors || []).length;
+      const bSponsorCount = (b.sponsors || []).length;
+      const aTotal = a.totalEarningsUSD || 0;
+      const bTotal = b.totalEarningsUSD || 0;
+      
+      if (aSponsorCount !== bSponsorCount) {
+        return bSponsorCount - aSponsorCount;
+      }
+      return bTotal - aTotal;
+    });
+
+    // Update aggregated users state
+    setAllSponsorsAggregatedUsers(combinedUsers);
+
+    // Display all loaded users (infinite scroll - show all as we load more)
+    const displayedUsers = combinedUsers;
+
+    displayedUsers.forEach((user, index) => {
+      user.leaderboard_position = index + 1;
+    });
+
+    const result = {
+      users: displayedUsers,
+      pagination: {
+        current_page: 1,
+        last_page: Math.ceil(combinedUsers.length / perPage),
+        total: combinedUsers.length,
+      },
+    };
+
+    console.log(`✅ [All Sponsors Lazy] Loaded ${combinedUsers.length} unique builders, displaying ${displayedUsers.length}`);
+    return result;
   };
 
   const fetchAllSponsors = async (filters: LeaderboardFilters): Promise<LeaderboardResponse> => {
@@ -1201,8 +1463,36 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         </table>
       </div>
 
-      {/* Pagination */}
-      {data.pagination.last_page > 1 && (
+      {/* Infinite Scroll Load More Trigger */}
+      {!filters.sponsor_slug && allSponsorsHasMore && (
+        <div
+          id="load-more-trigger"
+          className="h-20 flex items-center justify-center"
+        >
+          {loadingMore ? (
+            <div className="flex items-center gap-2 text-gray-500">
+              <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+              <span className="text-sm">Loading more builders...</span>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                fetchLeaderboard({ 
+                  ...filters, 
+                  page: 1,
+                  search: activeSearchQuery || undefined,
+                }, true);
+              }}
+              className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+            >
+              Load More
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Pagination (only for single sponsor mode) */}
+      {filters.sponsor_slug && data.pagination.last_page > 1 && (
         <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
           <p className="text-sm text-gray-500">
             Page {data.pagination.current_page} of {data.pagination.last_page}
