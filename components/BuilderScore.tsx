@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { getBuilderScore, getBuilderProfile } from "@/lib/talent-api";
 import type { BuilderScore, BuilderProfile } from "@/types/talent";
-import { formatScore, formatNumber, formatDate } from "@/lib/utils";
+import { formatScore, formatNumber, formatDate, copyToClipboard, formatAddress } from "@/lib/utils";
 
 export function BuilderScore() {
   const { address, isConnected } = useAccount();
@@ -12,6 +12,7 @@ export function BuilderScore() {
   const [profile, setProfile] = useState<BuilderProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!isConnected || !address) {
@@ -87,12 +88,54 @@ export function BuilderScore() {
     );
   }
 
+  const handleCopyAddress = async () => {
+    if (!address) return;
+    const success = await copyToClipboard(address);
+    if (success) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          Builder Score
-        </h2>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Builder Score
+          </h2>
+          {address && (
+            <button
+              onClick={handleCopyAddress}
+              className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors flex items-center gap-2"
+              title="Copy address"
+            >
+              <span className="font-mono text-xs">{formatAddress(address)}</span>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {copied ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                )}
+              </svg>
+            </button>
+          )}
+        </div>
         {profile?.profile?.name && (
           <p className="text-gray-600 dark:text-gray-400">{profile.profile.name}</p>
         )}
