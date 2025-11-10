@@ -234,7 +234,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   };
 
   return (
-    <div className="w-full">
+    <>
       <div className="bg-white rounded-lg border border-gray-200">
       {/* Header Section */}
       <div className="p-6 border-b border-gray-200">
@@ -321,8 +321,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
       {/* Top Builders by Category Table */}
       {!activeSearchQuery && topBuildersByCategory.length > 0 && (
-        <div className="mb-6 bg-white rounded-lg border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
+        <div className="mb-6 bg-white rounded-lg border border-gray-200 flex flex-col max-h-[400px]">
+          <div className="p-6 border-b border-gray-200 flex-shrink-0">
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               Top Builders by Category
             </h3>
@@ -330,7 +330,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               Leading builders across different categories
             </p>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto overflow-y-auto flex-1">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
@@ -478,9 +478,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       )}
 
       {/* Main Leaderboard Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
+      <div className="bg-white rounded-lg border border-gray-200 flex flex-col" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+        <div className="overflow-x-auto overflow-y-auto flex-1 min-h-0">
+          <table className="w-full">
+            <thead className="sticky top-0 bg-gray-50 z-10">
             <tr className="border-b border-gray-200 bg-gray-50">
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <div className="flex items-center gap-2">
@@ -653,11 +654,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             })}
           </tbody>
         </table>
-      </div>
-
-      {/* Pagination */}
-      {data.pagination.last_page > 1 && (
-        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+        </div>
+        
+        {/* Pagination */}
+        {data.pagination.last_page > 1 && (
+          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between flex-shrink-0 bg-white">
           <p className="text-sm text-gray-500">
             Page {data.pagination.current_page} of {data.pagination.last_page}
           </p>
@@ -743,6 +744,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           }}
         />
       )}
-    </div>
+    </>
   );
 }
