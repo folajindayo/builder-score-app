@@ -219,13 +219,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     );
 
     // Fetch data from all sponsors
-    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors...");
+    // Use per_page: 500 to get enough data for proper sorting
+    console.log("📡 [All Sponsors] Fetching leaderboard data from all sponsors (500 per sponsor)...");
     const allResponses = await Promise.allSettled(
       ALL_SPONSOR_SLUGS.map((slug) =>
         getLeaderboard({
           ...filters,
           sponsor_slug: slug,
           grant_id: undefined, // All time only
+          per_page: 500, // Fetch 500 builders per sponsor for comprehensive data
         })
       )
     );
@@ -254,7 +256,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     console.log("🔄 [All Sponsors] Step 1: Gathering and aggregating data from all sponsors...");
     let totalBuildersProcessed = 0;
     let totalEarningsCalculated = 0;
-    const builderTracking = new Map<number, Array<{sponsor: string, amount: number, amountUSD: number, tokenSymbol: string}>>();
 
     allResponses.forEach((result, index) => {
       if (result.status === "fulfilled") {
@@ -275,15 +276,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           // Convert token amount to USD immediately
           const earningsUSD = rewardAmount * tokenPrice;
 
-          const builderName = user.profile.display_name || user.profile.name || 'Anonymous';
-          const isExampleBuilder = builderName.toLowerCase().includes('defidevrel') || 
-                                   builderName.toLowerCase().includes('defidevrel.base.eth');
-
           if (!userMap.has(user.id)) {
             // First time seeing this builder - initialize
-            if (isExampleBuilder) {
-              console.log(`   🎯 EXAMPLE BUILDER FOUND: ${builderName} (ID: ${user.id}) in ${sponsor}`);
-            }
+            console.log(`   🆕 New builder found: ${user.profile.display_name || user.profile.name || user.id} (ID: ${user.id})`);
             userMap.set(user.id, {
               ...user,
               earningsBreakdown: [],
@@ -292,13 +287,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             });
             earningsBreakdownMap.set(user.id, []);
             sponsorsMap.set(user.id, new Set());
-            builderTracking.set(user.id, []);
           }
 
           const existingUser = userMap.get(user.id)!;
           const breakdown = earningsBreakdownMap.get(user.id)!;
           const sponsorsSet = sponsorsMap.get(user.id)!;
-          const tracking = builderTracking.get(user.id)!;
 
           // Track that this builder appears in this sponsor
           sponsorsSet.add(sponsor);
@@ -306,19 +299,14 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           // Add earnings from this sponsor (converted to USD)
           // Include ALL earnings from ALL sponsors, even if 0
           if (tokenInfo) {
-            const breakdownItem = {
+            breakdown.push({
               sponsor,
               amount: rewardAmount,
               amountUSD: earningsUSD, // Already in USD
               tokenSymbol: tokenInfo.symbol,
-            };
-            
-            breakdown.push(breakdownItem);
-            tracking.push(breakdownItem);
+            });
 
-            if (isExampleBuilder) {
-              console.log(`   🎯 EXAMPLE BUILDER EARNINGS: ${builderName} from ${sponsor}: ${rewardAmount} ${tokenInfo.symbol} × $${tokenPrice} = $${earningsUSD.toFixed(2)}`);
-            }
+            console.log(`   💵 Builder ${user.id} (${user.profile.display_name || user.profile.name || 'Anonymous'}): ${rewardAmount} ${tokenInfo.symbol} × $${tokenPrice} = $${earningsUSD.toFixed(2)}`);
 
             // Accumulate total earnings in USD from ALL sponsors
             // This sums the entire amount made from all sponsors
@@ -326,9 +314,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             existingUser.totalEarningsUSD = previousTotal + earningsUSD;
             totalEarningsCalculated += earningsUSD;
 
-            if (isExampleBuilder) {
-              console.log(`   🎯 EXAMPLE BUILDER TOTAL UPDATE: Previous: $${previousTotal.toFixed(2)} → New: $${existingUser.totalEarningsUSD.toFixed(2)} (Added $${earningsUSD.toFixed(2)} from ${sponsor})`);
-            }
+            console.log(`      Previous total: $${previousTotal.toFixed(2)} → New total: $${existingUser.totalEarningsUSD.toFixed(2)}`);
           }
 
           // Update other fields (take the best/highest values)
@@ -354,46 +340,18 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
 
     // Attach earnings breakdown and sponsors list to users
-    console.log("\n🔍 [All Sponsors] Step 2: Analyzing aggregated data...");
-    let exampleBuilderFound = false;
-    
     userMap.forEach((user, id) => {
       user.earningsBreakdown = earningsBreakdownMap.get(id) || [];
       user.sponsors = Array.from(sponsorsMap.get(id) || []);
       
-      const builderName = user.profile.display_name || user.profile.name || 'Anonymous';
-      const isExampleBuilder = builderName.toLowerCase().includes('defidevrel') || 
-                               builderName.toLowerCase().includes('defidevrel.base.eth');
-      
-      if (isExampleBuilder) {
-        exampleBuilderFound = true;
-        const tracking = builderTracking.get(id) || [];
-        const breakdownSum = user.earningsBreakdown.reduce((sum, b) => sum + b.amountUSD, 0);
-        
-        console.log(`\n🎯🎯🎯 EXAMPLE BUILDER ANALYSIS: ${builderName} (ID: ${id}) 🎯🎯🎯`);
-        console.log(`   Sponsors appeared in: ${user.sponsors.join(', ')} (${user.sponsors.length} sponsors)`);
-        console.log(`   Total Earnings (totalEarningsUSD): $${(user.totalEarningsUSD || 0).toFixed(2)}`);
-        console.log(`   Breakdown Sum Verification: $${breakdownSum.toFixed(2)}`);
-        console.log(`   Match: ${Math.abs((user.totalEarningsUSD || 0) - breakdownSum) < 0.01 ? '✅ CORRECT' : '❌ MISMATCH'}`);
-        console.log(`   Earnings Breakdown:`);
-        user.earningsBreakdown.forEach((b, idx) => {
-          console.log(`      ${idx + 1}. ${b.sponsor}: ${b.amount} ${b.tokenSymbol} × $${(b.amountUSD / b.amount || 0).toFixed(4)} = $${b.amountUSD.toFixed(2)}`);
-        });
-        console.log(`   Tracking array length: ${tracking.length}`);
-        console.log(`   Breakdown array length: ${user.earningsBreakdown.length}`);
+      // Log top 10 builders by earnings
+      if (user.totalEarningsUSD && user.totalEarningsUSD > 0) {
+        console.log(`   Builder ${id}: ${user.profile.display_name || user.profile.name || 'Anonymous'}`);
+        console.log(`      Sponsors: ${user.sponsors.join(', ')} (${user.sponsors.length} sponsors)`);
+        console.log(`      Total Earnings: $${user.totalEarningsUSD.toFixed(2)}`);
+        console.log(`      Breakdown:`, user.earningsBreakdown.map(b => `${b.sponsor}: ${b.amount} ${b.tokenSymbol} = $${b.amountUSD.toFixed(2)}`).join(', '));
       }
     });
-    
-    if (!exampleBuilderFound) {
-      console.log("   ⚠️  Example builder 'defidevrel.base.eth' NOT FOUND in aggregated results");
-      console.log("   Searching for similar names...");
-      userMap.forEach((user, id) => {
-        const builderName = user.profile.display_name || user.profile.name || '';
-        if (builderName.toLowerCase().includes('defi') || builderName.toLowerCase().includes('devrel')) {
-          console.log(`   Similar match: ${builderName} (ID: ${id}) - Sponsors: ${(user.sponsors || []).join(', ')}`);
-        }
-      });
-    }
 
     // Convert to array and sort:
     // 1. First by number of sponsors (builders in multiple sponsors prioritized)
@@ -418,16 +376,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     
     // Find example builder's position in sorted list
     const exampleBuilderIndex = combinedUsers.findIndex((user) => {
-      const builderName = user.profile.display_name || user.profile.name || '';
-      return builderName.toLowerCase().includes('defidevrel') || 
-             builderName.toLowerCase().includes('defidevrel.base.eth');
+      const builderName = (user.profile.display_name || user.profile.name || '').toLowerCase();
+      return builderName.includes('defidevrel') || builderName.includes('defidevrel.base.eth');
     });
     
     if (exampleBuilderIndex !== -1) {
       const exampleBuilder = combinedUsers[exampleBuilderIndex];
-      const pageNumber = Math.floor(exampleBuilderIndex / (filters.per_page || 1000)) + 1;
-      const positionOnPage = (exampleBuilderIndex % (filters.per_page || 1000)) + 1;
-      console.log(`\n🎯🎯🎯 EXAMPLE BUILDER POSITION IN SORTED LIST 🎯🎯🎯`);
+      const pageNumber = Math.floor(exampleBuilderIndex / 30) + 1;
+      const positionOnPage = (exampleBuilderIndex % 30) + 1;
+      console.log(`\n🎯 [EXAMPLE BUILDER] Position in sorted list:`);
       console.log(`   Name: ${exampleBuilder.profile.display_name || exampleBuilder.profile.name || 'Anonymous'}`);
       console.log(`   Rank: #${exampleBuilderIndex + 1} (Position ${positionOnPage} on page ${pageNumber})`);
       console.log(`   Sponsors: ${(exampleBuilder.sponsors || []).length} (${(exampleBuilder.sponsors || []).join(', ')})`);
@@ -437,17 +394,18 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     
     console.log(`   Top 10 builders after sorting:`);
     combinedUsers.slice(0, 10).forEach((user, idx) => {
-      const builderName = user.profile.display_name || user.profile.name || 'Anonymous';
-      const isExample = builderName.toLowerCase().includes('defidevrel');
+      const builderName = (user.profile.display_name || user.profile.name || 'Anonymous').toLowerCase();
+      const isExample = builderName.includes('defidevrel');
       const marker = isExample ? '🎯' : '';
-      console.log(`   ${marker} ${idx + 1}. ${builderName} (ID: ${user.id})`);
+      console.log(`   ${marker} ${idx + 1}. ${user.profile.display_name || user.profile.name || 'Anonymous'} (ID: ${user.id})`);
       console.log(`      Sponsors: ${(user.sponsors || []).length} (${(user.sponsors || []).join(', ')})`);
       console.log(`      Total Earnings: $${(user.totalEarningsUSD || 0).toFixed(2)}`);
     });
 
     // Apply pagination
+    // Display 30 per page in the table (regardless of fetch size)
     console.log("\n🔄 [All Sponsors] Step 4: Applying pagination...");
-    const perPage = filters.per_page || 1000;
+    const perPage = 30; // Always show 30 per page in table
     const currentPage = filters.page || 1;
     const startIndex = (currentPage - 1) * perPage;
     const endIndex = startIndex + perPage;
