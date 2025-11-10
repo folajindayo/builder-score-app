@@ -743,6 +743,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           }}
         />
       )}
-    </>
+    </div>
   );
 }
