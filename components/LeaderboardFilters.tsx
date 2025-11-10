@@ -4,6 +4,28 @@ import { useState } from "react";
 import { useDebounce } from "@/lib/hooks";
 import type { LeaderboardFilters } from "@/types/talent";
 
+// Common sponsor slugs - ordered list
+const SPONSOR_SLUGS = [
+  { value: "", label: "All Sponsors" },
+  { value: "walletconnect", label: "WalletConnect" },
+  { value: "ethereum", label: "Ethereum" },
+  { value: "polygon", label: "Polygon" },
+  { value: "arbitrum", label: "Arbitrum" },
+  { value: "optimism", label: "Optimism" },
+  { value: "base", label: "Base" },
+  { value: "zksync", label: "zkSync" },
+  { value: "starknet", label: "Starknet" },
+  { value: "avalanche", label: "Avalanche" },
+  { value: "bsc", label: "BNB Chain" },
+  { value: "fantom", label: "Fantom" },
+  { value: "gnosis", label: "Gnosis" },
+  { value: "celo", label: "Celo" },
+  { value: "linea", label: "Linea" },
+  { value: "scroll", label: "Scroll" },
+  { value: "mantle", label: "Mantle" },
+  { value: "blast", label: "Blast" },
+];
+
 interface LeaderboardFiltersProps {
   onFilterChange: (filters: LeaderboardFilters) => void;
   loading?: boolean;
@@ -67,15 +89,19 @@ export function LeaderboardFilters({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Sponsor Slug
+            Sponsor
           </label>
-          <input
-            type="text"
+          <select
             value={sponsorSlug}
             onChange={(e) => handleSponsorSlugChange(e.target.value)}
-            placeholder="walletconnect"
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          >
+            {SPONSOR_SLUGS.map((sponsor) => (
+              <option key={sponsor.value} value={sponsor.value}>
+                {sponsor.label}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
