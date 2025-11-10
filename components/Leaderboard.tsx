@@ -304,12 +304,13 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               <tbody className="bg-white divide-y divide-gray-200">
                 {topBuildersByCategory.map((item, idx) => {
                   const user = item.builder!;
+                  const category = item.category!; // We filtered out null categories
                   const rewardAmount = typeof user.reward_amount === 'string' 
                     ? parseFloat(user.reward_amount) 
                     : user.reward_amount;
                   const mcap = tokenPrice ? calculateMCAP(user, tokenPrice) : 0;
                   
-                  const categoryColors = {
+                  const categoryColors: Record<Exclude<BuilderCategory, null>, string> = {
                     sought_after: "bg-green-100 text-green-800 border-green-200",
                     trending: "bg-orange-100 text-orange-800 border-orange-200",
                     highest_score: "bg-blue-100 text-blue-800 border-blue-200",
@@ -319,16 +320,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
                   return (
                     <motion.tr
-                      key={`${item.category}-${user.id}`}
+                      key={`${category}-${user.id}`}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.1 }}
                       className="hover:bg-gray-50 transition-colors"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${categoryColors[item.category]}`}>
-                          <TrophyIcon category={item.category} className="w-4 h-4" />
-                          {getCategoryLabel(item.category)}
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${categoryColors[category]}`}>
+                          <TrophyIcon category={category} className="w-4 h-4" />
+                          {getCategoryLabel(category)}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
