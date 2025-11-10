@@ -97,6 +97,18 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
     });
   };
 
+  const handleClear = () => {
+    setAddress("");
+    setEnsName("");
+    setMinScore("");
+    setMaxScore("");
+    setSkills("");
+    setCredentials("");
+    onSearch({});
+  };
+
+  const hasFilters = address || ensName || minScore || maxScore || skills || credentials;
+
   return (
     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
@@ -185,13 +197,25 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full md:w-auto px-6 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
-        >
-          {loading ? "Searching..." : "Search"}
-        </button>
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex-1 md:flex-none px-6 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
+          >
+            {loading ? "Searching..." : "Search"}
+          </button>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={handleClear}
+              disabled={loading}
+              className="px-6 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
