@@ -5,7 +5,7 @@ import type { LeaderboardFilters } from "@/types/talent";
 
 // Sponsor slugs - ordered list
 const SPONSOR_SLUGS = [
-  { value: "", label: "All Sponsors" },
+  { value: "walletconnect", label: "WalletConnect" },
   { value: "celo", label: "Celo" },
   { value: "base", label: "Base" },
   { value: "base-summer", label: "Base Summer" },
