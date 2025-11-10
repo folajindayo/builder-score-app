@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { getLeaderboard } from "@/lib/builderscore-api";
 import { getTokenPrice, type TokenInfo } from "@/lib/coingecko-api";
 import type { LeaderboardResponse, LeaderboardFilters } from "@/types/talent";
-import { formatAddress, formatNumber } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
   categorizeBuilders,
@@ -111,6 +111,14 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     }
   };
 
+  const filteredUsers = data?.users || [];
+  
+  // Categorize builders and calculate MCAP (must be before early returns)
+  const categories = useMemo(() => {
+    if (!filteredUsers.length || !tokenPrice) return new Map<number, BuilderCategory>();
+    return categorizeBuilders(filteredUsers, tokenPrice);
+  }, [filteredUsers, tokenPrice]);
+
   if (loading && !data) {
     return (
       <div className="bg-white rounded-lg border border-gray-200">
@@ -140,14 +148,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       </div>
     );
   }
-
-  const filteredUsers = data.users;
-
-  // Categorize builders and calculate MCAP
-  const categories = useMemo(() => {
-    if (!filteredUsers.length || !tokenPrice) return new Map<number, BuilderCategory>();
-    return categorizeBuilders(filteredUsers, tokenPrice);
-  }, [filteredUsers, tokenPrice]);
 
   const handleViewProfile = (user: LeaderboardUser) => {
     setSelectedBuilder(user);
@@ -255,10 +255,21 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <span>Rank Change</span>
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div className="flex items-center gap-2">
+                  <span>MCAP</span>
+                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <span>Actions</span>
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredUsers.map((user, idx) => {
+            {data.users.map((user, idx) => {
               const rewardAmount = typeof user.reward_amount === 'string' 
                 ? parseFloat(user.reward_amount) 
                 : user.reward_amount;
