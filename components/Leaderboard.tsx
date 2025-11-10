@@ -1227,7 +1227,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <div className="flex items-center gap-2">
-                  <input type="checkbox" className="rounded border-gray-300" />
                   <span>Member Name</span>
                   <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
@@ -1293,9 +1292,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                     </div>
                   </td>
                   <td className="px-4 py-4">
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" className="rounded border-gray-300 flex-shrink-0" />
-                      <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0">
                         {user.profile.image_url ? (
                           <img
                             src={user.profile.image_url}
