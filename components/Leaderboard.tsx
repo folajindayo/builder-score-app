@@ -732,7 +732,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           </div>
         </div>
       )}
-      </div>
+        </div>
 
       {selectedBuilder && (
         <BuilderProfileModal
