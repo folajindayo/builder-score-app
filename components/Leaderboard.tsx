@@ -318,12 +318,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           )}
         </div>
       </div>
-      </div>
 
       {/* Top Builders by Category Table */}
       {!activeSearchQuery && topBuildersByCategory.length > 0 && (
-        <div className="mb-6 bg-white rounded-lg border border-gray-200 flex flex-col max-h-[400px]">
-          <div className="p-6 border-b border-gray-200 flex-shrink-0">
+        <div className="mb-6 bg-white rounded-lg border border-gray-200">
+          <div className="p-6 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               Top Builders by Category
             </h3>
@@ -331,29 +330,38 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               Leading builders across different categories
             </p>
           </div>
-          <div className="overflow-x-auto overflow-y-auto flex-1">
-            <table className="w-full">
+          <div className="w-full">
+            <table className="w-full table-fixed">
+              <colgroup>
+                <col className="w-[12%]" />
+                <col className="w-[20%]" />
+                <col className="w-[10%]" />
+                <col className="w-[12%]" />
+                <col className="w-[10%]" />
+                <col className="w-[10%]" />
+                <col className="w-[26%]" />
+              </colgroup>
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Category
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Builder
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Score
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Earnings
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     MCAP
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Position
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Reason
                   </th>
                 </tr>
@@ -383,56 +391,56 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       transition={{ delay: idx * 0.1 }}
                       className="hover:bg-gray-50 transition-colors"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${categoryColors[category]}`}>
-                          <TrophyIcon category={category} className="w-4 h-4" />
-                          {getCategoryLabel(category)}
+                      <td className="px-4 py-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium border ${categoryColors[category]}`}>
+                          <TrophyIcon category={category} className="w-3 h-3" />
+                          <span className="truncate">{getCategoryLabel(category)}</span>
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-3">
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-2">
                           {user.profile.image_url ? (
                             <img
                               src={user.profile.image_url}
                               alt={user.profile.display_name || user.profile.name}
-                              className="w-10 h-10 rounded-full object-cover"
+                              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                               onError={(e) => {
                                 e.currentTarget.style.display = 'none';
                               }}
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
                               <span className="text-xs font-medium text-gray-500">
                                 {user.leaderboard_position}
                               </span>
                             </div>
                           )}
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
+                          <div className="min-w-0">
+                            <div className="text-sm font-medium text-gray-900 truncate">
                               {user.profile.display_name || user.profile.name || "Anonymous"}
                             </div>
                             {user.profile.bio && (
-                              <div className="text-xs text-gray-500 truncate max-w-xs">
+                              <div className="text-xs text-gray-500 truncate">
                                 {user.profile.bio}
                               </div>
                             )}
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4">
                         <div className="text-sm font-semibold text-gray-900">
                           {user.profile.builder_score?.points !== undefined
                             ? formatNumber(user.profile.builder_score.points)
                             : "N/A"}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4">
                         {rewardAmount > 0 && tokenPrice && tokenInfo ? (
                           <div>
                             <div className="text-sm font-semibold text-gray-900">
                               ${formatNumber(rewardAmount * tokenPrice)}
                             </div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-500 truncate">
                               {formatNumber(rewardAmount)} {tokenInfo.symbol}
                             </div>
                           </div>
@@ -440,12 +448,12 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                           <span className="text-sm text-gray-400">—</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4">
                         <div className="text-sm font-semibold text-gray-900">
                           ${formatNumber(mcap)}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4">
                         <div className="text-sm font-medium text-gray-900">
                           #{user.leaderboard_position}
                         </div>
@@ -455,10 +463,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                           </div>
                         )}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         {tokenPrice ? (
                           <div 
-                            className="text-xs text-gray-600 max-w-xs"
+                            className="text-xs text-gray-600"
                             title={getCategoryReason(user, category, tokenPrice)}
                           >
                             <div className="truncate" title={getCategoryReason(user, category, tokenPrice)}>
@@ -479,10 +487,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       )}
 
       {/* Main Leaderboard Table */}
-      <div className="bg-white rounded-lg border border-gray-200 flex flex-col" style={{ maxHeight: 'calc(100vh - 200px)' }}>
-        <div className="overflow-x-auto overflow-y-auto flex-1 min-h-0">
-          <table className="w-full">
-            <thead className="sticky top-0 bg-gray-50 z-10">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <div className="flex items-center gap-2">
@@ -542,45 +549,45 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   transition={{ delay: idx * 0.02 }}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <input type="checkbox" className="rounded border-gray-300" />
-                      <div className="flex items-center gap-3">
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" className="rounded border-gray-300 flex-shrink-0" />
+                      <div className="flex items-center gap-2 min-w-0">
                         {user.profile.image_url ? (
                           <img
                             src={user.profile.image_url}
                             alt={user.profile.display_name || user.profile.name}
-                            className="w-10 h-10 rounded-full object-cover"
+                            className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                             }}
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
                             <span className="text-xs font-medium text-gray-500">
                               {user.leaderboard_position}
                             </span>
                           </div>
                         )}
                         <div className="min-w-0">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5">
                             <p className="text-sm font-medium text-gray-900 truncate">
                               {user.profile.display_name || user.profile.name || "Anonymous"}
                             </p>
                             {category && (
-                              <div className="flex items-center gap-1" title={getCategoryLabel(category)}>
-                                <TrophyIcon category={category} />
+                              <div className="flex items-center gap-1 flex-shrink-0" title={getCategoryLabel(category)}>
+                                <TrophyIcon category={category} className="w-4 h-4" />
                               </div>
                             )}
                             {user.profile.human_checkmark && (
-                              <span className="text-blue-500 text-xs" title="Verified">✓</span>
+                              <span className="text-blue-500 text-xs flex-shrink-0" title="Verified">✓</span>
                             )}
                           </div>
                           <p className="text-xs text-gray-500 truncate">
                             {user.profile.bio || user.profile.location || "No description"}
                           </p>
                           {user.profile.location && (
-                            <p className="text-xs text-gray-400 mt-0.5">
+                            <p className="text-xs text-gray-400 truncate">
                               {user.profile.location}
                             </p>
                           )}
@@ -588,14 +595,14 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4">
                     <div className="text-sm font-semibold text-gray-900">
                       {user.profile.builder_score?.points !== undefined
                         ? formatNumber(user.profile.builder_score.points)
                         : "N/A"}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4">
                     {rewardAmount > 0 ? (
                       <div>
                         {tokenPrice !== null && tokenInfo ? (
@@ -603,7 +610,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                             <div className="text-sm font-semibold text-gray-900">
                               ${formatNumber(rewardAmount * tokenPrice)}
                             </div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-500 truncate">
                               {formatNumber(rewardAmount)} {tokenInfo.symbol}
                             </div>
                           </>
@@ -617,10 +624,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       <span className="text-sm text-gray-400">—</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4">
                     {user.ranking_change !== 0 ? (
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                           user.ranking_change > 0
                             ? "bg-green-100 text-green-800"
                             : "bg-red-100 text-red-800"
@@ -632,17 +639,17 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       <span className="text-sm text-gray-400">—</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4">
                     <div className="text-sm font-semibold text-gray-900">
                       ${formatNumber(mcap)}
                     </div>
                     {category && (
-                      <div className="text-xs text-gray-500 mt-0.5">
+                      <div className="text-xs text-gray-500 truncate">
                         {getCategoryLabel(category)}
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4">
                     <button
                       onClick={() => handleViewProfile(user)}
                       className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
@@ -655,15 +662,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             })}
           </tbody>
         </table>
-        </div>
-        
-        {/* Pagination */}
-        {data.pagination.last_page > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between flex-shrink-0 bg-white">
-            <p className="text-sm text-gray-500">
-              Page {data.pagination.current_page} of {data.pagination.last_page}
-            </p>
-            <div className="flex items-center gap-2">
+      </div>
+
+      {/* Pagination */}
+      {data.pagination.last_page > 1 && (
+        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+          <p className="text-sm text-gray-500">
+            Page {data.pagination.current_page} of {data.pagination.last_page}
+          </p>
+          <div className="flex items-center gap-2">
             <button
               onClick={() => handlePageChange(1)}
               disabled={page === 1 || loading}
@@ -730,9 +737,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             >
               »»
             </button>
-            </div>
           </div>
-        )}
+        </div>
+      )}
       </div>
 
       {selectedBuilder && (
