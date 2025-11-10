@@ -108,10 +108,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 animate-pulse"
+            className="p-6 bg-white rounded-xl border-2 border-gray-200 shadow-md animate-pulse"
           >
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-2"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
           </div>
         ))}
       </div>
@@ -120,16 +120,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
   if (error) {
     return (
-      <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-        <p className="text-red-600 dark:text-red-400">{error}</p>
+      <div className="p-6 bg-red-50 rounded-xl border-2 border-red-200 shadow-sm">
+        <p className="text-red-600 font-medium">{error}</p>
       </div>
     );
   }
 
   if (!data || data.users.length === 0) {
     return (
-      <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
-        <p className="text-gray-600 dark:text-gray-400 text-center">
+      <div className="p-8 bg-white rounded-xl border-2 border-gray-200 shadow-sm">
+        <p className="text-gray-600 text-center text-lg">
           No leaderboard data available
         </p>
       </div>
@@ -143,18 +143,20 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-2xl font-bold text-gray-900">
             Top Builders
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600 mt-1">
             Showing {filteredUsers.length} of {data.pagination.total} builders
-            {activeSearchQuery && ` (searching for "${activeSearchQuery}")`}
+            {activeSearchQuery && (
+              <span className="text-blue-600 font-medium"> • Searching for "{activeSearchQuery}"</span>
+            )}
           </p>
         </div>
       </div>
 
-      <div className="mb-4">
-        <div className="flex gap-2">
+      <div className="mb-6">
+        <div className="flex gap-3">
           <div className="relative flex-1">
             <input
               type="text"
@@ -162,13 +164,13 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Search by name, wallet, or bio..."
-              className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 pr-10 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm"
               disabled={loading}
             />
             {searchQuery && !loading && (
               <button
                 onClick={handleClearSearch}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
                 title="Clear search"
               >
                 <svg
@@ -190,7 +192,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           <button
             onClick={handleSearch}
             disabled={loading || !searchQuery.trim()}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg flex items-center gap-2"
           >
             {loading ? (
               <>
@@ -238,85 +240,85 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           </button>
         </div>
         {loading && activeSearchQuery && (
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Searching through all builders...
+          <p className="mt-3 text-sm text-blue-600 font-medium">
+            🔍 Searching through all builders...
           </p>
         )}
       </div>
 
       {filteredUsers.length === 0 && activeSearchQuery && !loading && (
-        <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
-          <p className="text-gray-600 dark:text-gray-400 text-center">
+        <div className="p-8 bg-white rounded-xl border-2 border-gray-200 shadow-sm">
+          <p className="text-gray-600 text-center text-lg">
             No builders found matching "{activeSearchQuery}"
           </p>
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {filteredUsers.map((user) => (
           <div
             key={user.id}
-            className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"
+            className="p-6 bg-white rounded-xl border-2 border-gray-200 shadow-md hover:shadow-lg transition-all hover:border-blue-300"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4 flex-1">
-                <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full font-bold">
+              <div className="flex items-center gap-5 flex-1">
+                <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full font-bold text-lg shadow-md">
                   {user.leaderboard_position}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                    <h4 className="text-xl font-bold text-gray-900 truncate">
                       {user.profile.display_name || user.profile.name || "Anonymous"}
                     </h4>
                     {user.profile.human_checkmark && (
-                      <span className="text-blue-500" title="Verified">
+                      <span className="text-blue-500 text-xl" title="Verified">
                         ✓
                       </span>
                     )}
                   </div>
                   {user.profile.bio && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                    <p className="text-sm text-gray-600 line-clamp-1 mt-1">
                       {user.profile.bio}
                     </p>
                   )}
                   {user.recipient_wallet && (
-                    <p className="text-xs font-mono text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs font-mono text-gray-500 mt-2">
                       {formatAddress(user.recipient_wallet)}
                     </p>
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-6 ml-4">
+              <div className="flex items-center gap-8 ml-4">
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                  <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     {user.profile.builder_score?.points !== undefined
                       ? formatNumber(user.profile.builder_score.points)
                       : "N/A"}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Score</div>
+                  <div className="text-xs text-gray-500 font-medium mt-1">Score</div>
                 </div>
                 {user.reward_amount > 0 && (
                   <div className="text-right">
                     {tokenPrice !== null && tokenInfo ? (
                       <>
-                        <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                        <div className="text-xl font-bold text-green-600">
                           ${formatNumber(user.reward_amount * tokenPrice)}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-xs text-gray-500">
                           {formatNumber(user.reward_amount)} {tokenInfo.symbol}
                         </div>
                       </>
                     ) : (
                       <>
-                        <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                        <div className="text-xl font-bold text-green-600">
                           {formatNumber(user.reward_amount)} {tokenInfo?.symbol || "TOKEN"}
                         </div>
-                        <div className="text-xs text-gray-400 dark:text-gray-500">
+                        <div className="text-xs text-gray-400">
                           Loading USD...
                         </div>
                       </>
                     )}
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Earnings</div>
+                    <div className="text-xs text-gray-500 mt-1 font-medium">Earnings</div>
                     {user.reward_transaction_hash && (
                       <a
                         href={`https://etherscan.io/tx/${user.reward_transaction_hash}`}
