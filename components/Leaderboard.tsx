@@ -939,6 +939,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   className="hover:bg-gray-50 transition-colors"
                 >
                   <td className="px-4 py-4">
+                    <div className="text-sm font-semibold text-gray-600">
+                      {user.leaderboard_position || ((data.pagination.current_page - 1) * (data.pagination.total / data.pagination.last_page) + idx + 1)}
+                    </div>
+                  </td>
+                  <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <input type="checkbox" className="rounded border-gray-300 flex-shrink-0" />
                       <div className="flex items-center gap-2 min-w-0">
