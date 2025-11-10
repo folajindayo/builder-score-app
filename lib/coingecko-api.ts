@@ -40,6 +40,11 @@ export const SPONSOR_TOKENS: Record<string, TokenInfo> = {
     name: "Talent Protocol",
     fallbackPrice: 0.1, // Approximate fallback
   },
+  syndicate: {
+    symbol: "ETH",
+    name: "Ethereum",
+    fallbackPrice: 3000, // Approximate fallback
+  },
 };
 
 // Get token price by CoinGecko ID or contract address
@@ -134,13 +139,17 @@ export async function getTokenPrice(sponsorSlug: string | undefined): Promise<{
       // ETH price
       price = await getTokenPriceById("ethereum", tokenInfo.fallbackPrice);
       break;
-    case "talent-protocol":
-      // TALENT token - try to find by contract or use fallback
-      // Note: Update with actual TALENT contract address if available
-      price = tokenInfo.fallbackPrice;
-      break;
-    default:
-      price = tokenInfo.fallbackPrice;
+            case "talent-protocol":
+              // TALENT token - try to find by contract or use fallback
+              // Note: Update with actual TALENT contract address if available
+              price = tokenInfo.fallbackPrice;
+              break;
+            case "syndicate":
+              // Syndicate uses ETH
+              price = await getTokenPriceById("ethereum", tokenInfo.fallbackPrice);
+              break;
+            default:
+              price = tokenInfo.fallbackPrice;
   }
 
   return { price, tokenInfo };
