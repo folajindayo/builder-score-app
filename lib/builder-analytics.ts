@@ -74,21 +74,42 @@ export function getMostEarnings(users: LeaderboardUser[]): LeaderboardUser | nul
 
 /**
  * Get trending builder (based on ranking change and recent activity)
+ * Prioritizes builders with positive ranking changes and high positions
  */
 export function getTrendingBuilder(users: LeaderboardUser[]): LeaderboardUser | null {
   if (users.length === 0) return null;
   
-  // Score based on ranking change and position improvement
-  return users.reduce((trending, user) => {
+  // Filter builders with positive ranking changes first
+  const trendingBuilders = users.filter(user => user.ranking_change > 0);
+  
+  if (trendingBuilders.length === 0) {
+    // If no builders with positive change, find the one with best position improvement
+    return users.reduce((trending, user) => {
+      const trendingScore = 
+        Math.abs(user.ranking_change) * 5 + // Any change is good
+        (user.leaderboard_position <= 20 ? 100 - user.leaderboard_position : 0) + // Top 20 get bonus
+        (user.profile.builder_score?.points || 0) * 0.2;
+      
+      const currentScore = 
+        Math.abs(trending.ranking_change) * 5 +
+        (trending.leaderboard_position <= 20 ? 100 - trending.leaderboard_position : 0) +
+        (trending.profile.builder_score?.points || 0) * 0.2;
+      
+      return trendingScore > currentScore ? user : trending;
+    });
+  }
+  
+  // Score based on ranking change, position, and score
+  return trendingBuilders.reduce((trending, user) => {
     const trendingScore = 
-      (user.ranking_change > 0 ? user.ranking_change * 10 : 0) +
-      (user.leaderboard_position <= 10 ? 50 : 0) +
-      (user.profile.builder_score?.points || 0) * 0.1;
+      user.ranking_change * 15 + // Higher change = better
+      (user.leaderboard_position <= 10 ? 100 : user.leaderboard_position <= 50 ? 50 : 0) +
+      (user.profile.builder_score?.points || 0) * 0.2;
     
     const currentScore = 
-      (trending.ranking_change > 0 ? trending.ranking_change * 10 : 0) +
-      (trending.leaderboard_position <= 10 ? 50 : 0) +
-      (trending.profile.builder_score?.points || 0) * 0.1;
+      trending.ranking_change * 15 +
+      (trending.leaderboard_position <= 10 ? 100 : trending.leaderboard_position <= 50 ? 50 : 0) +
+      (trending.profile.builder_score?.points || 0) * 0.2;
     
     return trendingScore > currentScore ? user : trending;
   });
@@ -109,6 +130,7 @@ export function getHighestScore(users: LeaderboardUser[]): LeaderboardUser | nul
 
 /**
  * Get featured builder (combination of score, earnings, and activity)
+ * Featured builders have high MCAP, good scores, and strong activity
  */
 export function getFeaturedBuilder(users: LeaderboardUser[], tokenPrice: number): LeaderboardUser | null {
   if (users.length === 0) return null;
@@ -117,13 +139,17 @@ export function getFeaturedBuilder(users: LeaderboardUser[], tokenPrice: number)
     const featuredMCAP = calculateMCAP(featured, tokenPrice);
     const userMCAP = calculateMCAP(user, tokenPrice);
     
-    // Also consider verification and activity
+    // Also consider verification, activity, and overall profile strength
     const featuredBonus = 
-      (featured.profile.human_checkmark ? 100 : 0) +
-      (featured.profile.verified_nationality ? 50 : 0);
+      (featured.profile.human_checkmark ? 150 : 0) +
+      (featured.profile.verified_nationality ? 75 : 0) +
+      (featured.profile.bio ? 25 : 0) +
+      (featured.leaderboard_position <= 10 ? 100 : featured.leaderboard_position <= 50 ? 50 : 0);
     const userBonus = 
-      (user.profile.human_checkmark ? 100 : 0) +
-      (user.profile.verified_nationality ? 50 : 0);
+      (user.profile.human_checkmark ? 150 : 0) +
+      (user.profile.verified_nationality ? 75 : 0) +
+      (user.profile.bio ? 25 : 0) +
+      (user.leaderboard_position <= 10 ? 100 : user.leaderboard_position <= 50 ? 50 : 0);
     
     return (userMCAP + userBonus) > (featuredMCAP + featuredBonus) ? user : featured;
   });
@@ -131,26 +157,30 @@ export function getFeaturedBuilder(users: LeaderboardUser[], tokenPrice: number)
 
 /**
  * Get sought after builder (based on profile completeness, verification, and engagement)
+ * Builders with complete profiles, verifications, and good scores are most sought after
  */
 export function getSoughtAfterBuilder(users: LeaderboardUser[]): LeaderboardUser | null {
   if (users.length === 0) return null;
   
   return users.reduce((sought, user) => {
+    // Calculate completeness score
     const soughtScore = 
-      (sought.profile.human_checkmark ? 100 : 0) +
-      (sought.profile.verified_nationality ? 50 : 0) +
-      (sought.profile.bio ? 30 : 0) +
-      (sought.profile.location ? 20 : 0) +
-      (sought.profile.tags?.length || 0) * 10 +
-      (sought.profile.builder_score?.points || 0) * 0.5;
+      (sought.profile.human_checkmark ? 150 : 0) + // Verification is highly valued
+      (sought.profile.verified_nationality ? 75 : 0) +
+      (sought.profile.bio ? 40 : 0) + // Bio shows engagement
+      (sought.profile.location ? 30 : 0) + // Location adds credibility
+      (sought.profile.tags?.length || 0) * 15 + // More tags = more skills/interests
+      (sought.profile.builder_score?.points || 0) * 0.8 + // Score matters
+      (sought.profile.image_url ? 20 : 0); // Profile image shows completeness
     
     const userScore = 
-      (user.profile.human_checkmark ? 100 : 0) +
-      (user.profile.verified_nationality ? 50 : 0) +
-      (user.profile.bio ? 30 : 0) +
-      (user.profile.location ? 20 : 0) +
-      (user.profile.tags?.length || 0) * 10 +
-      (user.profile.builder_score?.points || 0) * 0.5;
+      (user.profile.human_checkmark ? 150 : 0) +
+      (user.profile.verified_nationality ? 75 : 0) +
+      (user.profile.bio ? 40 : 0) +
+      (user.profile.location ? 30 : 0) +
+      (user.profile.tags?.length || 0) * 15 +
+      (user.profile.builder_score?.points || 0) * 0.8 +
+      (user.profile.image_url ? 20 : 0);
     
     return userScore > soughtScore ? user : sought;
   });
