@@ -100,22 +100,27 @@ export function LeaderboardFilters({
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-4">
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1.5">
             Sponsor
           </label>
-          <select
-            value={sponsorSlug}
-            onChange={(e) => handleSponsorSlugChange(e.target.value)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-          >
+          <div className="flex flex-wrap gap-2">
             {SPONSOR_SLUGS.map((sponsor) => (
-              <option key={sponsor.value} value={sponsor.value}>
+              <button
+                key={sponsor.value}
+                type="button"
+                onClick={() => handleSponsorSlugChange(sponsor.value)}
+                className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
+                  sponsorSlug === sponsor.value
+                    ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
+              >
                 {sponsor.label}
-              </option>
+              </button>
             ))}
-          </select>
+          </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1.5">
