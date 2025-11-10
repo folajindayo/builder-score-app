@@ -847,7 +847,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
   if (loading && !data) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
         <div className="p-6">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="h-16 bg-gray-50 rounded mb-2 animate-pulse"></div>
@@ -859,7 +859,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
   if (error) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
         <p className="text-red-600 text-sm">{error}</p>
       </div>
     );
@@ -902,7 +902,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     }
     
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-8">
+      <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
         <p className="text-gray-500 text-center text-sm">
           No leaderboard data available
         </p>
@@ -1015,7 +1015,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
       {/* Top Builders by Category Table */}
       {!activeSearchQuery && topBuildersByCategory.length > 0 && (
-        <div className="mb-6 bg-white rounded-lg border border-gray-200">
+        <div className="mb-6 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               Top Builders by Category
@@ -1098,13 +1098,13 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                             <img
                               src={user.profile.image_url}
                               alt={user.profile.display_name || user.profile.name}
-                              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                              className="w-8 h-8 rounded-lg object-cover flex-shrink-0 shadow-sm"
                               onError={(e) => {
                                 e.currentTarget.style.display = 'none';
                               }}
                             />
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                            <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
                               <span className="text-xs font-medium text-gray-500">
                                 {user.leaderboard_position}
                               </span>

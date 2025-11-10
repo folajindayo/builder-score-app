@@ -34,7 +34,6 @@ export function LeaderboardFilters({
 }: LeaderboardFiltersProps) {
   const [sponsorSlug, setSponsorSlug] = useState(initialFilters.sponsor_slug || "");
   const [grantDuration, setGrantDuration] = useState<"thisWeek" | "lastWeek" | "allTime">("thisWeek");
-  const [perPage, setPerPage] = useState(initialFilters.per_page?.toString() || "1000");
 
   // Auto-set grant ID based on sponsor and duration (controlled from code)
   useEffect(() => {
@@ -62,13 +61,8 @@ export function LeaderboardFilters({
     setGrantDuration(value);
   };
 
-  const handlePerPageChange = (value: string) => {
-    setPerPage(value);
-  };
-
   const handleApplyFilters = () => {
     const filters: LeaderboardFilters = {
-      per_page: perPage ? Number(perPage) : undefined,
       page: 1,
     };
 
@@ -96,18 +90,17 @@ export function LeaderboardFilters({
   const handleClear = () => {
     setSponsorSlug("");
     setGrantDuration("allTime");
-    setPerPage("20");
-    onFilterChange({ per_page: 20, page: 1 });
+    onFilterChange({ page: 1 });
   };
 
-  const hasFilters = sponsorSlug || (perPage && perPage !== "20");
+  const hasFilters = sponsorSlug;
   const currentGrantId = sponsorSlug && GRANT_IDS[sponsorSlug] && grantDuration !== "allTime"
     ? GRANT_IDS[sponsorSlug][grantDuration] 
     : null;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1.5">
             Sponsor
@@ -115,7 +108,7 @@ export function LeaderboardFilters({
           <select
             value={sponsorSlug}
             onChange={(e) => handleSponsorSlugChange(e.target.value)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
           >
             {SPONSOR_SLUGS.map((sponsor) => (
               <option key={sponsor.value} value={sponsor.value}>
@@ -126,55 +119,56 @@ export function LeaderboardFilters({
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1.5">
-            Duration {sponsorSlug && sponsorSlug !== "all" && GRANT_IDS[sponsorSlug] && currentGrantId && (
-              <span className="text-xs text-gray-500 ml-1 font-normal">
-                (Grant ID: {currentGrantId})
-              </span>
-            )}
+            Duration
           </label>
           {sponsorSlug ? (
-            <select
-              value={grantDuration}
-              onChange={(e) => handleGrantDurationChange(e.target.value as "thisWeek" | "lastWeek" | "allTime")}
-              disabled={sponsorSlug === "all"}
-              className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                sponsorSlug === "all" ? "bg-gray-50 cursor-not-allowed" : ""
-              }`}
-            >
-              <option value="allTime">
-                All Time {sponsorSlug === "all" && "(Only option for All Sponsors)"}
-              </option>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => handleGrantDurationChange("allTime")}
+                disabled={sponsorSlug === "all"}
+                className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
+                  grantDuration === "allTime"
+                    ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                    : sponsorSlug === "all"
+                    ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                All Time
+              </button>
               {sponsorSlug !== "all" && GRANT_IDS[sponsorSlug] && (
                 <>
-                  <option value="thisWeek">
-                    This Week (Grant ID: {GRANT_IDS[sponsorSlug].thisWeek})
-                  </option>
-                  <option value="lastWeek">
-                    Last Week (Grant ID: {GRANT_IDS[sponsorSlug].lastWeek})
-                  </option>
+                  <button
+                    type="button"
+                    onClick={() => handleGrantDurationChange("thisWeek")}
+                    className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
+                      grantDuration === "thisWeek"
+                        ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    This Week
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleGrantDurationChange("lastWeek")}
+                    className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
+                      grantDuration === "lastWeek"
+                        ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    Last Week
+                  </button>
                 </>
               )}
-            </select>
+            </div>
           ) : (
-            <div className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-400">
+            <div className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 text-gray-400">
               Select a sponsor to see duration options
             </div>
           )}
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">
-            Results Per Page
-          </label>
-          <select
-            value={perPage}
-            onChange={(e) => handlePerPageChange(e.target.value)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
-          >
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
         </div>
       </div>
       <div className="mt-4 flex justify-end gap-2">
@@ -183,7 +177,7 @@ export function LeaderboardFilters({
             type="button"
             onClick={handleClear}
             disabled={loading}
-            className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 rounded-xl transition-colors"
           >
             Clear
           </button>
@@ -192,7 +186,7 @@ export function LeaderboardFilters({
           type="button"
           onClick={handleApplyFilters}
           disabled={loading}
-          className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+          className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl transition-colors shadow-sm"
         >
           {loading ? "Applying..." : "Apply"}
         </button>
