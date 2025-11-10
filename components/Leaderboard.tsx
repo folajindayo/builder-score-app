@@ -659,10 +659,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         {/* Pagination */}
         {data.pagination.last_page > 1 && (
           <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between flex-shrink-0 bg-white">
-          <p className="text-sm text-gray-500">
-            Page {data.pagination.current_page} of {data.pagination.last_page}
-          </p>
-          <div className="flex items-center gap-2">
+            <p className="text-sm text-gray-500">
+              Page {data.pagination.current_page} of {data.pagination.last_page}
+            </p>
+            <div className="flex items-center gap-2">
             <button
               onClick={() => handlePageChange(1)}
               disabled={page === 1 || loading}
@@ -729,9 +729,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             >
               »»
             </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
 
       {selectedBuilder && (
