@@ -1218,8 +1218,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       )}
 
       {/* Main Leaderboard Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="overflow-x-auto rounded-xl">
+        <table className="w-full rounded-xl overflow-hidden">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
