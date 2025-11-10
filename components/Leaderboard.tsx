@@ -295,7 +295,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           // Get unique key for this builder (talent_protocol_id or normalized name)
           const builderKey = getBuilderKey(user);
           const builderName = user.profile.display_name || user.profile.name || 'Anonymous';
-          const builderId = user.profile.talent_protocol_id || user.id;
 
           if (!userMap.has(builderKey)) {
             // First time seeing this builder - initialize
