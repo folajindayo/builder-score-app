@@ -808,6 +808,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                 <TrophyIcon category={category} className="w-4 h-4" />
                               </div>
                             )}
+                            {isAllSponsors && (user as UserWithEarningsBreakdown).sponsors && (user as UserWithEarningsBreakdown).sponsors!.length > 1 && (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200 flex-shrink-0" title="Appears in multiple sponsors">
+                                Multi-Sponsor
+                              </span>
+                            )}
                             {user.profile.human_checkmark && (
                               <span className="text-blue-500 text-xs flex-shrink-0" title="Verified">✓</span>
                             )}
@@ -874,21 +879,40 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                 </button>
                                 {isExpanded && (
                                   <div className="mt-2 space-y-1.5 bg-gray-50 rounded-lg p-2 border border-gray-200">
-                                    {userWithBreakdown.earningsBreakdown.map((breakdown, idx) => (
-                                      <div key={idx} className="flex items-center justify-between text-xs">
-                                        <span className="text-gray-600 capitalize">
-                                          {breakdown.sponsor.replace("-", " ")}:
-                                        </span>
-                                        <div className="text-right">
-                                          <div className="font-medium text-gray-900">
-                                            ${formatNumber(breakdown.amountUSD)}
+                                    {userWithBreakdown.earningsBreakdown.map((breakdown, idx) => {
+                                      // Calculate running total up to this point
+                                      const runningTotal = userWithBreakdown.earningsBreakdown!
+                                        .slice(0, idx + 1)
+                                        .reduce((sum, item) => sum + item.amountUSD, 0);
+                                      
+                                      return (
+                                        <div key={idx} className="flex items-center justify-between text-xs py-1 border-b border-gray-200 last:border-b-0">
+                                          <div className="flex-1">
+                                            <span className="text-gray-600 capitalize font-medium">
+                                              {breakdown.sponsor.replace("-", " ")}:
+                                            </span>
+                                            <div className="text-gray-500 mt-0.5">
+                                              {formatNumber(breakdown.amount)} {breakdown.tokenSymbol} × ${formatNumber(breakdown.amountUSD / breakdown.amount || 0)} = ${formatNumber(breakdown.amountUSD)}
+                                            </div>
                                           </div>
-                                          <div className="text-gray-500">
-                                            {formatNumber(breakdown.amount)} {breakdown.tokenSymbol}
+                                          <div className="text-right ml-2">
+                                            <div className="font-medium text-gray-900">
+                                              ${formatNumber(breakdown.amountUSD)}
+                                            </div>
+                                            {idx < userWithBreakdown.earningsBreakdown!.length - 1 && (
+                                              <div className="text-gray-400 text-xs mt-0.5">
+                                                + {idx === 0 ? '' : '... + '}
+                                              </div>
+                                            )}
+                                            {idx === userWithBreakdown.earningsBreakdown!.length - 1 && (
+                                              <div className="text-blue-600 font-semibold text-xs mt-1 pt-1 border-t border-gray-300">
+                                                = ${formatNumber(runningTotal)}
+                                              </div>
+                                            )}
                                           </div>
                                         </div>
-                                      </div>
-                                    ))}
+                                      );
+                                    })}
                                   </div>
                                 )}
                               </div>
