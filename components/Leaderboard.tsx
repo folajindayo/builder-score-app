@@ -422,16 +422,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       user.sponsors = Array.from(existingSponsorsMap.get(builderKey) || []);
     });
 
-    // Sort: prioritize multi-sponsor builders, then by earnings
+    // Sort: by total earnings USD (descending) - regardless of sponsor count
     const combinedUsers = Array.from(existingUserMap.values()).sort((a, b) => {
-      const aSponsorCount = (a.sponsors || []).length;
-      const bSponsorCount = (b.sponsors || []).length;
       const aTotal = a.totalEarningsUSD || 0;
       const bTotal = b.totalEarningsUSD || 0;
-      
-      if (aSponsorCount !== bSponsorCount) {
-        return bSponsorCount - aSponsorCount;
-      }
       return bTotal - aTotal;
     });
 
@@ -737,22 +731,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       });
     }
 
-    // Convert to array and sort:
-    // 1. First by number of sponsors (builders in multiple sponsors prioritized)
-    // 2. Then by total earnings USD (descending)
-    console.log("\n🔄 [All Sponsors] Step 3: Sorting builders...");
+    // Convert to array and sort by total earnings USD (descending) - regardless of sponsor count
+    console.log("\n🔄 [All Sponsors] Step 3: Sorting builders by earnings...");
     const combinedUsers = Array.from(userMap.values()).sort((a, b) => {
-      const aSponsorCount = (a.sponsors || []).length;
-      const bSponsorCount = (b.sponsors || []).length;
       const aTotal = a.totalEarningsUSD || 0;
       const bTotal = b.totalEarningsUSD || 0;
-      
-      // First, prioritize builders who appear in multiple sponsors
-      if (aSponsorCount !== bSponsorCount) {
-        return bSponsorCount - aSponsorCount; // More sponsors = higher priority
-      }
-      
-      // If same number of sponsors, sort by total earnings USD
       return bTotal - aTotal;
     });
 
