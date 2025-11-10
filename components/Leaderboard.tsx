@@ -1501,7 +1501,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   filteredUsers = allSponsorsAggregatedUsers.filter((user) => {
                     const name = (user.profile.display_name || user.profile.name || '').toLowerCase();
                     const bio = (user.profile.bio || '').toLowerCase();
-                    const wallet = (user.profile.wallet_address || '').toLowerCase();
+                    const wallet = (user.recipient_wallet || '').toLowerCase();
                     return name.includes(searchLower) || bio.includes(searchLower) || wallet.includes(searchLower);
                   });
                 }
@@ -1542,7 +1542,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   filteredUsers = allSponsorsAggregatedUsers.filter((user) => {
                     const name = (user.profile.display_name || user.profile.name || '').toLowerCase();
                     const bio = (user.profile.bio || '').toLowerCase();
-                    const wallet = (user.profile.wallet_address || '').toLowerCase();
+                    const wallet = (user.recipient_wallet || '').toLowerCase();
                     return name.includes(searchLower) || bio.includes(searchLower) || wallet.includes(searchLower);
                   });
                 }
