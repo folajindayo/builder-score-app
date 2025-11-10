@@ -240,24 +240,20 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               {activeSearchQuery && ` • Searching for "${activeSearchQuery}"`}
             </p>
           )}
-          {!activeSearchQuery && categorizedBuilders.mostEarnings && categorizedBuilders.highestScore && (
-            <div className="flex items-center gap-4 text-xs">
-              {categorizedBuilders.mostEarnings && (
-                <div className="flex items-center gap-1.5">
-                  <TrophyIcon category="most_earnings" className="w-4 h-4" />
-                  <span className="text-gray-600">
-                    Most Earnings: <span className="font-medium">{categorizedBuilders.mostEarnings.profile.display_name || categorizedBuilders.mostEarnings.profile.name}</span>
-                  </span>
-                </div>
-              )}
-              {categorizedBuilders.highestScore && (
-                <div className="flex items-center gap-1.5">
-                  <TrophyIcon category="highest_score" className="w-4 h-4" />
-                  <span className="text-gray-600">
-                    Highest Score: <span className="font-medium">{categorizedBuilders.highestScore.profile.display_name || categorizedBuilders.highestScore.profile.name}</span>
-                  </span>
-                </div>
-              )}
+          {!activeSearchQuery && (
+            <div className="flex items-center gap-4 text-xs flex-wrap">
+              {Array.from(categories.entries()).map(([userId, category]) => {
+                const user = filteredUsers.find(u => u.id === userId);
+                if (!user) return null;
+                return (
+                  <div key={userId} className="flex items-center gap-1.5">
+                    <TrophyIcon category={category} className="w-4 h-4" />
+                    <span className="text-gray-600">
+                      {getCategoryLabel(category)}: <span className="font-medium">{user.profile.display_name || user.profile.name}</span>
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
