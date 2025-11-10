@@ -49,7 +49,6 @@ function getCategoryReason(user: LeaderboardUser, category: Exclude<BuilderCateg
     case "featured":
       const mcap = calculateMCAP(user, tokenPrice);
       const verificationBonus = (user.profile.human_checkmark ? 150 : 0) + (user.profile.verified_nationality ? 75 : 0);
-      const positionBonus = user.leaderboard_position <= 10 ? 100 : user.leaderboard_position <= 50 ? 50 : 0;
       return `MCAP: $${formatNumber(mcap)} | Verified: ${verificationBonus > 0 ? 'Yes' : 'No'} | Top ${user.leaderboard_position <= 10 ? '10' : user.leaderboard_position <= 50 ? '50' : '100+'} position`;
     
     case "sought_after":
@@ -456,14 +455,18 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <div 
-                          className="text-xs text-gray-600 max-w-xs"
-                          title={getCategoryReason(user, category, tokenPrice)}
-                        >
-                          <div className="truncate" title={getCategoryReason(user, category, tokenPrice)}>
-                            {getCategoryReason(user, category, tokenPrice)}
+                        {tokenPrice ? (
+                          <div 
+                            className="text-xs text-gray-600 max-w-xs"
+                            title={getCategoryReason(user, category, tokenPrice)}
+                          >
+                            <div className="truncate" title={getCategoryReason(user, category, tokenPrice)}>
+                              {getCategoryReason(user, category, tokenPrice)}
+                            </div>
                           </div>
-                        </div>
+                        ) : (
+                          <span className="text-xs text-gray-400">Loading...</span>
+                        )}
                       </td>
                     </motion.tr>
                   );
