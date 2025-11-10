@@ -254,6 +254,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     console.log("🔄 [All Sponsors] Step 1: Gathering and aggregating data from all sponsors...");
     let totalBuildersProcessed = 0;
     let totalEarningsCalculated = 0;
+    const builderTracking = new Map<number, Array<{sponsor: string, amount: number, amountUSD: number, tokenSymbol: string}>>();
 
     allResponses.forEach((result, index) => {
       if (result.status === "fulfilled") {
