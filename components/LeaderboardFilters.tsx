@@ -31,7 +31,7 @@ export function LeaderboardFilters({
   initialFilters = {},
 }: LeaderboardFiltersProps) {
   const [sponsorSlug, setSponsorSlug] = useState(initialFilters.sponsor_slug || "");
-  const [grantDuration, setGrantDuration] = useState<"thisWeek" | "lastWeek">("thisWeek");
+  const [grantDuration, setGrantDuration] = useState<"thisWeek" | "lastWeek" | "allTime">("thisWeek");
   const [perPage, setPerPage] = useState(initialFilters.per_page?.toString() || "20");
 
   // Auto-set grant ID based on sponsor and duration (controlled from code)
@@ -50,7 +50,7 @@ export function LeaderboardFilters({
     }
   };
 
-  const handleGrantDurationChange = (value: "thisWeek" | "lastWeek") => {
+  const handleGrantDurationChange = (value: "thisWeek" | "lastWeek" | "allTime") => {
     setGrantDuration(value);
   };
 
@@ -66,22 +66,24 @@ export function LeaderboardFilters({
     };
 
     // Auto-set grant ID based on sponsor and duration (controlled from code)
-    if (sponsorSlug && GRANT_IDS[sponsorSlug]) {
+    // All time has no grant_id
+    if (sponsorSlug && GRANT_IDS[sponsorSlug] && grantDuration !== "allTime") {
       filters.grant_id = GRANT_IDS[sponsorSlug][grantDuration];
     }
+    // If allTime, grant_id is undefined (not set)
 
     onFilterChange(filters);
   };
 
   const handleClear = () => {
     setSponsorSlug("");
-    setGrantDuration("thisWeek");
+    setGrantDuration("allTime");
     setPerPage("20");
     onFilterChange({ per_page: 20, page: 1 });
   };
 
   const hasFilters = sponsorSlug || (perPage && perPage !== "20");
-  const currentGrantId = sponsorSlug && GRANT_IDS[sponsorSlug] 
+  const currentGrantId = sponsorSlug && GRANT_IDS[sponsorSlug] && grantDuration !== "allTime"
     ? GRANT_IDS[sponsorSlug][grantDuration] 
     : null;
 
@@ -115,18 +117,25 @@ export function LeaderboardFilters({
               </span>
             )}
           </label>
-          {sponsorSlug && GRANT_IDS[sponsorSlug] ? (
+          {sponsorSlug ? (
             <select
               value={grantDuration}
-              onChange={(e) => handleGrantDurationChange(e.target.value as "thisWeek" | "lastWeek")}
+              onChange={(e) => handleGrantDurationChange(e.target.value as "thisWeek" | "lastWeek" | "allTime")}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="thisWeek">
-                This Week (Grant ID: {GRANT_IDS[sponsorSlug].thisWeek})
+              <option value="allTime">
+                All Time
               </option>
-              <option value="lastWeek">
-                Last Week (Grant ID: {GRANT_IDS[sponsorSlug].lastWeek})
-              </option>
+              {GRANT_IDS[sponsorSlug] && (
+                <>
+                  <option value="thisWeek">
+                    This Week (Grant ID: {GRANT_IDS[sponsorSlug].thisWeek})
+                  </option>
+                  <option value="lastWeek">
+                    Last Week (Grant ID: {GRANT_IDS[sponsorSlug].lastWeek})
+                  </option>
+                </>
+              )}
             </select>
           ) : (
             <div className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
