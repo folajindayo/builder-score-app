@@ -217,7 +217,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               <div className="flex items-center gap-6 ml-4">
                 <div className="text-right">
                   <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                    {formatNumber(user.profile.builder_score.points)}
+                    {user.profile.builder_score?.points !== undefined
+                      ? formatNumber(user.profile.builder_score.points)
+                      : "N/A"}
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Score</div>
                 </div>
