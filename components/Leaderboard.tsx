@@ -17,11 +17,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [page, setPage] = useState(filters.page || 1);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const [tokenPrice, setTokenPrice] = useState<number | null>(null);
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
 
-  // Debounce search query
+  // Debounce search query and show loading state
   useEffect(() => {
+    if (searchQuery && searchQuery !== debouncedSearchQuery) {
+      setIsSearching(true);
+    }
+
     const timer = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
       if (searchQuery) {
@@ -30,7 +35,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, debouncedSearchQuery]);
 
   // Fetch token price based on sponsor slug
   useEffect(() => {
@@ -79,6 +84,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
   const fetchLeaderboard = async (leaderboardFilters: LeaderboardFilters) => {
     setLoading(true);
+    setIsSearching(false); // Clear search loading when API call starts
     setError(null);
     try {
       const response = await getLeaderboard(leaderboardFilters);
@@ -156,29 +162,60 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by name, wallet, or bio..."
             className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            disabled={loading}
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-              title="Clear search"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            {(isSearching || loading) && (
+              <div className="animate-spin">
+                <svg
+                  className="w-5 h-5 text-blue-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              </div>
+            )}
+            {searchQuery && !loading && !isSearching && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                title="Clear search"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          )}
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
+        {(isSearching || loading) && searchQuery && (
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Searching through all builders...
+          </p>
+        )}
       </div>
 
       {filteredUsers.length === 0 && searchQuery && (
