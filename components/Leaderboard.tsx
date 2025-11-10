@@ -340,18 +340,44 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
 
     // Attach earnings breakdown and sponsors list to users
+    console.log("\n🔄 [All Sponsors] Step 2: Finalizing user data...");
+    let exampleBuilderFound = false;
+    
     userMap.forEach((user, id) => {
       user.earningsBreakdown = earningsBreakdownMap.get(id) || [];
       user.sponsors = Array.from(sponsorsMap.get(id) || []);
       
-      // Log top 10 builders by earnings
-      if (user.totalEarningsUSD && user.totalEarningsUSD > 0) {
-        console.log(`   Builder ${id}: ${user.profile.display_name || user.profile.name || 'Anonymous'}`);
-        console.log(`      Sponsors: ${user.sponsors.join(', ')} (${user.sponsors.length} sponsors)`);
-        console.log(`      Total Earnings: $${user.totalEarningsUSD.toFixed(2)}`);
-        console.log(`      Breakdown:`, user.earningsBreakdown.map(b => `${b.sponsor}: ${b.amount} ${b.tokenSymbol} = $${b.amountUSD.toFixed(2)}`).join(', '));
+      // Check for example builder: defidevrel.base.eth
+      const builderName = (user.profile.display_name || user.profile.name || '').toLowerCase();
+      const isExampleBuilder = builderName.includes('defidevrel') || builderName.includes('defidevrel.base.eth');
+      
+      if (isExampleBuilder) {
+        exampleBuilderFound = true;
+        const breakdownSum = user.earningsBreakdown.reduce((sum, b) => sum + b.amountUSD, 0);
+        
+        console.log(`\n🎯 [EXAMPLE BUILDER] ${user.profile.display_name || user.profile.name || 'Anonymous'} (ID: ${id})`);
+        console.log(`   Sponsors appeared in: ${user.sponsors.join(', ')} (${user.sponsors.length} sponsors)`);
+        console.log(`   Total Earnings (totalEarningsUSD): $${(user.totalEarningsUSD || 0).toFixed(2)}`);
+        console.log(`   Breakdown Sum Verification: $${breakdownSum.toFixed(2)}`);
+        console.log(`   Match: ${Math.abs((user.totalEarningsUSD || 0) - breakdownSum) < 0.01 ? '✅ CORRECT' : '❌ MISMATCH'}`);
+        console.log(`   Earnings Breakdown:`);
+        user.earningsBreakdown.forEach((b, idx) => {
+          const price = b.amount > 0 ? (b.amountUSD / b.amount) : 0;
+          console.log(`      ${idx + 1}. ${b.sponsor}: ${b.amount} ${b.tokenSymbol} × $${price.toFixed(4)} = $${b.amountUSD.toFixed(2)}`);
+        });
       }
     });
+    
+    if (!exampleBuilderFound) {
+      console.log("\n⚠️  [EXAMPLE BUILDER] 'defidevrel.base.eth' NOT FOUND in aggregated results");
+      console.log("   Searching for similar names...");
+      userMap.forEach((user, id) => {
+        const builderName = (user.profile.display_name || user.profile.name || '').toLowerCase();
+        if (builderName.includes('defi') || builderName.includes('devrel')) {
+          console.log(`   Similar match: ${user.profile.display_name || user.profile.name} (ID: ${id}) - Sponsors: ${(user.sponsors || []).join(', ')}`);
+        }
+      });
+    }
 
     // Convert to array and sort:
     // 1. First by number of sponsors (builders in multiple sponsors prioritized)
