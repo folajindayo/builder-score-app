@@ -10,6 +10,11 @@ import {
   categorizeBuilders,
   calculateMCAP,
   getCategoryLabel,
+  getMostEarnings,
+  getTrendingBuilder,
+  getHighestScore,
+  getFeaturedBuilder,
+  getSoughtAfterBuilder,
   type BuilderCategory,
 } from "@/lib/builder-analytics";
 import { TrophyIcon } from "@/components/TrophyIcon";
@@ -117,6 +122,26 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const categories = useMemo(() => {
     if (!filteredUsers.length || !tokenPrice) return new Map<number, BuilderCategory>();
     return categorizeBuilders(filteredUsers, tokenPrice);
+  }, [filteredUsers, tokenPrice]);
+
+  // Get top builders for each category in specified order
+  const topBuildersByCategory = useMemo(() => {
+    if (!filteredUsers.length || !tokenPrice) return [];
+    
+    const soughtAfter = getSoughtAfterBuilder(filteredUsers);
+    const trending = getTrendingBuilder(filteredUsers);
+    const highestScore = getHighestScore(filteredUsers);
+    const featured = getFeaturedBuilder(filteredUsers, tokenPrice);
+    const mostEarnings = getMostEarnings(filteredUsers);
+    
+    // Return in specified order: sought after, trending, highest score, featured, most earnings
+    return [
+      { category: "sought_after" as BuilderCategory, builder: soughtAfter },
+      { category: "trending" as BuilderCategory, builder: trending },
+      { category: "highest_score" as BuilderCategory, builder: highestScore },
+      { category: "featured" as BuilderCategory, builder: featured },
+      { category: "most_earnings" as BuilderCategory, builder: mostEarnings },
+    ].filter(item => item.builder !== null);
   }, [filteredUsers, tokenPrice]);
 
 
