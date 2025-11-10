@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getLeaderboard } from "@/lib/builderscore-api";
+import { getWCTPrice, convertWCTToUSD } from "@/lib/coingecko-api";
 import type { LeaderboardResponse, LeaderboardFilters } from "@/types/talent";
 import { formatAddress, formatNumber } from "@/lib/utils";
 
@@ -15,6 +16,17 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(filters.page || 1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [wctPrice, setWctPrice] = useState<number | null>(null);
+
+  // Fetch WCT price on component mount
+  useEffect(() => {
+    getWCTPrice()
+      .then(setWctPrice)
+      .catch((err) => {
+        console.error("Failed to fetch WCT price:", err);
+        setWctPrice(0.1249); // Fallback price
+      });
+  }, []);
 
   // Reset page when filters change (except page filter)
   useEffect(() => {
@@ -192,10 +204,26 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                 </div>
                 {user.reward_amount > 0 && (
                   <div className="text-right">
-                    <div className="text-lg font-bold text-green-600 dark:text-green-400">
-                      ${formatNumber(user.reward_amount)}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Earnings</div>
+                    {wctPrice !== null ? (
+                      <>
+                        <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                          ${formatNumber(user.reward_amount * wctPrice)}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {formatNumber(user.reward_amount)} WCT
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                          {formatNumber(user.reward_amount)} WCT
+                        </div>
+                        <div className="text-xs text-gray-400 dark:text-gray-500">
+                          Loading USD...
+                        </div>
+                      </>
+                    )}
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Earnings</div>
                     {user.reward_transaction_hash && (
                       <a
                         href={`https://etherscan.io/tx/${user.reward_transaction_hash}`}
