@@ -64,7 +64,7 @@ npm run dev
 ## Coding Standards
 
 - Follow TypeScript best practices
-- Use NativeWind (Tailwind CSS) for styling
+- Use Tailwind CSS for styling
 - Keep files under 500 lines when possible
 - Write clear, self-documenting code
 - Add comments for complex logic

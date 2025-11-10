@@ -11,12 +11,12 @@ An onchain builder score and searcher application built with Next.js, ReownKit (
   - Builder score range
   - Skills
   - Credentials
-- **Responsive Design**: Modern UI with NativeWind (Tailwind CSS) styling
+- **Responsive Design**: Modern UI with Tailwind CSS styling
 
 ## Tech Stack
 
 - **Framework**: Next.js 14+ (App Router)
-- **Styling**: NativeWind (Tailwind CSS)
+- **Styling**: Tailwind CSS
 - **Wallet Integration**: 
   - ReownKit (AppKit) with Wagmi adapter
   - WalletConnect Wallet SDK (@reown/walletkit)
