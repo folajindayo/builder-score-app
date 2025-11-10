@@ -111,6 +111,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [allSponsorsPageMap, setAllSponsorsPageMap] = useState<Map<string, number>>(new Map());
   const [allSponsorsAggregatedUsers, setAllSponsorsAggregatedUsers] = useState<UserWithEarningsBreakdown[]>([]);
   const [allSponsorsHasMore, setAllSponsorsHasMore] = useState(true);
+  const [displayedCount, setDisplayedCount] = useState(100); // Display 100 builders at a time
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -173,6 +174,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       setAllSponsorsPageMap(new Map());
       setAllSponsorsAggregatedUsers([]);
       setAllSponsorsHasMore(true);
+      setDisplayedCount(100); // Reset to show first 100
     }
   }, [JSON.stringify({ sponsor_slug: filters.sponsor_slug, grant_id: filters.grant_id, per_page: filters.per_page })]);
 
@@ -436,8 +438,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     // Update aggregated users state
     setAllSponsorsAggregatedUsers(combinedUsers);
 
-    // Display all loaded users (infinite scroll - show all as we load more)
-    const displayedUsers = combinedUsers;
+    // Display 100 builders at a time (or all if less than 100)
+    const currentDisplayedCount = isLoadMore ? displayedCount + 100 : Math.min(100, combinedUsers.length);
+    setDisplayedCount(currentDisplayedCount);
+    const displayedUsers = combinedUsers.slice(0, currentDisplayedCount);
 
     displayedUsers.forEach((user, index) => {
       user.leaderboard_position = index + 1;
@@ -447,12 +451,12 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       users: displayedUsers,
       pagination: {
         current_page: 1,
-        last_page: Math.ceil(combinedUsers.length / 30), // 30 per page for display
+        last_page: Math.ceil(combinedUsers.length / 100), // 100 per display chunk
         total: combinedUsers.length,
       },
     };
 
-    console.log(`✅ [All Sponsors Lazy] Loaded ${combinedUsers.length} unique builders, displaying ${displayedUsers.length}`);
+    console.log(`✅ [All Sponsors Lazy] Loaded ${combinedUsers.length} unique builders, displaying ${displayedUsers.length} of ${combinedUsers.length}`);
     return result;
   };
 
