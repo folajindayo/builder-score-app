@@ -604,18 +604,34 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        {rewardAmount > 0 && tokenPrice && tokenInfo ? (
-                          <div>
-                            <div className="text-sm font-semibold text-gray-900">
-                              ${formatNumber(rewardAmount * tokenPrice)}
-                            </div>
-                            <div className="text-xs text-gray-500 truncate">
-                              {formatNumber(rewardAmount)} {tokenInfo.symbol}
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-sm text-gray-400">—</span>
-                        )}
+                        {(() => {
+                          const userWithBreakdown = user as UserWithEarningsBreakdown;
+                          if (isAllSponsors && userWithBreakdown.totalEarningsUSD !== undefined) {
+                            return (
+                              <div>
+                                <div className="text-sm font-semibold text-gray-900">
+                                  ${formatNumber(userWithBreakdown.totalEarningsUSD)}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  Total (All Sponsors)
+                                </div>
+                              </div>
+                            );
+                          } else if (rewardAmount > 0 && tokenPrice && tokenInfo) {
+                            return (
+                              <div>
+                                <div className="text-sm font-semibold text-gray-900">
+                                  ${formatNumber(rewardAmount * tokenPrice)}
+                                </div>
+                                <div className="text-xs text-gray-500 truncate">
+                                  {formatNumber(rewardAmount)} {tokenInfo.symbol}
+                                </div>
+                              </div>
+                            );
+                          } else {
+                            return <span className="text-sm text-gray-400">—</span>;
+                          }
+                        })()}
                       </td>
                       <td className="px-4 py-4">
                         <div className="text-sm font-semibold text-gray-900">
