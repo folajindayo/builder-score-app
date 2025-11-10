@@ -708,7 +708,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                 : user.reward_amount;
               
               const category = categories.get(user.id) || null;
-              const mcap = tokenPrice ? calculateMCAP(user, tokenPrice) : 0;
+              // For all sponsors, use totalEarningsUSD as the base for MCAP calculation
+              const priceForMCAP = isAllSponsors 
+                ? 1 // USD already calculated, so use 1 as multiplier
+                : (tokenPrice || 0);
+              const mcap = priceForMCAP ? calculateMCAP(user, priceForMCAP) : 0;
 
               return (
                 <motion.tr
