@@ -265,32 +265,32 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       return allUsers;
     };
     
-    // Fetch all pages for each sponsor sequentially (one sponsor at a time)
-    const allSponsorData = await Promise.allSettled(
-      ALL_SPONSOR_SLUGS.map((slug) => fetchAllPagesForSponsor(slug))
-    );
+    // Fetch all pages for each sponsor sequentially (one sponsor at a time, one page at a time)
+    const allResponses: Array<PromiseSettledResult<LeaderboardResponse>> = [];
     
-    // Convert to the format expected by the rest of the code
-    const allResponses = allSponsorData.map((result) => {
-      if (result.status === "fulfilled") {
-        return {
+    for (const slug of ALL_SPONSOR_SLUGS) {
+      try {
+        console.log(`\n🔄 [All Sponsors] Processing sponsor: ${slug}`);
+        const users = await fetchAllPagesForSponsor(slug);
+        allResponses.push({
           status: "fulfilled" as const,
           value: {
-            users: result.value,
+            users,
             pagination: {
               current_page: 1,
               last_page: 1,
-              total: result.value.length,
+              total: users.length,
             },
           },
-        };
-      } else {
-        return {
+        });
+      } catch (error) {
+        console.error(`\n❌ [All Sponsors] Error processing ${slug}:`, error);
+        allResponses.push({
           status: "rejected" as const,
-          reason: result.reason,
-        };
+          reason: error,
+        });
       }
-    });
+    }
     
     console.log("📊 [All Sponsors] Responses received:", allResponses.length);
     allResponses.forEach((result, index) => {
