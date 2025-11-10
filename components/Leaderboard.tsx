@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { getLeaderboard } from "@/lib/builderscore-api";
 import { getTokenPrice, type TokenInfo } from "@/lib/coingecko-api";
-import { useDebounce } from "@/lib/hooks";
 import type { LeaderboardResponse, LeaderboardFilters } from "@/types/talent";
 import { formatAddress, formatNumber } from "@/lib/utils";
 
@@ -22,10 +21,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
 
   // Debounce search query
-  useDebounce(() => {
-    setDebouncedSearchQuery(searchQuery);
-    setPage(1); // Reset to page 1 when search changes
-  }, 500, [searchQuery]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      if (searchQuery) {
+        setPage(1); // Reset to page 1 when search changes
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Fetch token price based on sponsor slug
   useEffect(() => {
