@@ -177,7 +177,7 @@ export function BuilderScore() {
                     />
                   )}
                 </svg>
-              </button>
+              </motion.button>
             )}
             {address && (
               <motion.button
