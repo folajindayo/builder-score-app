@@ -26,9 +26,10 @@ export function BuilderScore() {
       setLoading(true);
       setError(null);
       try {
+        // Fetch score (required) and profile (optional - returns null if not available)
         const [scoreData, profileData] = await Promise.all([
           getBuilderScore(address),
-          getBuilderProfile(address),
+          getBuilderProfile(address), // Returns null if endpoint not available
         ]);
         setScore(scoreData);
         setProfile(profileData);
@@ -100,7 +101,7 @@ export function BuilderScore() {
       <div className="mb-6">
         <div className="flex items-baseline gap-2">
           <span className="text-5xl font-bold text-blue-600 dark:text-blue-400">
-            {formatScore(score.score)}
+            {formatScore(typeof score.score === 'number' ? score.score : 0)}
           </span>
           {score.rank && (
             <span className="text-sm text-gray-500 dark:text-gray-400">
