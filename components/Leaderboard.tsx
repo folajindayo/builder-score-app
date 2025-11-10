@@ -20,7 +20,6 @@ import {
 import { TrophyIcon } from "@/components/TrophyIcon";
 import { BuilderProfileModal } from "@/components/BuilderProfileModal";
 import type { LeaderboardUser } from "@/types/talent";
-import { SPONSOR_TOKENS } from "@/lib/coingecko-api";
 
 // All sponsor slugs
 const ALL_SPONSOR_SLUGS = ["walletconnect", "celo", "base", "base-summer", "syndicate", "talent-protocol"];
@@ -311,7 +310,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       pagination: {
         current_page: currentPage,
         last_page: Math.ceil(combinedUsers.length / perPage),
-        per_page: perPage,
         total: combinedUsers.length,
       },
     };
@@ -333,12 +331,13 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
   // Get top builders for each category in specified order
   const topBuildersByCategory = useMemo(() => {
-    if (!filteredUsers.length || !tokenPrice) return [];
+    if (!filteredUsers.length) return [];
     
+    const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
     const soughtAfter = getSoughtAfterBuilder(filteredUsers);
     const trending = getTrendingBuilder(filteredUsers);
     const highestScore = getHighestScore(filteredUsers);
-    const featured = getFeaturedBuilder(filteredUsers, tokenPrice);
+    const featured = getFeaturedBuilder(filteredUsers, priceForMCAP);
     const mostEarnings = getMostEarnings(filteredUsers);
     
     // Return in specified order: sought after, trending, highest score, featured, most earnings
@@ -349,7 +348,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       { category: "featured" as BuilderCategory, builder: featured },
       { category: "most_earnings" as BuilderCategory, builder: mostEarnings },
     ].filter(item => item.builder !== null);
-  }, [filteredUsers, tokenPrice]);
+  }, [filteredUsers, tokenPrice, isAllSponsors]);
 
 
   if (loading && !data) {
