@@ -322,12 +322,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   };
 
   const filteredUsers = data?.users || [];
+  const isAllSponsors = !filters.sponsor_slug;
   
   // Categorize builders and calculate MCAP (must be before early returns)
   const categories = useMemo(() => {
-    if (!filteredUsers.length || !tokenPrice) return new Map<number, BuilderCategory>();
-    return categorizeBuilders(filteredUsers, tokenPrice);
-  }, [filteredUsers, tokenPrice]);
+    if (!filteredUsers.length) return new Map<number, BuilderCategory>();
+    // For all sponsors mode, use average token price or default
+    const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
+    return categorizeBuilders(filteredUsers, priceForMCAP);
+  }, [filteredUsers, tokenPrice, isAllSponsors]);
 
   // Get top builders for each category in specified order
   const topBuildersByCategory = useMemo(() => {
@@ -397,8 +400,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       return newSet;
     });
   };
-
-  const isAllSponsors = !filters.sponsor_slug;
 
   return (
     <>
@@ -540,7 +541,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   const rewardAmount = typeof user.reward_amount === 'string' 
                     ? parseFloat(user.reward_amount) 
                     : user.reward_amount;
-                  const mcap = tokenPrice ? calculateMCAP(user, tokenPrice) : 0;
+                  const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 0);
+                  const mcap = priceForMCAP ? calculateMCAP(user, priceForMCAP) : 0;
                   
                   const categoryColors: Record<Exclude<BuilderCategory, null>, string> = {
                     sought_after: "bg-green-100 text-green-800 border-green-200",
