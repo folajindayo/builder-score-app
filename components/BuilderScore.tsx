@@ -97,6 +97,25 @@ export function BuilderScore() {
     }
   };
 
+  const handleRefresh = async () => {
+    if (!address) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const [scoreData, profileData] = await Promise.all([
+        getBuilderScore(address),
+        getBuilderProfile(address),
+      ]);
+      setScore(scoreData);
+      setProfile(profileData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch builder score");
+      console.error("Error fetching builder data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="mb-6">
@@ -104,37 +123,59 @@ export function BuilderScore() {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             Builder Score
           </h2>
-          {address && (
+          <div className="flex items-center gap-2">
+            {address && (
+              <button
+                onClick={handleCopyAddress}
+                className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors flex items-center gap-2"
+                title="Copy address"
+              >
+                <span className="font-mono text-xs">{formatAddress(address)}</span>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  {copied ? (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  ) : (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  )}
+                </svg>
+              </button>
+            )}
             <button
-              onClick={handleCopyAddress}
-              className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors flex items-center gap-2"
-              title="Copy address"
+              onClick={handleRefresh}
+              disabled={loading}
+              className="p-2 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
+              title="Refresh score"
             >
-              <span className="font-mono text-xs">{formatAddress(address)}</span>
               <svg
-                className="w-4 h-4"
+                className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                {copied ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                )}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
               </svg>
             </button>
-          )}
+          </div>
         </div>
         {profile?.profile?.name && (
           <p className="text-gray-600 dark:text-gray-400">{profile.profile.name}</p>
