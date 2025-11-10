@@ -262,9 +262,26 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-5 flex-1">
+                {/* Position Badge */}
                 <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full font-bold text-lg shadow-md">
                   {user.leaderboard_position}
                 </div>
+                
+                {/* Profile Image */}
+                {user.profile.image_url && (
+                  <div className="flex-shrink-0">
+                    <img
+                      src={user.profile.image_url}
+                      alt={user.profile.display_name || user.profile.name}
+                      className="w-14 h-14 rounded-full object-cover border-2 border-gray-200 shadow-sm"
+                      onError={(e) => {
+                        // Fallback to a placeholder if image fails to load
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+                
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h4 className="text-xl font-bold text-gray-900 truncate">
@@ -275,17 +292,44 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                         ✓
                       </span>
                     )}
+                    {user.profile.verified_nationality && (
+                      <span className="text-green-500 text-sm" title="Verified Nationality">
+                        🌍
+                      </span>
+                    )}
                   </div>
                   {user.profile.bio && (
-                    <p className="text-sm text-gray-600 line-clamp-1 mt-1">
+                    <p className="text-sm text-gray-600 line-clamp-2 mt-1">
                       {user.profile.bio}
                     </p>
                   )}
-                  {user.recipient_wallet && (
-                    <p className="text-xs font-mono text-gray-500 mt-2">
-                      {formatAddress(user.recipient_wallet)}
-                    </p>
-                  )}
+                  <div className="flex items-center gap-3 mt-2 flex-wrap">
+                    {user.profile.location && (
+                      <span className="text-xs text-gray-500 flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {user.profile.location}
+                      </span>
+                    )}
+                    {user.recipient_wallet && (
+                      <span className="text-xs font-mono text-gray-500">
+                        {formatAddress(user.recipient_wallet)}
+                      </span>
+                    )}
+                    {user.profile.talent_protocol_id && (
+                      <a
+                        href={`https://beta.talentprotocol.com/profile/${user.profile.talent_protocol_id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-500 hover:text-blue-600 font-medium"
+                        title="View on Talent Protocol"
+                      >
+                        View Profile →
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-8 ml-4">
@@ -347,14 +391,19 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             </div>
             {user.profile.tags && user.profile.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
-                {user.profile.tags.slice(0, 5).map((tag, idx) => (
+                {user.profile.tags.slice(0, 6).map((tag, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium"
+                    className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 rounded-full text-xs font-medium border border-blue-200"
                   >
                     {tag}
                   </span>
                 ))}
+                {user.profile.tags.length > 6 && (
+                  <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">
+                    +{user.profile.tags.length - 6} more
+                  </span>
+                )}
               </div>
             )}
           </div>
