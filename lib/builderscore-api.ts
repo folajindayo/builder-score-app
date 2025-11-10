@@ -61,4 +61,52 @@ export async function getLeaderboard(
   }
 }
 
+/**
+ * Fetch builder data across multiple sponsors
+ */
+export async function getBuilderAcrossSponsors(
+  builderId: number,
+  sponsorSlugs: string[] = ["walletconnect", "celo", "base", "base-summer", "syndicate", "talent-protocol"]
+): Promise<Array<{ sponsor: string; data: LeaderboardResponse | null }>> {
+  try {
+    const results = await Promise.allSettled(
+      sponsorSlugs.map(async (sponsor) => {
+        // Search for the builder in each sponsor's leaderboard
+        const filters: LeaderboardFilters = {
+          sponsor_slug: sponsor,
+          per_page: 100,
+          page: 1,
+        };
+        
+        const response = await getLeaderboard(filters);
+        
+        // Find the builder in the results
+        const builder = response.users.find((u) => u.id === builderId);
+        
+        if (builder) {
+          return {
+            sponsor,
+            data: {
+              users: [builder],
+              pagination: response.pagination,
+            } as LeaderboardResponse,
+          };
+        }
+        
+        return { sponsor, data: null };
+      })
+    );
+
+    return results
+      .filter((result): result is PromiseFulfilledResult<{ sponsor: string; data: LeaderboardResponse | null }> => 
+        result.status === "fulfilled"
+      )
+      .map((result) => result.value)
+      .filter((item) => item.data !== null);
+  } catch (error) {
+    console.error("Error fetching builder across sponsors:", error);
+    return [];
+  }
+}
+
 

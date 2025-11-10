@@ -1,11 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getLeaderboard } from "@/lib/builderscore-api";
 import { getTokenPrice, type TokenInfo } from "@/lib/coingecko-api";
 import type { LeaderboardResponse, LeaderboardFilters } from "@/types/talent";
 import { formatAddress, formatNumber } from "@/lib/utils";
 import { motion } from "framer-motion";
+import {
+  categorizeBuilders,
+  calculateMCAP,
+  getCategoryLabel,
+  type BuilderCategory,
+} from "@/lib/builder-analytics";
+import { TrophyIcon } from "@/components/TrophyIcon";
+import { BuilderProfileModal } from "@/components/BuilderProfileModal";
+import type { LeaderboardUser } from "@/types/talent";
 
 interface LeaderboardProps {
   filters?: LeaderboardFilters;
@@ -20,6 +29,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [activeSearchQuery, setActiveSearchQuery] = useState("");
   const [tokenPrice, setTokenPrice] = useState<number | null>(null);
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
+  const [selectedBuilder, setSelectedBuilder] = useState<LeaderboardUser | null>(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -239,6 +250,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               const rewardAmount = typeof user.reward_amount === 'string' 
                 ? parseFloat(user.reward_amount) 
                 : user.reward_amount;
+              
+              const category = categories.get(user.id) || null;
+              const mcap = tokenPrice ? calculateMCAP(user, tokenPrice) : 0;
 
               return (
                 <motion.tr
@@ -273,6 +287,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                             <p className="text-sm font-medium text-gray-900 truncate">
                               {user.profile.display_name || user.profile.name || "Anonymous"}
                             </p>
+                            {category && (
+                              <div className="flex items-center gap-1" title={getCategoryLabel(category)}>
+                                <TrophyIcon category={category} />
+                              </div>
+                            )}
                             {user.profile.human_checkmark && (
                               <span className="text-blue-500 text-xs" title="Verified">✓</span>
                             )}
@@ -332,6 +351,24 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                     ) : (
                       <span className="text-sm text-gray-400">—</span>
                     )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-semibold text-gray-900">
+                      ${formatNumber(mcap)}
+                    </div>
+                    {category && (
+                      <div className="text-xs text-gray-500 mt-0.5">
+                        {getCategoryLabel(category)}
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => handleViewProfile(user)}
+                      className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                    >
+                      View Profile
+                    </button>
                   </td>
                 </motion.tr>
               );
