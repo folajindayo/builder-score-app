@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getLeaderboard } from "@/lib/builderscore-api";
 import { getTokenPrice, type TokenInfo } from "@/lib/coingecko-api";
+import { useDebounce } from "@/lib/hooks";
 import type { LeaderboardResponse, LeaderboardFilters } from "@/types/talent";
 import { formatAddress, formatNumber } from "@/lib/utils";
 
@@ -16,8 +17,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(filters.page || 1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [tokenPrice, setTokenPrice] = useState<number | null>(null);
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
+
+  // Debounce search query
+  useDebounce(() => {
+    setDebouncedSearchQuery(searchQuery);
+    setPage(1); // Reset to page 1 when search changes
+  }, 500, [searchQuery]);
 
   // Fetch token price based on sponsor slug
   useEffect(() => {
@@ -47,7 +55,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     }
   }, [filters.sponsor_slug]);
 
-  // Reset page when filters change (except page filter)
+  // Reset page when filters change (except page filter and search)
   useEffect(() => {
     if (filters.page !== undefined) {
       setPage(filters.page);
@@ -57,8 +65,12 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   }, [JSON.stringify({ sponsor_slug: filters.sponsor_slug, grant_id: filters.grant_id, per_page: filters.per_page })]);
 
   useEffect(() => {
-    fetchLeaderboard({ ...filters, page });
-  }, [page, JSON.stringify(filters)]);
+    fetchLeaderboard({ 
+      ...filters, 
+      page,
+      search: debouncedSearchQuery || undefined,
+    });
+  }, [page, debouncedSearchQuery, JSON.stringify({ sponsor_slug: filters.sponsor_slug, grant_id: filters.grant_id, per_page: filters.per_page })]);
 
   const fetchLeaderboard = async (leaderboardFilters: LeaderboardFilters) => {
     setLoading(true);
@@ -114,16 +126,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     );
   }
 
-  // Filter users by search query (client-side)
-  const filteredUsers = searchQuery
-    ? data.users.filter((user) => {
-        const query = searchQuery.toLowerCase();
-        const name = (user.profile.display_name || user.profile.name || "").toLowerCase();
-        const wallet = (user.recipient_wallet || "").toLowerCase();
-        const bio = (user.profile.bio || "").toLowerCase();
-        return name.includes(query) || wallet.includes(query) || bio.includes(query);
-      })
-    : data.users;
+  // Use server-side filtered results (no client-side filtering needed)
+  const filteredUsers = data.users;
 
   return (
     <div className="space-y-4">
@@ -134,7 +138,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Showing {filteredUsers.length} of {data.pagination.total} builders
-            {searchQuery && ` (filtered by "${searchQuery}")`}
+            {debouncedSearchQuery && ` (searching for "${debouncedSearchQuery}")`}
           </p>
         </div>
       </div>

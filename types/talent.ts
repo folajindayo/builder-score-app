@@ -129,5 +129,6 @@ export interface LeaderboardFilters {
   page?: number;
   sponsor_slug?: string;
   grant_id?: number;
+  search?: string;
 }
 

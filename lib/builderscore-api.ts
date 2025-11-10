@@ -47,6 +47,9 @@ export async function getLeaderboard(
     if (filters.grant_id !== undefined) {
       params.append("grant_id", filters.grant_id.toString());
     }
+    if (filters.search) {
+      params.append("search", filters.search);
+    }
 
     const queryString = params.toString();
     return await fetchAPI<LeaderboardResponse>(
