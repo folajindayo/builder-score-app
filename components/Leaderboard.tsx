@@ -1468,7 +1468,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       </div>
 
       {/* Infinite Scroll Load More Trigger */}
-      {!filters.sponsor_slug && allSponsorsHasMore && (
+      {!filters.sponsor_slug && (allSponsorsHasMore || (data && displayedCount < allSponsorsAggregatedUsers.length)) && (
         <div
           id="load-more-trigger"
           className="h-20 flex items-center justify-center"
@@ -1481,15 +1481,37 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           ) : (
             <button
               onClick={() => {
-                fetchLeaderboard({ 
-                  ...filters, 
-                  page: 1,
-                  search: activeSearchQuery || undefined,
-                }, true);
+                // If we have more loaded data to show, just increase display count
+                if (displayedCount < allSponsorsAggregatedUsers.length) {
+                  const newDisplayedCount = Math.min(displayedCount + 100, allSponsorsAggregatedUsers.length);
+                  setDisplayedCount(newDisplayedCount);
+                  // Update displayed users in data
+                  const newDisplayedUsers = allSponsorsAggregatedUsers.slice(0, newDisplayedCount);
+                  newDisplayedUsers.forEach((user, index) => {
+                    user.leaderboard_position = index + 1;
+                  });
+                  setData({
+                    users: newDisplayedUsers,
+                    pagination: {
+                      current_page: 1,
+                      last_page: Math.ceil(allSponsorsAggregatedUsers.length / 100),
+                      total: allSponsorsAggregatedUsers.length,
+                    },
+                  });
+                } else {
+                  // Need to fetch more data from API
+                  fetchLeaderboard({ 
+                    ...filters, 
+                    page: 1,
+                    search: activeSearchQuery || undefined,
+                  }, true);
+                }
               }}
               className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
             >
-              Load More
+              {displayedCount < allSponsorsAggregatedUsers.length 
+                ? `Show More (${Math.min(100, allSponsorsAggregatedUsers.length - displayedCount)} more)` 
+                : "Load More"}
             </button>
           )}
         </div>
