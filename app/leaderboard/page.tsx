@@ -6,7 +6,6 @@ import { Leaderboard } from "@/components/Leaderboard";
 import { LeaderboardFilters } from "@/components/LeaderboardFilters";
 import type { LeaderboardFilters as LeaderboardFiltersType } from "@/types/talent";
 import Link from "next/link";
-import { motion } from "framer-motion";
 
 export default function LeaderboardPage() {
   const [filters, setFilters] = useState<LeaderboardFiltersType>({
