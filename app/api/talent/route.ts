@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_TALENT_API_URL || "https://api.talentprotocol.com/v1";
+const API_BASE_URL = process.env.NEXT_PUBLIC_TALENT_API_URL;
 const API_KEY = process.env.TALENT_PROTOCOL_API_KEY || "";
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_TALENT_API_URL environment variable is required");
+}
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

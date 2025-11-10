@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BUILDERSCORE_API_URL || "https://www.builderscore.xyz/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_BUILDERSCORE_API_URL;
 const API_KEY = process.env.BUILDERSCORE_API_KEY || "";
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_BUILDERSCORE_API_URL environment variable is required");
+}
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
