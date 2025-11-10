@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { LeaderboardFilters } from "@/types/talent";
+import { motion } from "framer-motion";
 
 // Sponsor slugs - ordered list
 const SPONSOR_SLUGS = [
@@ -88,7 +89,11 @@ export function LeaderboardFilters({
     : null;
 
   return (
-    <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-lg mb-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="p-6 bg-white rounded-xl border border-gray-200 shadow-lg mb-6"
+    >
       <h3 className="text-xl font-semibold text-gray-900 mb-6">
         Filter Leaderboard
       </h3>
@@ -161,25 +166,29 @@ export function LeaderboardFilters({
       </div>
       <div className="mt-6 flex justify-end gap-3">
         {hasFilters && (
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             type="button"
             onClick={handleClear}
             disabled={loading}
             className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 rounded-lg font-semibold transition-all shadow-sm hover:shadow"
           >
             Clear Filters
-          </button>
+          </motion.button>
         )}
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           type="button"
           onClick={handleApplyFilters}
           disabled={loading}
           className="px-8 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
         >
           {loading ? "Applying..." : "Apply Filters"}
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
