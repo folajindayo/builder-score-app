@@ -89,6 +89,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
   const [selectedBuilder, setSelectedBuilder] = useState<LeaderboardUser | null>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [builderSponsors, setBuilderSponsors] = useState<Map<number, string[]>>(new Map());
+  const [loadingSponsors, setLoadingSponsors] = useState(false);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -148,6 +150,53 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       search: activeSearchQuery || undefined,
     });
   }, [page, activeSearchQuery, JSON.stringify({ sponsor_slug: filters.sponsor_slug, grant_id: filters.grant_id, per_page: filters.per_page })]);
+
+  // Fetch sponsor information for each builder when "All Sponsors" is selected
+  useEffect(() => {
+    const isAllSponsors = !filters.sponsor_slug;
+    
+    if (isAllSponsors && data && data.users.length > 0 && !loading) {
+      setLoadingSponsors(true);
+      const sponsorSlugs = ["walletconnect", "celo", "base", "base-summer", "syndicate", "talent-protocol"];
+      const sponsorMap = new Map<number, string[]>();
+
+      // Check each builder across all sponsors
+      Promise.allSettled(
+        data.users.map(async (user) => {
+          const userSponsors: string[] = [];
+          
+          await Promise.allSettled(
+            sponsorSlugs.map(async (sponsor) => {
+              try {
+                const response = await getLeaderboard({
+                  sponsor_slug: sponsor,
+                  per_page: 100,
+                  page: 1,
+                });
+                
+                const found = response.users.some((u) => u.id === user.id);
+                if (found) {
+                  userSponsors.push(sponsor);
+                }
+              } catch (error) {
+                // Silently fail for individual sponsor checks
+              }
+            })
+          );
+          
+          if (userSponsors.length > 0) {
+            sponsorMap.set(user.id, userSponsors);
+          }
+        })
+      ).then(() => {
+        setBuilderSponsors(sponsorMap);
+        setLoadingSponsors(false);
+      });
+    } else {
+      setBuilderSponsors(new Map());
+      setLoadingSponsors(false);
+    }
+  }, [data, filters.sponsor_slug, loading]);
 
   const fetchLeaderboard = async (leaderboardFilters: LeaderboardFilters) => {
     setLoading(true);
