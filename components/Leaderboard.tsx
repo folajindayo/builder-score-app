@@ -266,7 +266,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           sponsorsSet.add(sponsor);
 
           // Add earnings from this sponsor (converted to USD)
-          if (rewardAmount > 0 && tokenInfo) {
+          // Include ALL earnings from ALL sponsors, even if 0
+          if (tokenInfo) {
             breakdown.push({
               sponsor,
               amount: rewardAmount,
@@ -274,7 +275,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               tokenSymbol: tokenInfo.symbol,
             });
 
-            // Accumulate total earnings in USD
+            // Accumulate total earnings in USD from ALL sponsors
+            // This sums the entire amount made from all sponsors
             existingUser.totalEarningsUSD = (existingUser.totalEarningsUSD || 0) + earningsUSD;
           }
 
