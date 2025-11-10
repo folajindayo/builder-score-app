@@ -234,7 +234,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   };
 
   return (
-    <>
+    <div className="w-full">
       <div className="bg-white rounded-lg border border-gray-200">
       {/* Header Section */}
       <div className="p-6 border-b border-gray-200">
