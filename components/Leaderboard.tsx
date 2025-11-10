@@ -324,7 +324,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                         href={`https://etherscan.io/tx/${user.reward_transaction_hash}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+                        className="text-xs text-blue-500 hover:text-blue-600 font-medium"
                         title="View transaction"
                       >
                         View TX
@@ -334,10 +334,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                 )}
                 {user.ranking_change !== 0 && (
                   <div
-                    className={`text-sm font-medium ${
+                    className={`text-sm font-bold px-3 py-1 rounded-full ${
                       user.ranking_change > 0
-                        ? "text-green-600 dark:text-green-400"
-                        : "text-red-600 dark:text-red-400"
+                        ? "text-green-700 bg-green-100"
+                        : "text-red-700 bg-red-100"
                     }`}
                   >
                     {user.ranking_change > 0 ? "↑" : "↓"} {Math.abs(user.ranking_change)}
@@ -346,11 +346,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </div>
             </div>
             {user.profile.tags && user.profile.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
                 {user.profile.tags.slice(0, 5).map((tag, idx) => (
                   <span
                     key={idx}
-                    className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs"
+                    className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium"
                   >
                     {tag}
                   </span>
