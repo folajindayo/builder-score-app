@@ -21,7 +21,7 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+        <div className="mx-[200px] px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex items-center justify-between">
             <motion.h1 
               initial={{ opacity: 0, x: -20 }}
@@ -49,7 +49,7 @@ export default function SearchPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="mx-[200px] px-4 sm:px-6 lg:px-8 py-10">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
