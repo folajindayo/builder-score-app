@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { getBuilderScore, getBuilderProfile } from "@/lib/talent-api";
 import type { BuilderScore, BuilderProfile } from "@/types/talent";
-import { formatScore, formatNumber } from "@/lib/utils";
+import { formatScore, formatNumber, formatDate } from "@/lib/utils";
 
 export function BuilderScore() {
   const { address, isConnected } = useAccount();
@@ -152,8 +152,16 @@ export function BuilderScore() {
         </div>
       )}
 
-      {score.dataPoints && score.dataPoints.length > 0 && (
+      {score.updatedAt && (
         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Last updated: {formatDate(score.updatedAt)}
+          </p>
+        </div>
+      )}
+
+      {score.dataPoints && score.dataPoints.length > 0 && (
+        <div className="mt-2">
           <p className="text-xs text-gray-500 dark:text-gray-400">
             Based on {score.dataPoints.length} verified data points
           </p>
