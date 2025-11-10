@@ -84,7 +84,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
   const fetchLeaderboard = async (leaderboardFilters: LeaderboardFilters) => {
     setLoading(true);
-    setIsSearching(false); // Clear search loading when API call starts
     setError(null);
     try {
       const response = await getLeaderboard(leaderboardFilters);
