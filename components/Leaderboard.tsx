@@ -905,7 +905,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               Search not found
             </p>
             <p className="mt-2 text-gray-400 text-center text-xs">
-              No builders found matching "{activeSearchQuery}"
+              No builders found matching &quot;{activeSearchQuery}&quot;
             </p>
             <button
               onClick={handleClearSearch}
