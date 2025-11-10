@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getLeaderboard } from "@/lib/builderscore-api";
-import { getWCTPrice, convertWCTToUSD } from "@/lib/coingecko-api";
+import { getWCTPrice } from "@/lib/coingecko-api";
 import type { LeaderboardResponse, LeaderboardFilters } from "@/types/talent";
 import { formatAddress, formatNumber } from "@/lib/utils";
 
