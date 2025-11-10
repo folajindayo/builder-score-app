@@ -295,10 +295,21 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       user.sponsors = Array.from(sponsorsMap.get(id) || []);
     });
 
-    // Convert to array and sort by total earnings USD (descending)
+    // Convert to array and sort:
+    // 1. First by number of sponsors (builders in multiple sponsors prioritized)
+    // 2. Then by total earnings USD (descending)
     const combinedUsers = Array.from(userMap.values()).sort((a, b) => {
+      const aSponsorCount = (a.sponsors || []).length;
+      const bSponsorCount = (b.sponsors || []).length;
       const aTotal = a.totalEarningsUSD || 0;
       const bTotal = b.totalEarningsUSD || 0;
+      
+      // First, prioritize builders who appear in multiple sponsors
+      if (aSponsorCount !== bSponsorCount) {
+        return bSponsorCount - aSponsorCount; // More sponsors = higher priority
+      }
+      
+      // If same number of sponsors, sort by total earnings USD
       return bTotal - aTotal;
     });
 
