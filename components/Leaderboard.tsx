@@ -1901,6 +1901,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   #
                 </th>
               )}
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                <span className="sr-only">Compare</span>
+              </th>
               {visibleColumns.name && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   <div className="flex items-center gap-2">
@@ -2341,6 +2344,115 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </motion.div>
             );
           })}
+        </div>
+      )}
+
+      {/* Comparison Modal */}
+      {showComparison && selectedForComparison.size > 0 && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+          >
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Builder Comparison</h3>
+              <button
+                onClick={() => setShowComparison(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {Array.from(selectedForComparison).map(userId => {
+                  const user = displayUsers.find(u => u.id === userId);
+                  if (!user) return null;
+                  
+                  const rewardAmount = typeof user.reward_amount === 'string' 
+                    ? parseFloat(user.reward_amount) 
+                    : user.reward_amount;
+                  const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 0);
+                  const mcap = priceForMCAP ? calculateMCAP(user, priceForMCAP) : 0;
+                  const userWithBreakdown = user as UserWithEarningsBreakdown;
+                  
+                  return (
+                    <div key={user.id} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                      <div className="flex items-center gap-3 mb-4">
+                        {user.profile.image_url ? (
+                          <img
+                            src={user.profile.image_url}
+                            alt={user.profile.display_name || user.profile.name}
+                            className="w-12 h-12 rounded-lg object-cover shadow-sm"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center shadow-sm">
+                            <span className="text-xs font-medium text-gray-500">#{user.leaderboard_position || 0}</span>
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">
+                            {user.profile.display_name || user.profile.name || "Anonymous"}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            Position #{user.leaderboard_position || 0}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-600">Score</span>
+                          <span className="text-sm font-semibold text-gray-900">
+                            {user.profile.builder_score?.points !== undefined
+                              ? formatNumber(user.profile.builder_score.points)
+                              : "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-600">Earnings</span>
+                          <span className="text-sm font-semibold text-gray-900">
+                            {isAllSponsors && userWithBreakdown.totalEarningsUSD !== undefined
+                              ? `$${formatNumber(userWithBreakdown.totalEarningsUSD)}`
+                              : tokenPrice !== null && tokenInfo
+                              ? `$${formatNumber(rewardAmount * tokenPrice)}`
+                              : `${formatNumber(rewardAmount)} ${tokenInfo?.symbol || ''}`}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-600">MCAP</span>
+                          <span className="text-sm font-semibold text-gray-900">
+                            ${formatNumber(mcap)}
+                          </span>
+                        </div>
+                        {user.ranking_change !== 0 && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-600">Change</span>
+                            <span className={`text-xs font-medium ${
+                              user.ranking_change > 0 ? 'text-green-600' : 'text-red-600'
+                            }`}>
+                              {user.ranking_change > 0 ? '↑' : '↓'} {Math.abs(user.ranking_change)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => handleViewProfile(user)}
+                        className="mt-4 w-full px-3 py-2 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors font-medium"
+                      >
+                        View Full Profile
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
         </div>
       )}
 
