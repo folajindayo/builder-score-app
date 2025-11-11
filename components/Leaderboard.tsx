@@ -1766,7 +1766,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                         const isExpanded = expandedEarnings.has(user.id);
                         
                         if (isAllSponsors && userWithBreakdown.totalEarningsUSD !== undefined) {
-                        // All sponsors mode - show total USD and breakdown
+                          // All sponsors mode - show total USD and breakdown
                         return (
                           <div>
                             <div className="text-sm font-semibold text-gray-900">
