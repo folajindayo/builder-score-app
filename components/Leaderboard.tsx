@@ -135,6 +135,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
   const [selectedForComparison, setSelectedForComparison] = useState<Set<number>>(new Set());
   const [showComparison, setShowComparison] = useState(false);
+  const [builderNotes, setBuilderNotes] = useState<Record<number, string>>({});
+  const [editingNote, setEditingNote] = useState<number | null>(null);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -306,6 +308,49 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       }
     }
   }, []);
+
+  // Load builder notes from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('builderNotes');
+    if (saved) {
+      try {
+        setBuilderNotes(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load builder notes:', e);
+      }
+    }
+  }, []);
+
+  // Save builder notes to localStorage
+  useEffect(() => {
+    if (Object.keys(builderNotes).length > 0) {
+      localStorage.setItem('builderNotes', JSON.stringify(builderNotes));
+    }
+  }, [builderNotes]);
+
+  // Copy wallet address to clipboard
+  const copyWalletAddress = async (address: string) => {
+    try {
+      await navigator.clipboard.writeText(address);
+      // You could add a toast notification here
+    } catch (err) {
+      console.error('Failed to copy wallet address:', err);
+    }
+  };
+
+  // Save builder note
+  const saveNote = (userId: number, note: string) => {
+    setBuilderNotes(prev => {
+      const updated = { ...prev };
+      if (note.trim()) {
+        updated[userId] = note.trim();
+      } else {
+        delete updated[userId];
+      }
+      return updated;
+    });
+    setEditingNote(null);
+  };
 
   // Comparison functionality
   const toggleComparison = (userId: number) => {
