@@ -130,6 +130,116 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     }
   };
 
+  // Export to CSV
+  const handleExportCSV = () => {
+    if (!data || !data.users.length) return;
+    
+    const headers = ["Position", "Name", "Score", "Earnings", "Rank Change", "MCAP", "Category"];
+    const rows = data.users.map((user) => {
+      const rewardAmount = typeof user.reward_amount === 'string' 
+        ? parseFloat(user.reward_amount) 
+        : user.reward_amount;
+      const earnings = isAllSponsors 
+        ? `$${formatNumber((user as UserWithEarningsBreakdown).totalEarningsUSD || 0)}`
+        : tokenPrice !== null && tokenInfo
+        ? `$${formatNumber(rewardAmount * tokenPrice)} (${formatNumber(rewardAmount)} ${tokenInfo.symbol})`
+        : `${formatNumber(rewardAmount)}`;
+      const category = categories.get(user.id);
+      const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
+      const mcap = calculateMCAP(user, priceForMCAP);
+      
+      return [
+        user.leaderboard_position || "",
+        user.profile.display_name || user.profile.name || "Anonymous",
+        user.profile.builder_score?.points ? formatNumber(user.profile.builder_score.points) : "N/A",
+        earnings,
+        user.ranking_change || 0,
+        `$${formatNumber(mcap)}`,
+        category ? getCategoryLabel(category) : "",
+      ];
+    });
+    
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+    ].join("\n");
+    
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `leaderboard-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Export to JSON
+  const handleExportJSON = () => {
+    if (!data || !data.users.length) return;
+    
+    const exportData = data.users.map((user) => {
+      const rewardAmount = typeof user.reward_amount === 'string' 
+        ? parseFloat(user.reward_amount) 
+        : user.reward_amount;
+      const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
+      const mcap = calculateMCAP(user, priceForMCAP);
+      const category = categories.get(user.id);
+      
+      return {
+        position: user.leaderboard_position,
+        name: user.profile.display_name || user.profile.name || "Anonymous",
+        score: user.profile.builder_score?.points || null,
+        earnings: isAllSponsors 
+          ? (user as UserWithEarningsBreakdown).totalEarningsUSD || 0
+          : rewardAmount,
+        earningsUSD: isAllSponsors 
+          ? (user as UserWithEarningsBreakdown).totalEarningsUSD || 0
+          : tokenPrice !== null ? rewardAmount * tokenPrice : null,
+        rankChange: user.ranking_change || 0,
+        mcap: mcap,
+        category: category ? getCategoryLabel(category) : null,
+        wallet: user.recipient_wallet,
+        bio: user.profile.bio,
+        location: user.profile.location,
+      };
+    });
+    
+    const jsonContent = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([jsonContent], { type: "application/json" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `leaderboard-${new Date().toISOString().split('T')[0]}.json`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Share functionality
+  const handleShare = async () => {
+    const shareData = {
+      title: "Builder Score Leaderboard",
+      text: `Check out the top builders on the leaderboard!`,
+      url: window.location.href,
+    };
+    
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: copy to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      }
+    } catch (err) {
+      // User cancelled or error occurred
+      console.log("Share cancelled or failed");
+    }
+  };
+
   useEffect(() => {
     // For "all sponsors", we don't need a single token price
     // Earnings are already calculated in USD in fetchAllSponsors
