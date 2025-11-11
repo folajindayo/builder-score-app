@@ -126,6 +126,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   });
   const [showColumnToggle, setShowColumnToggle] = useState(false);
   const [quickFilter, setQuickFilter] = useState<'all' | 'top10' | 'top50' | 'top100'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<BuilderCategory | 'all'>('all');
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -1031,8 +1032,14 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     return users.slice(0, limit);
   }, [sortedUsers, filteredUsers, quickFilter]);
   
+  // Apply category filter
+  const categoryFilteredUsers = useMemo(() => {
+    if (categoryFilter === 'all') return quickFilteredUsers;
+    return quickFilteredUsers.filter(user => categories.get(user.id) === categoryFilter);
+  }, [quickFilteredUsers, categoryFilter, categories]);
+  
   // Use sorted users for display
-  const displayUsers = quickFilteredUsers;
+  const displayUsers = categoryFilteredUsers;
   
   // Categorize builders and calculate MCAP (must be before early returns)
   const categories = useMemo(() => {
@@ -1327,6 +1334,39 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </button>
             ))}
           </div>
+          {categories.size > 0 && (
+            <div className="mt-3 flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-gray-600">Category:</span>
+              <button
+                onClick={() => setCategoryFilter('all')}
+                className={`px-3 py-1.5 text-xs rounded-xl transition-colors ${
+                  categoryFilter === 'all'
+                    ? 'bg-purple-100 text-purple-700 border border-purple-300'
+                    : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
+                }`}
+              >
+                All
+              </button>
+              {(['sought_after', 'trending', 'highest_score', 'featured', 'most_earnings'] as BuilderCategory[]).map((category) => {
+                const hasBuilders = Array.from(categories.values()).includes(category);
+                if (!hasBuilders) return null;
+                return (
+                  <button
+                    key={category}
+                    onClick={() => setCategoryFilter(category)}
+                    className={`px-3 py-1.5 text-xs rounded-xl transition-colors flex items-center gap-1.5 ${
+                      categoryFilter === category
+                        ? 'bg-purple-100 text-purple-700 border border-purple-300'
+                        : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
+                    }`}
+                  >
+                    <TrophyIcon category={category} className="w-3 h-3" />
+                    {getCategoryLabel(category)}
+                  </button>
+                );
+              })}
+            </div>
+          )}
           {showColumnToggle && (
             <div className="mt-2 p-3 bg-gray-50 rounded-xl border border-gray-200">
               <div className="text-xs font-medium text-gray-700 mb-2">Toggle Columns:</div>
