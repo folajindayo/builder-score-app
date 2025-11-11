@@ -137,6 +137,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [showComparison, setShowComparison] = useState(false);
   const [builderNotes, setBuilderNotes] = useState<Record<number, string>>({});
   const [editingNote, setEditingNote] = useState<number | null>(null);
+  const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -332,7 +333,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const copyWalletAddress = async (address: string) => {
     try {
       await navigator.clipboard.writeText(address);
-      // You could add a toast notification here
+      setCopiedAddress(address);
+      setTimeout(() => setCopiedAddress(null), 2000);
     } catch (err) {
       console.error('Failed to copy wallet address:', err);
     }
