@@ -1858,19 +1858,19 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   )}
                   {visibleColumns.rankChange && (
                     <td className="px-4 py-4">
-                    {user.ranking_change !== 0 ? (
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                          user.ranking_change > 0
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {user.ranking_change > 0 ? "↑" : "↓"} {Math.abs(user.ranking_change)}
-                      </span>
-                    ) : (
-                      <span className="text-sm text-gray-400">—</span>
-                    )}
+                      {user.ranking_change !== 0 ? (
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                            user.ranking_change > 0
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {user.ranking_change > 0 ? "↑" : "↓"} {Math.abs(user.ranking_change)}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-gray-400">—</span>
+                      )}
                     </td>
                   )}
                   {visibleColumns.mcap && (
