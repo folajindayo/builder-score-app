@@ -1562,6 +1562,29 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </button>
             </div>
           </div>
+          <div className="mt-3 flex items-center gap-2">
+            <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={autoRefresh}
+                onChange={(e) => setAutoRefresh(e.target.checked)}
+                className="w-3 h-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span>Auto-refresh</span>
+            </label>
+            {autoRefresh && (
+              <select
+                value={refreshInterval}
+                onChange={(e) => setRefreshInterval(Number(e.target.value))}
+                className="px-2 py-1 text-xs border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
+              >
+                <option value={10}>10s</option>
+                <option value={30}>30s</option>
+                <option value={60}>1m</option>
+                <option value={300}>5m</option>
+              </select>
+            )}
+          </div>
           {selectedForComparison.size > 0 && (
             <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between">
               <div className="flex items-center gap-2">
