@@ -1512,6 +1512,32 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </button>
             </div>
           </div>
+          {selectedForComparison.size > 0 && (
+            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span className="text-sm font-medium text-blue-700">
+                  {selectedForComparison.size} builder{selectedForComparison.size > 1 ? 's' : ''} selected for comparison
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowComparison(true)}
+                  className="px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors font-medium"
+                >
+                  Compare
+                </button>
+                <button
+                  onClick={clearComparison}
+                  className="px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-colors"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          )}
           {showAdvancedFilters && (
             <div className="mt-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
