@@ -2231,7 +2231,26 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   )}
                   {visibleColumns.actions && (
                     <td className="px-4 py-4">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <button
+                          onClick={() => copyWalletAddress(user.recipient_wallet)}
+                          className={`p-1.5 rounded-lg transition-colors ${
+                            copiedAddress === user.recipient_wallet
+                              ? 'bg-green-100 text-green-600'
+                              : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-blue-600'
+                          }`}
+                          title={copiedAddress === user.recipient_wallet ? 'Copied!' : 'Copy wallet address'}
+                        >
+                          {copiedAddress === user.recipient_wallet ? (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                          )}
+                        </button>
                         <button
                           onClick={() => toggleBookmark(user.id)}
                           className={`p-1.5 rounded-lg transition-colors ${
@@ -2246,12 +2265,67 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                           </svg>
                         </button>
                         <button
+                          onClick={() => setEditingNote(editingNote === user.id ? null : user.id)}
+                          className={`p-1.5 rounded-lg transition-colors ${
+                            builderNotes[user.id]
+                              ? 'bg-green-100 text-green-600 hover:bg-green-200'
+                              : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-green-600'
+                          }`}
+                          title={builderNotes[user.id] ? 'Edit note' : 'Add note'}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button
                           onClick={() => handleViewProfile(user)}
                           className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
                         >
                           View Profile
                         </button>
                       </div>
+                      {editingNote === user.id && (
+                        <div className="mt-2 p-2 bg-gray-50 rounded-lg border border-gray-200">
+                          <textarea
+                            defaultValue={builderNotes[user.id] || ''}
+                            placeholder="Add a note about this builder..."
+                            className="w-full px-2 py-1 text-xs border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                            rows={2}
+                            onBlur={(e) => saveNote(user.id, e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && e.ctrlKey) {
+                                saveNote(user.id, e.currentTarget.value);
+                              }
+                            }}
+                            autoFocus
+                          />
+                          <div className="mt-1 flex justify-end gap-2">
+                            <button
+                              onClick={() => {
+                                setEditingNote(null);
+                                saveNote(user.id, '');
+                              }}
+                              className="text-xs text-gray-500 hover:text-gray-700"
+                            >
+                              Clear
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                const textarea = e.currentTarget.parentElement?.previousElementSibling as HTMLTextAreaElement;
+                                if (textarea) saveNote(user.id, textarea.value);
+                              }}
+                              className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {builderNotes[user.id] && editingNote !== user.id && (
+                        <div className="mt-2 p-2 bg-green-50 rounded-lg border border-green-200">
+                          <p className="text-xs text-gray-700">{builderNotes[user.id]}</p>
+                        </div>
+                      )}
                     </td>
                   )}
                 </motion.tr>
