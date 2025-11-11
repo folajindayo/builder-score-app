@@ -133,6 +133,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [bookmarkedBuilders, setBookmarkedBuilders] = useState<Set<number>>(new Set());
   const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
+  const [selectedForComparison, setSelectedForComparison] = useState<Set<number>>(new Set());
+  const [showComparison, setShowComparison] = useState(false);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -304,6 +306,28 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       }
     }
   }, []);
+
+  // Comparison functionality
+  const toggleComparison = (userId: number) => {
+    setSelectedForComparison(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        if (newSet.size >= 3) {
+          // Limit to 3 builders for comparison
+          return prev;
+        }
+        newSet.add(userId);
+      }
+      return newSet;
+    });
+  };
+
+  const clearComparison = () => {
+    setSelectedForComparison(new Set());
+    setShowComparison(false);
+  };
 
   // Refresh functionality
   const handleRefresh = () => {
