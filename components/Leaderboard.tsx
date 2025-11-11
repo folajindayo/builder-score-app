@@ -141,6 +141,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [tableDensity, setTableDensity] = useState<'compact' | 'normal' | 'comfortable'>('normal');
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [refreshInterval, setRefreshInterval] = useState(30); // seconds
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -365,6 +366,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     }, refreshInterval * 1000);
     return () => clearInterval(interval);
   }, [autoRefresh, refreshInterval]);
+
+  // Scroll to top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollToTop(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Comparison functionality
   const toggleComparison = (userId: number) => {
