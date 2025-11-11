@@ -112,6 +112,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [allSponsorsAggregatedUsers, setAllSponsorsAggregatedUsers] = useState<UserWithEarningsBreakdown[]>([]);
   const [allSponsorsHasMore, setAllSponsorsHasMore] = useState(true);
   const [displayedCount, setDisplayedCount] = useState(30); // Display 30 builders at a time
+  const [showStats, setShowStats] = useState(false);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
