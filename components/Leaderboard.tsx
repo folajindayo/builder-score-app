@@ -115,6 +115,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [showStats, setShowStats] = useState(false);
   const [sortBy, setSortBy] = useState<'position' | 'score' | 'earnings' | 'mcap'>('position');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [visibleColumns, setVisibleColumns] = useState({
+    position: true,
+    name: true,
+    score: true,
+    earnings: true,
+    rankChange: true,
+    mcap: true,
+    actions: true,
+  });
+  const [showColumnToggle, setShowColumnToggle] = useState(false);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -1282,7 +1292,34 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                 )}
               </button>
             ))}
+            <button
+              onClick={() => setShowColumnToggle(!showColumnToggle)}
+              className="px-3 py-1.5 text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl transition-colors flex items-center gap-1.5"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              Columns
+            </button>
           </div>
+          {showColumnToggle && (
+            <div className="mt-2 p-3 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="text-xs font-medium text-gray-700 mb-2">Toggle Columns:</div>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(visibleColumns).map(([key, value]) => (
+                  <label key={key} className="flex items-center gap-1.5 text-xs text-gray-700 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={value}
+                      onChange={(e) => setVisibleColumns({ ...visibleColumns, [key]: e.target.checked })}
+                      className="w-3 h-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <div className="flex items-center justify-between mt-4 flex-wrap gap-4">
           <div className="flex items-center gap-4">
@@ -1565,47 +1602,61 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         <table className="w-full rounded-xl overflow-hidden">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
-                #
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <div className="flex items-center gap-2">
-                  <span>Member Name</span>
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                </div>
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <div className="flex items-center gap-2">
-                  <span>Score</span>
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                </div>
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <div className="flex items-center gap-2">
-                  <span>Earnings</span>
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                </div>
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <span>Rank Change</span>
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <div className="flex items-center gap-2">
-                  <span>MCAP</span>
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                </div>
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <span>Actions</span>
-              </th>
+              {visibleColumns.position && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
+                  #
+                </th>
+              )}
+              {visibleColumns.name && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div className="flex items-center gap-2">
+                    <span>Member Name</span>
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>
+                  </div>
+                </th>
+              )}
+              {visibleColumns.score && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div className="flex items-center gap-2">
+                    <span>Score</span>
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>
+                  </div>
+                </th>
+              )}
+              {visibleColumns.earnings && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div className="flex items-center gap-2">
+                    <span>Earnings</span>
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>
+                  </div>
+                </th>
+              )}
+              {visibleColumns.rankChange && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <span>Rank Change</span>
+                </th>
+              )}
+              {visibleColumns.mcap && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div className="flex items-center gap-2">
+                    <span>MCAP</span>
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>
+                  </div>
+                </th>
+              )}
+              {visibleColumns.actions && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <span>Actions</span>
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -1629,12 +1680,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   transition={{ delay: idx * 0.02 }}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-4 py-4">
-                    <div className="text-sm font-semibold text-gray-600">
-                      {user.leaderboard_position || ((data.pagination.current_page - 1) * 30 + idx + 1)}
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
+                  {visibleColumns.position && (
+                    <td className="px-4 py-4">
+                      <div className="text-sm font-semibold text-gray-600">
+                        {user.leaderboard_position || ((data.pagination.current_page - 1) * 30 + idx + 1)}
+                      </div>
+                    </td>
+                  )}
+                  {visibleColumns.name && (
+                    <td className="px-4 py-4">
                     <div className="flex items-center gap-2 min-w-0">
                       {user.profile.image_url ? (
                         <img
@@ -1694,15 +1748,19 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                           )}
                       </div>
                     </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="text-sm font-semibold text-gray-900">
-                      {user.profile.builder_score?.points !== undefined
-                        ? formatNumber(user.profile.builder_score.points)
-                        : "N/A"}
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
+                    </td>
+                  )}
+                  {visibleColumns.score && (
+                    <td className="px-4 py-4">
+                      <div className="text-sm font-semibold text-gray-900">
+                        {user.profile.builder_score?.points !== undefined
+                          ? formatNumber(user.profile.builder_score.points)
+                          : "N/A"}
+                      </div>
+                    </td>
+                  )}
+                  {visibleColumns.earnings && (
+                    <td className="px-4 py-4">
                     {(() => {
                       const userWithBreakdown = user as UserWithEarningsBreakdown;
                       const isExpanded = expandedEarnings.has(user.id);
@@ -1811,25 +1869,30 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                     ) : (
                       <span className="text-sm text-gray-400">—</span>
                     )}
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="text-sm font-semibold text-gray-900">
-                      ${formatNumber(mcap)}
-                    </div>
-                    {category && (
-                      <div className="text-xs text-gray-500 truncate">
-                        {getCategoryLabel(category)}
+                    </td>
+                  )}
+                  {visibleColumns.mcap && (
+                    <td className="px-4 py-4">
+                      <div className="text-sm font-semibold text-gray-900">
+                        ${formatNumber(mcap)}
                       </div>
-                    )}
-                  </td>
-                  <td className="px-4 py-4">
-                    <button
-                      onClick={() => handleViewProfile(user)}
-                      className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
-                    >
-                      View Profile
-                    </button>
-                  </td>
+                      {category && (
+                        <div className="text-xs text-gray-500 truncate">
+                          {getCategoryLabel(category)}
+                        </div>
+                      )}
+                    </td>
+                  )}
+                  {visibleColumns.actions && (
+                    <td className="px-4 py-4">
+                      <button
+                        onClick={() => handleViewProfile(user)}
+                        className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                      >
+                        View Profile
+                      </button>
+                    </td>
+                  )}
                 </motion.tr>
               );
             })}
