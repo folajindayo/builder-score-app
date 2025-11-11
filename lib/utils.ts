@@ -39,6 +39,12 @@ export function formatWalletAddress(address: string, startChars = 6, endChars = 
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
 }
 
+// Validate wallet address format
+export function isValidWalletAddress(address: string): boolean {
+  if (!address) return false;
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
