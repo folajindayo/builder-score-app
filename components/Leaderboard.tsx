@@ -1311,6 +1311,22 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               Columns
             </button>
           </div>
+          <div className="mt-3 flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-gray-600">Quick Filter:</span>
+            {(['all', 'top10', 'top50', 'top100'] as const).map((filter) => (
+              <button
+                key={filter}
+                onClick={() => setQuickFilter(filter)}
+                className={`px-3 py-1.5 text-xs rounded-xl transition-colors ${
+                  quickFilter === filter
+                    ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                    : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
+                }`}
+              >
+                {filter === 'all' ? 'All' : filter === 'top10' ? 'Top 10' : filter === 'top50' ? 'Top 50' : 'Top 100'}
+              </button>
+            ))}
+          </div>
           {showColumnToggle && (
             <div className="mt-2 p-3 bg-gray-50 rounded-xl border border-gray-200">
               <div className="text-xs font-medium text-gray-700 mb-2">Toggle Columns:</div>
