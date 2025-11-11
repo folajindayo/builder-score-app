@@ -125,6 +125,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     actions: true,
   });
   const [showColumnToggle, setShowColumnToggle] = useState(false);
+  const [quickFilter, setQuickFilter] = useState<'all' | 'top10' | 'top50' | 'top100'>('all');
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -1022,8 +1023,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
   }, [data, sortBy, sortOrder, tokenPrice, isAllSponsors]);
   
+  // Apply quick filter
+  const quickFilteredUsers = useMemo(() => {
+    const users = sortedUsers.length > 0 ? sortedUsers : filteredUsers;
+    if (quickFilter === 'all') return users;
+    const limit = quickFilter === 'top10' ? 10 : quickFilter === 'top50' ? 50 : 100;
+    return users.slice(0, limit);
+  }, [sortedUsers, filteredUsers, quickFilter]);
+  
   // Use sorted users for display
-  const displayUsers = sortedUsers.length > 0 ? sortedUsers : filteredUsers;
+  const displayUsers = quickFilteredUsers;
   
   // Categorize builders and calculate MCAP (must be before early returns)
   const categories = useMemo(() => {
