@@ -1827,7 +1827,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                     </div>
                                   )}
                                 </div>
-                              );
+                              )}
                             </div>
                           );
                         } else if (rewardAmount > 0) {
