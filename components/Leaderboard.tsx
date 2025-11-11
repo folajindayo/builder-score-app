@@ -357,6 +357,15 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     setEditingNote(null);
   };
 
+  // Auto-refresh functionality
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const interval = setInterval(() => {
+      handleRefresh();
+    }, refreshInterval * 1000);
+    return () => clearInterval(interval);
+  }, [autoRefresh, refreshInterval]);
+
   // Comparison functionality
   const toggleComparison = (userId: number) => {
     setSelectedForComparison(prev => {
