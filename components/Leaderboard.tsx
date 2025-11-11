@@ -139,6 +139,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [editingNote, setEditingNote] = useState<number | null>(null);
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const [tableDensity, setTableDensity] = useState<'compact' | 'normal' | 'comfortable'>('normal');
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [refreshInterval, setRefreshInterval] = useState(30); // seconds
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
