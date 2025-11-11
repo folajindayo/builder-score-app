@@ -1830,7 +1830,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                               );
                             </div>
                           );
-                      } else if (rewardAmount > 0) {
+                        } else if (rewardAmount > 0) {
                         // Single sponsor mode
                         return (
                           <div>
