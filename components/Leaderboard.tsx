@@ -1132,30 +1132,76 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between mt-4">
-          {activeSearchQuery && (
-            <p className="text-xs text-gray-500">
-              Showing {filteredUsers.length} of {data.pagination.total} builders
-              {activeSearchQuery && ` • Searching for "${activeSearchQuery}"`}
-            </p>
-          )}
-          {!activeSearchQuery && (
-            <div className="flex items-center gap-4 text-xs flex-wrap">
-              {Array.from(categories.entries()).map(([userId, category]) => {
-                const user = filteredUsers.find(u => u.id === userId);
-                if (!user) return null;
-                return (
-                  <div key={userId} className="flex items-center gap-1.5">
-                    <TrophyIcon category={category} className="w-4 h-4" />
-                    <span className="text-gray-600">
-                      {getCategoryLabel(category)}: <span className="font-medium">{user.profile.display_name || user.profile.name}</span>
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+        <div className="flex items-center justify-between mt-4 flex-wrap gap-4">
+          <div className="flex items-center gap-4">
+            {activeSearchQuery && (
+              <p className="text-xs text-gray-500">
+                Showing {filteredUsers.length} of {data.pagination.total} builders
+                {activeSearchQuery && ` • Searching for "${activeSearchQuery}"`}
+              </p>
+            )}
+            {!activeSearchQuery && (
+              <div className="flex items-center gap-4 text-xs flex-wrap">
+                {Array.from(categories.entries()).map(([userId, category]) => {
+                  const user = filteredUsers.find(u => u.id === userId);
+                  if (!user) return null;
+                  return (
+                    <div key={userId} className="flex items-center gap-1.5">
+                      <TrophyIcon category={category} className="w-4 h-4" />
+                      <span className="text-gray-600">
+                        {getCategoryLabel(category)}: <span className="font-medium">{user.profile.display_name || user.profile.name}</span>
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <button
+            onClick={() => setShowStats(!showStats)}
+            className="px-3 py-1.5 text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl transition-colors flex items-center gap-1.5"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            {showStats ? "Hide Stats" : "Show Stats"}
+          </button>
         </div>
+        {showStats && data && (
+          <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">{data.pagination.total}</div>
+                <div className="text-xs text-gray-600 mt-1">Total Builders</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">{filteredUsers.length}</div>
+                <div className="text-xs text-gray-600 mt-1">Displayed</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">
+                  {filteredUsers.length > 0 
+                    ? formatNumber(Math.round(filteredUsers.reduce((sum, u) => sum + (u.profile.builder_score?.points || 0), 0) / filteredUsers.length))
+                    : "0"}
+                </div>
+                <div className="text-xs text-gray-600 mt-1">Avg Score</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">
+                  {isAllSponsors && filteredUsers.length > 0
+                    ? `$${formatNumber(Math.round(filteredUsers.reduce((sum, u) => sum + ((u as UserWithEarningsBreakdown).totalEarningsUSD || 0), 0) / filteredUsers.length))}`
+                    : tokenPrice !== null && filteredUsers.length > 0
+                    ? `$${formatNumber(Math.round(filteredUsers.reduce((sum, u) => {
+                        const amt = typeof u.reward_amount === 'string' ? parseFloat(u.reward_amount) : u.reward_amount;
+                        return sum + (amt * tokenPrice);
+                      }, 0) / filteredUsers.length))}`
+                    : "—"}
+                </div>
+                <div className="text-xs text-gray-600 mt-1">Avg Earnings</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Top Builders by Category Table */}
