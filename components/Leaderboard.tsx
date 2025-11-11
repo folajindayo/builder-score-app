@@ -1774,7 +1774,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                               </div>
                               {userWithBreakdown.earningsBreakdown && userWithBreakdown.earningsBreakdown.length > 0 && (
                                 <div className="mt-1">
-                                <button
+                                  <button
                                   onClick={() => toggleEarningsBreakdown(user.id)}
                                   className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
                                 >
