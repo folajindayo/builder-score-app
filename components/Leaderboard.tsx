@@ -2004,7 +2004,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               )}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className={`bg-white divide-y divide-gray-200 ${
+            tableDensity === 'compact' ? 'text-xs' : tableDensity === 'comfortable' ? 'text-base' : ''
+          }`}>
             {displayUsers.map((user, idx) => {
               const rewardAmount = typeof user.reward_amount === 'string' 
                 ? parseFloat(user.reward_amount) 
