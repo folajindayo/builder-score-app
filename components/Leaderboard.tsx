@@ -1773,7 +1773,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                 ${formatNumber(userWithBreakdown.totalEarningsUSD)}
                               </div>
                               {userWithBreakdown.earningsBreakdown && userWithBreakdown.earningsBreakdown.length > 0 && (
-                              <div className="mt-1">
+                                <div className="mt-1">
                                 <button
                                   onClick={() => toggleEarningsBreakdown(user.id)}
                                   className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
@@ -1826,10 +1826,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                     })}
                                   </div>
                                 )}
-                              </div>
-                            )}
-                          </div>
-                        );
+                                </div>
+                              )}
+                            </div>
+                          );
                       } else if (rewardAmount > 0) {
                         // Single sponsor mode
                         return (
