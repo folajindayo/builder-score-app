@@ -1650,7 +1650,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       placeholder="Max"
                       value={scoreRange.max}
                       onChange={(e) => setScoreRange({ ...scoreRange, max: e.target.value === '' ? '' : Number(e.target.value) })}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     />
                   </div>
                 </div>
