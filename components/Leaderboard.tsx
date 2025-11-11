@@ -1799,35 +1799,35 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                         return (
                                           <div key={idx} className="flex items-center justify-between text-xs py-1 border-b border-gray-200 last:border-b-0">
                                             <div className="flex-1">
-                                            <span className="text-gray-600 capitalize font-medium">
-                                              {breakdown.sponsor.replace("-", " ")}:
-                                            </span>
-                                            <div className="text-gray-500 mt-0.5">
-                                              {formatNumber(breakdown.amount)} {breakdown.tokenSymbol} × ${formatNumber(breakdown.amountUSD / breakdown.amount || 0)} = ${formatNumber(breakdown.amountUSD)}
+                                              <span className="text-gray-600 capitalize font-medium">
+                                                {breakdown.sponsor.replace("-", " ")}:
+                                              </span>
+                                              <div className="text-gray-500 mt-0.5">
+                                                {formatNumber(breakdown.amount)} {breakdown.tokenSymbol} × ${formatNumber(breakdown.amountUSD / breakdown.amount || 0)} = ${formatNumber(breakdown.amountUSD)}
+                                              </div>
+                                            </div>
+                                            <div className="text-right ml-2">
+                                              <div className="font-medium text-gray-900">
+                                                ${formatNumber(breakdown.amountUSD)}
+                                              </div>
+                                              {idx < userWithBreakdown.earningsBreakdown!.length - 1 && (
+                                                <div className="text-gray-400 text-xs mt-0.5">
+                                                  + {idx === 0 ? '' : '... + '}
+                                                </div>
+                                              )}
+                                              {idx === userWithBreakdown.earningsBreakdown!.length - 1 && (
+                                                <div className="text-blue-600 font-semibold text-xs mt-1 pt-1 border-t border-gray-300">
+                                                  = ${formatNumber(runningTotal)}
+                                                </div>
+                                              )}
                                             </div>
                                           </div>
-                                          <div className="text-right ml-2">
-                                            <div className="font-medium text-gray-900">
-                                              ${formatNumber(breakdown.amountUSD)}
-                                            </div>
-                                            {idx < userWithBreakdown.earningsBreakdown!.length - 1 && (
-                                              <div className="text-gray-400 text-xs mt-0.5">
-                                                + {idx === 0 ? '' : '... + '}
-                                              </div>
-                                            )}
-                                            {idx === userWithBreakdown.earningsBreakdown!.length - 1 && (
-                                              <div className="text-blue-600 font-semibold text-xs mt-1 pt-1 border-t border-gray-300">
-                                                = ${formatNumber(runningTotal)}
-                                              </div>
-                                            )}
-                                          </div>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                )}
+                                        );
+                                      })}
+                                    </div>
+                                  )}
                                 </div>
-                              )}
+                              );
                             </div>
                           );
                       } else if (rewardAmount > 0) {
