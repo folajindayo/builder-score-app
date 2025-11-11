@@ -127,6 +127,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [showColumnToggle, setShowColumnToggle] = useState(false);
   const [quickFilter, setQuickFilter] = useState<'all' | 'top10' | 'top50' | 'top100'>('all');
   const [categoryFilter, setCategoryFilter] = useState<BuilderCategory | 'all'>('all');
+  const [scoreRange, setScoreRange] = useState<{ min: number | ''; max: number | '' }>({ min: '', max: '' });
+  const [earningsRange, setEarningsRange] = useState<{ min: number | ''; max: number | '' }>({ min: '', max: '' });
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -1046,8 +1049,36 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     return quickFilteredUsers.filter(user => categories.get(user.id) === categoryFilter);
   }, [quickFilteredUsers, categoryFilter, categories]);
   
+  // Apply score range filter
+  const scoreFilteredUsers = useMemo(() => {
+    if (scoreRange.min === '' && scoreRange.max === '') return categoryFilteredUsers;
+    return categoryFilteredUsers.filter(user => {
+      const score = user.profile.builder_score?.points || 0;
+      const min = scoreRange.min === '' ? -Infinity : scoreRange.min;
+      const max = scoreRange.max === '' ? Infinity : scoreRange.max;
+      return score >= min && score <= max;
+    });
+  }, [categoryFilteredUsers, scoreRange]);
+  
+  // Apply earnings range filter
+  const earningsFilteredUsers = useMemo(() => {
+    if (earningsRange.min === '' && earningsRange.max === '') return scoreFilteredUsers;
+    return scoreFilteredUsers.filter(user => {
+      let earnings: number;
+      if (isAllSponsors) {
+        earnings = (user as UserWithEarningsBreakdown).totalEarningsUSD || 0;
+      } else {
+        const rewardAmount = typeof user.reward_amount === 'string' ? parseFloat(user.reward_amount) : user.reward_amount;
+        earnings = tokenPrice !== null ? rewardAmount * tokenPrice : rewardAmount;
+      }
+      const min = earningsRange.min === '' ? -Infinity : earningsRange.min;
+      const max = earningsRange.max === '' ? Infinity : earningsRange.max;
+      return earnings >= min && earnings <= max;
+    });
+  }, [scoreFilteredUsers, earningsRange, isAllSponsors, tokenPrice]);
+  
   // Use sorted users for display
-  const displayUsers = categoryFilteredUsers;
+  const displayUsers = earningsFilteredUsers;
 
   // Get top builders for each category in specified order
   const topBuildersByCategory = useMemo(() => {
