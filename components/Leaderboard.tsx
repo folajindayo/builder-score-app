@@ -1775,9 +1775,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                               {userWithBreakdown.earningsBreakdown && userWithBreakdown.earningsBreakdown.length > 0 && (
                                 <div className="mt-1">
                                   <button
-                                  onClick={() => toggleEarningsBreakdown(user.id)}
-                                  className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
-                                >
+                                    onClick={() => toggleEarningsBreakdown(user.id)}
+                                    className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                                  >
                                   {isExpanded ? "Hide" : "Show"} Breakdown
                                   <svg
                                     className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -1787,9 +1787,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                   >
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                   </svg>
-                                </button>
-                                {isExpanded && (
-                                  <div className="mt-2 space-y-1.5 bg-gray-50 rounded-lg p-2 border border-gray-200">
+                                  </button>
+                                  {isExpanded && (
+                                    <div className="mt-2 space-y-1.5 bg-gray-50 rounded-lg p-2 border border-gray-200">
                                     {userWithBreakdown.earningsBreakdown.map((breakdown, idx) => {
                                       // Calculate running total up to this point
                                       const runningTotal = userWithBreakdown.earningsBreakdown!
