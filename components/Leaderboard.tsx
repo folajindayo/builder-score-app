@@ -2270,7 +2270,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-2 flex-wrap">
                         <button
-                          onClick={() => copyWalletAddress(user.recipient_wallet)}
+                          onClick={() => copyWalletAddress(user.recipient_wallet || '')}
                           className={`p-1.5 rounded-lg transition-colors ${
                             copiedAddress === user.recipient_wallet
                               ? 'bg-green-100 text-green-600'
