@@ -1840,9 +1840,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         </div>
       )}
 
-      {/* Main Leaderboard Table */}
-      <div className="overflow-x-auto rounded-xl">
-        <table className="w-full rounded-xl overflow-hidden">
+      {/* Main Leaderboard Table or Card View */}
+      {viewMode === 'table' ? (
+        <div className="overflow-x-auto rounded-xl">
+          <table className="w-full rounded-xl overflow-hidden">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
               {visibleColumns.position && (
@@ -2159,6 +2160,139 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           </tbody>
         </table>
       </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {displayUsers.map((user, idx) => {
+            const rewardAmount = typeof user.reward_amount === 'string' 
+              ? parseFloat(user.reward_amount) 
+              : user.reward_amount;
+            
+            const category = categories.get(user.id) || null;
+            const priceForMCAP = isAllSponsors 
+              ? 1
+              : (tokenPrice || 0);
+            const mcap = priceForMCAP ? calculateMCAP(user, priceForMCAP) : 0;
+            const userWithBreakdown = user as UserWithEarningsBreakdown;
+
+            return (
+              <motion.div
+                key={user.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    {user.profile.image_url ? (
+                      <img
+                        src={user.profile.image_url}
+                        alt={user.profile.display_name || user.profile.name}
+                        className="w-12 h-12 rounded-lg object-cover flex-shrink-0 shadow-sm"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <span className="text-xs font-medium text-gray-500">
+                          {user.leaderboard_position || idx + 1}
+                        </span>
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <p className="text-sm font-semibold text-gray-900 truncate">
+                          {user.profile.display_name || user.profile.name || "Anonymous"}
+                        </p>
+                        {category && (
+                          <TrophyIcon category={category} className="w-4 h-4 flex-shrink-0" />
+                        )}
+                        {isAllSponsors && userWithBreakdown.sponsors && userWithBreakdown.sponsors.length > 1 && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200 flex-shrink-0">
+                            Multi
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 truncate">
+                        {user.profile.bio || user.profile.location || "No description"}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => toggleBookmark(user.id)}
+                    className={`p-1.5 rounded-lg transition-colors flex-shrink-0 ${
+                      bookmarkedBuilders.has(user.id)
+                        ? 'bg-yellow-100 text-yellow-600'
+                        : 'bg-gray-100 text-gray-400 hover:text-yellow-600'
+                    }`}
+                  >
+                    <svg className="w-4 h-4" fill={bookmarkedBuilders.has(user.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div className="bg-gray-50 rounded-lg p-2">
+                    <div className="text-xs text-gray-500 mb-0.5">Score</div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      {user.profile.builder_score?.points !== undefined
+                        ? formatNumber(user.profile.builder_score.points)
+                        : "N/A"}
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-2">
+                    <div className="text-xs text-gray-500 mb-0.5">Earnings</div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      {isAllSponsors && userWithBreakdown.totalEarningsUSD !== undefined
+                        ? `$${formatNumber(userWithBreakdown.totalEarningsUSD)}`
+                        : tokenPrice !== null && tokenInfo
+                        ? `$${formatNumber(rewardAmount * tokenPrice)}`
+                        : `${formatNumber(rewardAmount)} ${tokenInfo?.symbol || ''}`}
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-2">
+                    <div className="text-xs text-gray-500 mb-0.5">MCAP</div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      ${formatNumber(mcap)}
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-2">
+                    <div className="text-xs text-gray-500 mb-0.5">Position</div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      #{user.leaderboard_position || idx + 1}
+                    </div>
+                  </div>
+                </div>
+
+                {user.ranking_change !== 0 && (
+                  <div className="mb-3">
+                    <span
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        user.ranking_change > 0
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {user.ranking_change > 0 ? "↑" : "↓"} {Math.abs(user.ranking_change)} positions
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleViewProfile(user)}
+                    className="flex-1 px-3 py-2 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors font-medium"
+                  >
+                    View Profile
+                  </button>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Infinite Scroll Load More Trigger */}
       {!filters.sponsor_slug && (allSponsorsHasMore || (data && displayedCount < allSponsorsAggregatedUsers.length)) && (
