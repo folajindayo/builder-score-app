@@ -1767,7 +1767,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                         
                         if (isAllSponsors && userWithBreakdown.totalEarningsUSD !== undefined) {
                           // All sponsors mode - show total USD and breakdown
-                        return (
+                          return (
                           <div>
                             <div className="text-sm font-semibold text-gray-900">
                               ${formatNumber(userWithBreakdown.totalEarningsUSD)}
