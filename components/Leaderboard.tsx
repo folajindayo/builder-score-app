@@ -1024,6 +1024,14 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
   }, [data, sortBy, sortOrder, tokenPrice, isAllSponsors]);
   
+  // Categorize builders and calculate MCAP (must be before early returns)
+  const categories = useMemo(() => {
+    if (!filteredUsers.length) return new Map<number, BuilderCategory>();
+    // For all sponsors mode, use average token price or default
+    const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
+    return categorizeBuilders(filteredUsers, priceForMCAP);
+  }, [filteredUsers, tokenPrice, isAllSponsors]);
+  
   // Apply quick filter
   const quickFilteredUsers = useMemo(() => {
     const users = sortedUsers.length > 0 ? sortedUsers : filteredUsers;
@@ -1040,14 +1048,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   
   // Use sorted users for display
   const displayUsers = categoryFilteredUsers;
-  
-  // Categorize builders and calculate MCAP (must be before early returns)
-  const categories = useMemo(() => {
-    if (!filteredUsers.length) return new Map<number, BuilderCategory>();
-    // For all sponsors mode, use average token price or default
-    const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
-    return categorizeBuilders(filteredUsers, priceForMCAP);
-  }, [filteredUsers, tokenPrice, isAllSponsors]);
 
   // Get top builders for each category in specified order
   const topBuildersByCategory = useMemo(() => {
