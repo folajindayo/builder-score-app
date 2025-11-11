@@ -1798,7 +1798,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                         
                                         return (
                                           <div key={idx} className="flex items-center justify-between text-xs py-1 border-b border-gray-200 last:border-b-0">
-                                          <div className="flex-1">
+                                            <div className="flex-1">
                                             <span className="text-gray-600 capitalize font-medium">
                                               {breakdown.sponsor.replace("-", " ")}:
                                             </span>
