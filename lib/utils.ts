@@ -33,6 +33,12 @@ export function formatDate(dateString: string): string {
   }
 }
 
+// Format wallet address with ellipsis
+export function formatWalletAddress(address: string, startChars = 6, endChars = 4): string {
+  if (!address || address.length <= startChars + endChars) return address;
+  return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
