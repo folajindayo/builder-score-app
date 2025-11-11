@@ -130,6 +130,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [scoreRange, setScoreRange] = useState<{ min: number | ''; max: number | '' }>({ min: '', max: '' });
   const [earningsRange, setEarningsRange] = useState<{ min: number | ''; max: number | '' }>({ min: '', max: '' });
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [bookmarkedBuilders, setBookmarkedBuilders] = useState<Set<number>>(new Set());
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -274,6 +275,33 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const handlePrint = () => {
     window.print();
   };
+
+  // Bookmark functionality
+  const toggleBookmark = (userId: number) => {
+    setBookmarkedBuilders(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      // Save to localStorage
+      localStorage.setItem('bookmarkedBuilders', JSON.stringify(Array.from(newSet)));
+      return newSet;
+    });
+  };
+
+  // Load bookmarks from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('bookmarkedBuilders');
+    if (saved) {
+      try {
+        setBookmarkedBuilders(new Set(JSON.parse(saved)));
+      } catch (e) {
+        console.error('Failed to load bookmarks:', e);
+      }
+    }
+  }, []);
 
   // Refresh functionality
   const handleRefresh = () => {
@@ -2051,12 +2079,27 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   )}
                   {visibleColumns.actions && (
                     <td className="px-4 py-4">
-                      <button
-                        onClick={() => handleViewProfile(user)}
-                        className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
-                      >
-                        View Profile
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => toggleBookmark(user.id)}
+                          className={`p-1.5 rounded-lg transition-colors ${
+                            bookmarkedBuilders.has(user.id)
+                              ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
+                              : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-yellow-600'
+                          }`}
+                          title={bookmarkedBuilders.has(user.id) ? 'Remove bookmark' : 'Bookmark builder'}
+                        >
+                          <svg className="w-4 h-4" fill={bookmarkedBuilders.has(user.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleViewProfile(user)}
+                          className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                        >
+                          View Profile
+                        </button>
+                      </div>
                     </td>
                   )}
                 </motion.tr>
