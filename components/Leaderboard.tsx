@@ -2073,7 +2073,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   className="hover:bg-gray-50 transition-colors"
                 >
                   {visibleColumns.position && (
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4" aria-label={`Position ${user.leaderboard_position || ((data.pagination.current_page - 1) * 30 + idx + 1)}`}>
                       <div className="text-sm font-semibold text-gray-600">
                         {user.leaderboard_position || ((data.pagination.current_page - 1) * 30 + idx + 1)}
                       </div>
