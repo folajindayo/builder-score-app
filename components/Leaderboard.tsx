@@ -1568,12 +1568,13 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </button>
               <button
                 onClick={() => setViewMode('card')}
-                className={`px-3 py-1.5 text-xs transition-colors ${
+                className={`px-3 py-1.5 text-xs transition-all duration-200 ${
                   viewMode === 'card'
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    ? 'bg-blue-100 text-blue-700 shadow-sm'
+                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:shadow-sm'
                 }`}
                 title="Card view"
+                aria-label="Switch to card view"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
