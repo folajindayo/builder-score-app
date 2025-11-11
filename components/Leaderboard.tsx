@@ -1835,19 +1835,19 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                           return (
                             <div>
                               {tokenPrice !== null && tokenInfo ? (
-                              <>
+                                <>
+                                  <div className="text-sm font-semibold text-gray-900">
+                                    ${formatNumber(rewardAmount * tokenPrice)}
+                                  </div>
+                                  <div className="text-xs text-gray-500 truncate">
+                                    {formatNumber(rewardAmount)} {tokenInfo.symbol}
+                                  </div>
+                                </>
+                              ) : (
                                 <div className="text-sm font-semibold text-gray-900">
-                                  ${formatNumber(rewardAmount * tokenPrice)}
+                                  {formatNumber(rewardAmount)} {tokenInfo?.symbol || "TOKEN"}
                                 </div>
-                                <div className="text-xs text-gray-500 truncate">
-                                  {formatNumber(rewardAmount)} {tokenInfo.symbol}
-                                </div>
-                              </>
-                            ) : (
-                              <div className="text-sm font-semibold text-gray-900">
-                                {formatNumber(rewardAmount)} {tokenInfo?.symbol || "TOKEN"}
-                              </div>
-                            )}
+                              )}
                             </div>
                           );
                         } else {
