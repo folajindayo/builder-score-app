@@ -138,6 +138,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [builderNotes, setBuilderNotes] = useState<Record<number, string>>({});
   const [editingNote, setEditingNote] = useState<number | null>(null);
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
+  const [tableDensity, setTableDensity] = useState<'compact' | 'normal' | 'comfortable'>('normal');
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
