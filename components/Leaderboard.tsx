@@ -1791,12 +1791,12 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                   {isExpanded && (
                                     <div className="mt-2 space-y-1.5 bg-gray-50 rounded-lg p-2 border border-gray-200">
                                       {userWithBreakdown.earningsBreakdown.map((breakdown, idx) => {
-                                      // Calculate running total up to this point
-                                      const runningTotal = userWithBreakdown.earningsBreakdown!
-                                        .slice(0, idx + 1)
-                                        .reduce((sum, item) => sum + item.amountUSD, 0);
-                                      
-                                      return (
+                                        // Calculate running total up to this point
+                                        const runningTotal = userWithBreakdown.earningsBreakdown!
+                                          .slice(0, idx + 1)
+                                          .reduce((sum, item) => sum + item.amountUSD, 0);
+                                        
+                                        return (
                                         <div key={idx} className="flex items-center justify-between text-xs py-1 border-b border-gray-200 last:border-b-0">
                                           <div className="flex-1">
                                             <span className="text-gray-600 capitalize font-medium">
