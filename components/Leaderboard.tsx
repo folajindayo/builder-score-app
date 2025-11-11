@@ -1761,7 +1761,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   )}
                   {visibleColumns.earnings && (
                     <td className="px-4 py-4">
-                    {(() => {
+                      {(() => {
                       const userWithBreakdown = user as UserWithEarningsBreakdown;
                       const isExpanded = expandedEarnings.has(user.id);
                       
