@@ -76,6 +76,11 @@ export function calculatePercentageChange(oldValue: number, newValue: number): n
   return ((newValue - oldValue) / oldValue) * 100;
 }
 
+// Deep clone object
+export function deepClone<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
