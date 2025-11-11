@@ -2277,6 +2277,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                               : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-blue-600'
                           }`}
                           title={copiedAddress === user.recipient_wallet ? 'Copied!' : 'Copy wallet address'}
+                          aria-label={copiedAddress === user.recipient_wallet ? 'Wallet address copied' : 'Copy wallet address to clipboard'}
                         >
                           {copiedAddress === user.recipient_wallet ? (
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
