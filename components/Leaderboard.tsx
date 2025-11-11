@@ -1854,8 +1854,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                           return <span className="text-sm text-gray-400">—</span>;
                         }
                       })()}
-                  </td>
-                  <td className="px-4 py-4">
+                    </td>
+                  )}
+                  {visibleColumns.rankChange && (
+                    <td className="px-4 py-4">
                     {user.ranking_change !== 0 ? (
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
