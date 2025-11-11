@@ -113,6 +113,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [allSponsorsHasMore, setAllSponsorsHasMore] = useState(true);
   const [displayedCount, setDisplayedCount] = useState(30); // Display 30 builders at a time
   const [showStats, setShowStats] = useState(false);
+  const [sortBy, setSortBy] = useState<'position' | 'score' | 'earnings' | 'mcap'>('position');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -235,9 +237,25 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
         await navigator.clipboard.writeText(window.location.href);
         alert("Link copied to clipboard!");
       }
-    } catch (err) {
+    } catch {
       // User cancelled or error occurred
       console.log("Share cancelled or failed");
+    }
+  };
+
+  // Refresh functionality
+  const handleRefresh = () => {
+    setPage(1);
+    fetchLeaderboard();
+  };
+
+  // Sort functionality
+  const handleSort = (field: 'position' | 'score' | 'earnings' | 'mcap') => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(field);
+      setSortOrder('asc');
     }
   };
 
@@ -933,17 +951,67 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
     return categorizeBuilders(filteredUsers, priceForMCAP);
   }, [filteredUsers, tokenPrice, isAllSponsors]);
+  
+  // Use sorted users for display
+  const displayUsers = sortedUsers.length > 0 ? sortedUsers : filteredUsers;
+
+  // Sort filtered users
+  const sortedUsers = useMemo(() => {
+    if (!data || !data.users.length) return [];
+    
+    const users = [...data.users];
+    const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
+    
+    return users.sort((a, b) => {
+      let aValue: number;
+      let bValue: number;
+      
+      switch (sortBy) {
+        case 'position':
+          aValue = a.leaderboard_position || 0;
+          bValue = b.leaderboard_position || 0;
+          break;
+        case 'score':
+          aValue = a.profile.builder_score?.points || 0;
+          bValue = b.profile.builder_score?.points || 0;
+          break;
+        case 'earnings':
+          if (isAllSponsors) {
+            aValue = (a as UserWithEarningsBreakdown).totalEarningsUSD || 0;
+            bValue = (b as UserWithEarningsBreakdown).totalEarningsUSD || 0;
+          } else {
+            const aAmt = typeof a.reward_amount === 'string' ? parseFloat(a.reward_amount) : a.reward_amount;
+            const bAmt = typeof b.reward_amount === 'string' ? parseFloat(b.reward_amount) : b.reward_amount;
+            aValue = tokenPrice !== null ? aAmt * tokenPrice : aAmt;
+            bValue = tokenPrice !== null ? bAmt * tokenPrice : bAmt;
+          }
+          break;
+        case 'mcap':
+          aValue = calculateMCAP(a, priceForMCAP);
+          bValue = calculateMCAP(b, priceForMCAP);
+          break;
+        default:
+          return 0;
+      }
+      
+      if (sortOrder === 'asc') {
+        return aValue - bValue;
+      } else {
+        return bValue - aValue;
+      }
+    });
+  }, [data, sortBy, sortOrder, tokenPrice, isAllSponsors]);
 
   // Get top builders for each category in specified order
   const topBuildersByCategory = useMemo(() => {
-    if (!filteredUsers.length) return [];
+    if (!data || !data.users.length) return [];
     
     const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
-    const soughtAfter = getSoughtAfterBuilder(filteredUsers);
-    const trending = getTrendingBuilder(filteredUsers);
-    const highestScore = getHighestScore(filteredUsers);
-    const featured = getFeaturedBuilder(filteredUsers, priceForMCAP);
-    const mostEarnings = getMostEarnings(filteredUsers);
+    const soughtAfter = getSoughtAfterBuilder(data.users);
+    const trending = getTrendingBuilder(data.users);
+    const highestScore = getHighestScore(data.users);
+    const featured = getFeaturedBuilder(data.users, priceForMCAP);
+    const mostEarnings = getMostEarnings(data.users);
     
     // Return in specified order: sought after, trending, highest score, featured, most earnings
     return [
@@ -953,7 +1021,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       { category: "featured" as BuilderCategory, builder: featured },
       { category: "most_earnings" as BuilderCategory, builder: mostEarnings },
     ].filter(item => item.builder !== null);
-  }, [filteredUsers, tokenPrice, isAllSponsors]);
+  }, [data, tokenPrice, isAllSponsors]);
 
 
   if (loading && !data) {
@@ -1129,7 +1197,39 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                 </svg>
                 Share
               </button>
+              <button
+                onClick={handleRefresh}
+                disabled={loading}
+                className="px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100 disabled:opacity-50 text-gray-700 border border-gray-200 rounded-xl transition-colors flex items-center gap-1.5 shadow-sm"
+                title="Refresh leaderboard"
+              >
+                <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Refresh
+              </button>
             </div>
+          </div>
+          <div className="mt-4 flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-gray-600">Sort by:</span>
+            {(['position', 'score', 'earnings', 'mcap'] as const).map((field) => (
+              <button
+                key={field}
+                onClick={() => handleSort(field)}
+                className={`px-3 py-1.5 text-xs rounded-xl transition-colors flex items-center gap-1.5 ${
+                  sortBy === field
+                    ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                    : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
+                }`}
+              >
+                {field.charAt(0).toUpperCase() + field.slice(1)}
+                {sortBy === field && (
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={sortOrder === 'asc' ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
+                  </svg>
+                )}
+              </button>
+            ))}
           </div>
         </div>
         <div className="flex items-center justify-between mt-4 flex-wrap gap-4">
