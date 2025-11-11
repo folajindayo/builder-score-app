@@ -1398,6 +1398,74 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               })}
             </div>
           )}
+          <div className="mt-3 flex items-center gap-2">
+            <button
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="px-3 py-1.5 text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl transition-colors flex items-center gap-1.5"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              {showAdvancedFilters ? 'Hide' : 'Show'} Advanced Filters
+            </button>
+          </div>
+          {showAdvancedFilters && (
+            <div className="mt-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-2">Score Range</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      placeholder="Min"
+                      value={scoreRange.min}
+                      onChange={(e) => setScoreRange({ ...scoreRange, min: e.target.value === '' ? '' : Number(e.target.value) })}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <span className="text-xs text-gray-500">to</span>
+                    <input
+                      type="number"
+                      placeholder="Max"
+                      value={scoreRange.max}
+                      onChange={(e) => setScoreRange({ ...scoreRange, max: e.target.value === '' ? '' : Number(e.target.value) })}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-2">Earnings Range (USD)</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      placeholder="Min"
+                      value={earningsRange.min}
+                      onChange={(e) => setEarningsRange({ ...earningsRange, min: e.target.value === '' ? '' : Number(e.target.value) })}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <span className="text-xs text-gray-500">to</span>
+                    <input
+                      type="number"
+                      placeholder="Max"
+                      value={earningsRange.max}
+                      onChange={(e) => setEarningsRange({ ...earningsRange, max: e.target.value === '' ? '' : Number(e.target.value) })}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 flex justify-end">
+                <button
+                  onClick={() => {
+                    setScoreRange({ min: '', max: '' });
+                    setEarningsRange({ min: '', max: '' });
+                  }}
+                  className="px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-colors"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+          )}
           {showColumnToggle && (
             <div className="mt-2 p-3 bg-gray-50 rounded-xl border border-gray-200">
               <div className="text-xs font-medium text-gray-700 mb-2">Toggle Columns:</div>
