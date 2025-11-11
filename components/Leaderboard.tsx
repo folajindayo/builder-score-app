@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { getLeaderboard } from "@/lib/builderscore-api";
 import { getTokenPrice, type TokenInfo } from "@/lib/coingecko-api";
 import type { LeaderboardResponse, LeaderboardFilters } from "@/types/talent";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, formatWalletAddress } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
   categorizeBuilders,
