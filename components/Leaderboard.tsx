@@ -1834,7 +1834,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                           // Single sponsor mode
                           return (
                             <div>
-                            {tokenPrice !== null && tokenInfo ? (
+                              {tokenPrice !== null && tokenInfo ? (
                               <>
                                 <div className="text-sm font-semibold text-gray-900">
                                   ${formatNumber(rewardAmount * tokenPrice)}
