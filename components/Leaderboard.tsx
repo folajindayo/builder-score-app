@@ -1769,10 +1769,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                           // All sponsors mode - show total USD and breakdown
                           return (
                             <div>
-                            <div className="text-sm font-semibold text-gray-900">
-                              ${formatNumber(userWithBreakdown.totalEarningsUSD)}
-                            </div>
-                            {userWithBreakdown.earningsBreakdown && userWithBreakdown.earningsBreakdown.length > 0 && (
+                              <div className="text-sm font-semibold text-gray-900">
+                                ${formatNumber(userWithBreakdown.totalEarningsUSD)}
+                              </div>
+                              {userWithBreakdown.earningsBreakdown && userWithBreakdown.earningsBreakdown.length > 0 && (
                               <div className="mt-1">
                                 <button
                                   onClick={() => toggleEarningsBreakdown(user.id)}
