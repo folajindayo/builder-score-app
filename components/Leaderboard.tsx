@@ -1831,9 +1831,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                             </div>
                           );
                         } else if (rewardAmount > 0) {
-                        // Single sponsor mode
-                        return (
-                          <div>
+                          // Single sponsor mode
+                          return (
+                            <div>
                             {tokenPrice !== null && tokenInfo ? (
                               <>
                                 <div className="text-sm font-semibold text-gray-900">
