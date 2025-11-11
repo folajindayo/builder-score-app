@@ -246,7 +246,11 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   // Refresh functionality
   const handleRefresh = () => {
     setPage(1);
-    fetchLeaderboard();
+    const leaderboardFilters = {
+      ...filters,
+      page: 1,
+    };
+    fetchLeaderboard(leaderboardFilters);
   };
 
   // Sort functionality
@@ -944,17 +948,6 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const filteredUsers = data?.users || [];
   const isAllSponsors = !filters.sponsor_slug;
   
-  // Categorize builders and calculate MCAP (must be before early returns)
-  const categories = useMemo(() => {
-    if (!filteredUsers.length) return new Map<number, BuilderCategory>();
-    // For all sponsors mode, use average token price or default
-    const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
-    return categorizeBuilders(filteredUsers, priceForMCAP);
-  }, [filteredUsers, tokenPrice, isAllSponsors]);
-  
-  // Use sorted users for display
-  const displayUsers = sortedUsers.length > 0 ? sortedUsers : filteredUsers;
-
   // Sort filtered users
   const sortedUsers = useMemo(() => {
     if (!data || !data.users.length) return [];
@@ -1001,6 +994,17 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       }
     });
   }, [data, sortBy, sortOrder, tokenPrice, isAllSponsors]);
+  
+  // Use sorted users for display
+  const displayUsers = sortedUsers.length > 0 ? sortedUsers : filteredUsers;
+  
+  // Categorize builders and calculate MCAP (must be before early returns)
+  const categories = useMemo(() => {
+    if (!filteredUsers.length) return new Map<number, BuilderCategory>();
+    // For all sponsors mode, use average token price or default
+    const priceForMCAP = isAllSponsors ? 1 : (tokenPrice || 1);
+    return categorizeBuilders(filteredUsers, priceForMCAP);
+  }, [filteredUsers, tokenPrice, isAllSponsors]);
 
   // Get top builders for each category in specified order
   const topBuildersByCategory = useMemo(() => {
@@ -1557,7 +1561,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.users.map((user, idx) => {
+            {displayUsers.map((user, idx) => {
               const rewardAmount = typeof user.reward_amount === 'string' 
                 ? parseFloat(user.reward_amount) 
                 : user.reward_amount;
