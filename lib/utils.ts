@@ -70,6 +70,12 @@ export function formatPercentage(value: number, decimals: number = 1): string {
   return `${value.toFixed(decimals)}%`;
 }
 
+// Calculate percentage change
+export function calculatePercentageChange(oldValue: number, newValue: number): number {
+  if (oldValue === 0) return newValue === 0 ? 0 : 100;
+  return ((newValue - oldValue) / oldValue) * 100;
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
