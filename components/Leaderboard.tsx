@@ -1768,7 +1768,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                         if (isAllSponsors && userWithBreakdown.totalEarningsUSD !== undefined) {
                           // All sponsors mode - show total USD and breakdown
                           return (
-                          <div>
+                            <div>
                             <div className="text-sm font-semibold text-gray-900">
                               ${formatNumber(userWithBreakdown.totalEarningsUSD)}
                             </div>
@@ -1848,12 +1848,12 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                                 {formatNumber(rewardAmount)} {tokenInfo?.symbol || "TOKEN"}
                               </div>
                             )}
-                          </div>
-                        );
-                      } else {
-                        return <span className="text-sm text-gray-400">—</span>;
-                      }
-                    })()}
+                            </div>
+                          );
+                        } else {
+                          return <span className="text-sm text-gray-400">—</span>;
+                        }
+                      })()}
                   </td>
                   <td className="px-4 py-4">
                     {user.ranking_change !== 0 ? (
