@@ -131,6 +131,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [earningsRange, setEarningsRange] = useState<{ min: number | ''; max: number | '' }>({ min: '', max: '' });
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [bookmarkedBuilders, setBookmarkedBuilders] = useState<Set<number>>(new Set());
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
@@ -1105,8 +1107,14 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
   }, [scoreFilteredUsers, earningsRange, isAllSponsors, tokenPrice]);
   
+  // Apply bookmark filter
+  const bookmarkFilteredUsers = useMemo(() => {
+    if (!showBookmarkedOnly) return earningsFilteredUsers;
+    return earningsFilteredUsers.filter(user => bookmarkedBuilders.has(user.id));
+  }, [earningsFilteredUsers, showBookmarkedOnly, bookmarkedBuilders]);
+  
   // Use sorted users for display
-  const displayUsers = earningsFilteredUsers;
+  const displayUsers = bookmarkFilteredUsers;
 
   // Get top builders for each category in specified order
   const topBuildersByCategory = useMemo(() => {
@@ -1426,7 +1434,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               })}
             </div>
           )}
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-3 flex items-center gap-2 flex-wrap">
             <button
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
               className="px-3 py-1.5 text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl transition-colors flex items-center gap-1.5"
@@ -1436,6 +1444,49 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </svg>
               {showAdvancedFilters ? 'Hide' : 'Show'} Advanced Filters
             </button>
+            {bookmarkedBuilders.size > 0 && (
+              <button
+                onClick={() => setShowBookmarkedOnly(!showBookmarkedOnly)}
+                className={`px-3 py-1.5 text-xs rounded-xl transition-colors flex items-center gap-1.5 ${
+                  showBookmarkedOnly
+                    ? 'bg-yellow-100 text-yellow-700 border border-yellow-300'
+                    : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
+                }`}
+              >
+                <svg className="w-3 h-3" fill={showBookmarkedOnly ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+                Bookmarks ({bookmarkedBuilders.size})
+              </button>
+            )}
+            <div className="flex items-center gap-1 border border-gray-200 rounded-xl overflow-hidden">
+              <button
+                onClick={() => setViewMode('table')}
+                className={`px-3 py-1.5 text-xs transition-colors ${
+                  viewMode === 'table'
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                }`}
+                title="Table view"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setViewMode('card')}
+                className={`px-3 py-1.5 text-xs transition-colors ${
+                  viewMode === 'card'
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                }`}
+                title="Card view"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+              </button>
+            </div>
           </div>
           {showAdvancedFilters && (
             <div className="mt-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
