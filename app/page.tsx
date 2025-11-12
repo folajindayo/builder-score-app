@@ -13,8 +13,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <SkipLink href="#main-content" />
-      <header className="bg-white border-b border-gray-200">
-        <div className="mx-[200px] px-6 py-4">
+      <header className="bg-white border-b border-gray-200" role="banner">
+        <nav className="mx-[200px] px-6 py-4" role="navigation" aria-label="Main navigation">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-gray-900">
               Builder Score
@@ -35,7 +35,7 @@ export default function Home() {
               <WalletButton />
             </div>
           </div>
-        </div>
+        </nav>
       </header>
 
       <main id="main-content" className="mx-[200px] px-6 py-8">
