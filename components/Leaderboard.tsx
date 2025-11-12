@@ -2167,7 +2167,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: Math.min(idx * 0.02, 0.5) }}
-                  className="hover:bg-gray-50 transition-colors"
+                  className="hover:bg-gray-50 transition-colors focus-within:bg-blue-50 focus-within:ring-2 focus-within:ring-blue-500 focus-within:outline-none"
+                  tabIndex={0}
+                  role="row"
+                  aria-label={`Builder ${user.profile.display_name || user.profile.name || user.id}, position ${user.leaderboard_position || ((data.pagination.current_page - 1) * 30 + idx + 1)}, score ${user.profile.builder_score?.points || 0}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleViewProfile(user);
+                    }
+                  }}
                 >
                   {visibleColumns.position && (
                     <td className="px-4 py-4" aria-label={`Position ${user.leaderboard_position || ((data.pagination.current_page - 1) * 30 + idx + 1)}`}>
