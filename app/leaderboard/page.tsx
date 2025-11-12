@@ -55,7 +55,8 @@ export default function LeaderboardPage() {
 
       <main className="mx-[200px] px-6 py-8">
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-2">
+          <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Leaderboard" }]} />
+          <div className="flex items-center gap-2 mb-2 mt-4">
             <h2 className="text-3xl font-bold text-gray-900">
               Leaderboard
             </h2>
