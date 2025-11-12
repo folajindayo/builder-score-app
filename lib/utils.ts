@@ -358,6 +358,37 @@ export function sortBy<T>(array: T[], keyFn: (item: T) => number | string, order
 }
 
 /**
+ * Sorts an array by multiple criteria
+ * @param array - The array to sort
+ * @param sortFns - Array of sort functions, applied in order
+ * @returns A new sorted array
+ */
+export function sortByMultiple<T>(
+  array: T[],
+  sortFns: Array<{ keyFn: (item: T) => number | string; order?: "asc" | "desc" }>
+): T[] {
+  return [...array].sort((a, b) => {
+    for (const { keyFn, order = "asc" } of sortFns) {
+      const aVal = keyFn(a);
+      const bVal = keyFn(b);
+      if (aVal < bVal) return order === "asc" ? -1 : 1;
+      if (aVal > bVal) return order === "asc" ? 1 : -1;
+    }
+    return 0;
+  });
+}
+
+/**
+ * Sorts an array of numbers
+ * @param array - The array to sort
+ * @param order - 'asc' for ascending, 'desc' for descending
+ * @returns A new sorted array
+ */
+export function sortNumbers(array: number[], order: "asc" | "desc" = "asc"): number[] {
+  return [...array].sort((a, b) => (order === "asc" ? a - b : b - a));
+}
+
+/**
  * Chunks an array into smaller arrays of specified size
  * @param array - The array to chunk
  * @param size - The size of each chunk
