@@ -636,4 +636,35 @@ export function formatRelativeTime(dateString: string): string {
   }
 }
 
+/**
+ * Formats a date range into a readable string
+ * @param startDate - The start date string
+ * @param endDate - The end date string
+ * @returns Formatted date range string (e.g., "Jan 1 - Jan 31, 2024")
+ */
+export function formatDateRange(startDate: string, endDate: string): string {
+  try {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const startYear = start.getFullYear();
+    const endYear = end.getFullYear();
+    
+    const startFormatted = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: startYear !== endYear ? "numeric" : undefined,
+    }).format(start);
+    
+    const endFormatted = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(end);
+    
+    return `${startFormatted} - ${endFormatted}`;
+  } catch {
+    return `${startDate} - ${endDate}`;
+  }
+}
+
 
