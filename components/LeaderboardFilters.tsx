@@ -27,7 +27,7 @@ interface LeaderboardFiltersProps {
   initialFilters?: LeaderboardFilters;
 }
 
-export function LeaderboardFilters({
+export const LeaderboardFilters = memo(function LeaderboardFilters({
   onFilterChange,
   loading,
   initialFilters = {},
@@ -193,5 +193,5 @@ export function LeaderboardFilters({
       </div>
     </div>
   );
-}
+});
 
