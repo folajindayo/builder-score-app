@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState, memo, useMemo } from "react";
 import { useAccount } from "wagmi";
 import { getBuilderScore, getBuilderProfile } from "@/lib/talent-api";
 import type { BuilderScore, BuilderProfile } from "@/types/talent";
@@ -279,7 +279,7 @@ export const BuilderScore = memo(function BuilderScore() {
             Skills ({score.skills.length})
           </h3>
           <div className="flex flex-wrap gap-2">
-            {score.skills.map((skill, idx) => (
+            {useMemo(() => score.skills?.map((skill, idx) => (
               <motion.span
                 key={skill.id}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -289,7 +289,7 @@ export const BuilderScore = memo(function BuilderScore() {
               >
                 {skill.name}
               </motion.span>
-            ))}
+            )), [score.skills])}
           </div>
         </motion.div>
       )}
