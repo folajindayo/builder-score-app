@@ -2063,8 +2063,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
       {/* Main Leaderboard Table or Card View */}
       {viewMode === 'table' ? (
-        <div className="overflow-x-auto rounded-xl">
-          <table className="w-full rounded-xl overflow-hidden">
+        <div className="overflow-x-auto rounded-xl" role="region" aria-label="Leaderboard table">
+          <table className="w-full rounded-xl overflow-hidden" role="table" aria-label="Builders leaderboard">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
               {visibleColumns.position && (
