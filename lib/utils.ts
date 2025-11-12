@@ -708,4 +708,20 @@ export function compareDates(date1: string, date2: string): number {
   }
 }
 
+/**
+ * Adds or subtracts days from a date
+ * @param dateString - The date string
+ * @param days - Number of days to add (positive) or subtract (negative)
+ * @returns New date string
+ */
+export function addDays(dateString: string, days: number): string {
+  try {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + days);
+    return date.toISOString();
+  } catch {
+    return dateString;
+  }
+}
+
 
