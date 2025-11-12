@@ -16,6 +16,14 @@ const SPONSOR_SLUGS = [
   { value: "talent-protocol", label: "Talent Protocol" },
 ];
 
+// Filter presets
+const FILTER_PRESETS = [
+  { label: "All Time", sponsor: "all", duration: "allTime" as const },
+  { label: "This Week", sponsor: "walletconnect", duration: "thisWeek" as const },
+  { label: "Last Week", sponsor: "walletconnect", duration: "lastWeek" as const },
+  { label: "Top Builders", sponsor: "all", duration: "allTime" as const },
+] as const;
+
 // Grant IDs by sponsor and duration
 const GRANT_IDS: Record<string, { thisWeek: number; lastWeek: number }> = {
   walletconnect: { thisWeek: 710, lastWeek: 704 },
