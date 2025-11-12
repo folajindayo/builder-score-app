@@ -26,6 +26,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://api.talentprotocol.com" />
+        <link rel="dns-prefetch" href="https://api.talentprotocol.com" />
         {typeof window !== 'undefined' && 'serviceWorker' in navigator && (
           <script
             dangerouslySetInnerHTML={{
