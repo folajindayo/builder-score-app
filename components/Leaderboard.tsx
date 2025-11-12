@@ -2163,7 +2163,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       {user.profile.image_url ? (
                         <img
                           src={user.profile.image_url}
-                          alt={user.profile.display_name || user.profile.name}
+                          alt={user.profile.display_name || user.profile.name || `Builder ${user.id} profile picture`}
                           className="w-8 h-8 rounded-lg object-cover flex-shrink-0 shadow-sm"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
