@@ -143,10 +143,10 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [refreshInterval, setRefreshInterval] = useState(30); // seconds
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     setActiveSearchQuery(searchQuery);
     setPage(1);
-  };
+  }, [searchQuery]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
