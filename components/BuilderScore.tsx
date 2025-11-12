@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useAccount } from "wagmi";
 import { getBuilderScore, getBuilderProfile } from "@/lib/talent-api";
 import type { BuilderScore, BuilderProfile } from "@/types/talent";
 import { formatScore, formatNumber, formatDate, copyToClipboard, formatAddress } from "@/lib/utils";
 import { motion } from "framer-motion";
 
-export function BuilderScore() {
+export const BuilderScore = memo(function BuilderScore() {
   const { address, isConnected } = useAccount();
   const [score, setScore] = useState<BuilderScore | null>(null);
   const [profile, setProfile] = useState<BuilderProfile | null>(null);
