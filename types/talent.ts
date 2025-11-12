@@ -1,21 +1,40 @@
 // Talent Protocol API Types
 
+/**
+ * Builder score data structure
+ */
 export interface BuilderScore {
+  /** The builder's score value */
   score: number;
+  /** Rank position among all builders */
   rank?: number;
+  /** Percentile position (0-100) */
   percentile?: number;
+  /** Data points contributing to the score */
   dataPoints?: DataPoint[];
+  /** Credentials earned by the builder */
   credentials?: Credential[];
+  /** Skills associated with the builder */
   skills?: Skill[];
+  /** Last update timestamp */
   updatedAt?: string;
 }
 
+/**
+ * Data point contributing to builder score
+ */
 export interface DataPoint {
+  /** Unique identifier */
   id: string;
+  /** Source of the data point */
   source: string;
+  /** Type of data point */
   type: string;
+  /** Numeric value */
   value: number;
+  /** Whether the data point is verified */
   verified: boolean;
+  /** Creation timestamp */
   createdAt: string;
 }
 
