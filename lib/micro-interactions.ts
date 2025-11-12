@@ -121,3 +121,54 @@ export const staggerItem: Variants = {
   animate: { opacity: 1, y: 0 },
 };
 
+/**
+ * Success checkmark animation
+ */
+export const successCheck: Variants = {
+  initial: { scale: 0, opacity: 0 },
+  animate: { 
+    scale: [0, 1.2, 1],
+    opacity: 1,
+    transition: { 
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  },
+};
+
+/**
+ * Success bounce animation
+ */
+export const successBounce: Variants = {
+  initial: { scale: 0 },
+  animate: { 
+    scale: [0, 1.2, 1],
+    transition: { 
+      duration: 0.6,
+      ease: "easeOut"
+    }
+  },
+};
+
+/**
+ * Success fade and slide
+ */
+export const successSlide: Variants = {
+  initial: { opacity: 0, y: -20, scale: 0.8 },
+  animate: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { 
+      duration: 0.4,
+      ease: "easeOut"
+    }
+  },
+  exit: { 
+    opacity: 0, 
+    y: 20, 
+    scale: 0.8,
+    transition: { duration: 0.3 }
+  },
+};
+
