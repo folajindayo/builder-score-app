@@ -31,8 +31,8 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <LoadingProgressBar isLoading={loading} />
-      <header className="bg-white border-b border-gray-200">
-        <div className="mx-[200px] px-6 py-4">
+      <header className="bg-white border-b border-gray-200" role="banner">
+        <nav className="mx-[200px] px-6 py-4" role="navigation" aria-label="Main navigation">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-gray-900">
               Builder Score
@@ -53,10 +53,10 @@ export default function LeaderboardPage() {
               <WalletButton />
             </div>
           </div>
-        </div>
+        </nav>
       </header>
 
-      <main className="mx-[200px] px-6 py-8">
+      <main className="mx-[200px] px-6 py-8" role="main">
         <div className="mb-6">
           <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Leaderboard" }]} />
           <div className="flex items-center gap-2 mb-2 mt-4">
