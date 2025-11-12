@@ -2147,7 +2147,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   key={user.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: idx * 0.02 }}
+                  transition={{ delay: Math.min(idx * 0.02, 0.5) }}
                   className="hover:bg-gray-50 transition-colors"
                 >
                   {visibleColumns.position && (
