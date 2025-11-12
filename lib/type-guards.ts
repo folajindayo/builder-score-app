@@ -51,3 +51,59 @@ export function isFunction(value: unknown): value is Function {
   return typeof value === "function";
 }
 
+/**
+ * Type guard for checking if a value is a Date
+ */
+export function isDate(value: unknown): value is Date {
+  return value instanceof Date && !isNaN(value.getTime());
+}
+
+/**
+ * Type guard for checking if a value is a Promise
+ */
+export function isPromise<T = unknown>(value: unknown): value is Promise<T> {
+  return value instanceof Promise || (isObject(value) && isFunction((value as any).then));
+}
+
+/**
+ * Type guard for checking if a value is a RegExp
+ */
+export function isRegExp(value: unknown): value is RegExp {
+  return value instanceof RegExp;
+}
+
+/**
+ * Type guard for checking if a value is a Map
+ */
+export function isMap<K = unknown, V = unknown>(value: unknown): value is Map<K, V> {
+  return value instanceof Map;
+}
+
+/**
+ * Type guard for checking if a value is a Set
+ */
+export function isSet<T = unknown>(value: unknown): value is Set<T> {
+  return value instanceof Set;
+}
+
+/**
+ * Type guard for checking if a value is a non-empty string
+ */
+export function isNonEmptyString(value: unknown): value is string {
+  return isString(value) && value.length > 0;
+}
+
+/**
+ * Type guard for checking if a value is a positive number
+ */
+export function isPositiveNumber(value: unknown): value is number {
+  return isNumber(value) && value > 0;
+}
+
+/**
+ * Type guard for checking if a value is a non-negative number
+ */
+export function isNonNegativeNumber(value: unknown): value is number {
+  return isNumber(value) && value >= 0;
+}
+
