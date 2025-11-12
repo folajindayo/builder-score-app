@@ -1,11 +1,12 @@
 "use client";
 
+import { memo } from "react";
 import { useAccount, useDisconnect } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
 import { formatAddress } from "@/lib/utils";
 import { motion } from "framer-motion";
 
-export function WalletButton() {
+export const WalletButton = memo(function WalletButton() {
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();
   const { disconnect } = useDisconnect();
