@@ -1366,7 +1366,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               <button
                 onClick={handleSearch}
                 disabled={loading}
-                className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl transition-colors shadow-sm"
+                className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl transition-all duration-200 shadow-sm hover:shadow-md"
               >
                 {loading ? "Searching..." : "Search"}
               </button>
