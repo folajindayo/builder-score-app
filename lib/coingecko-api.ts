@@ -7,6 +7,9 @@ export interface TokenPrice {
   usd_24h_change?: number;
 }
 
+/**
+ * Token information including symbol, name, and fallback price
+ */
 export interface TokenInfo {
   symbol: string;
   name: string;
