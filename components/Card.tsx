@@ -12,7 +12,7 @@ interface CardProps {
 
 export function Card({ children, className = "", hover = false, onClick }: CardProps) {
   const baseClasses = "bg-white rounded-xl border-2 border-gray-200 shadow-sm";
-  const hoverClasses = hover ? "hover:shadow-lg hover:border-gray-300 transition-all cursor-pointer" : "";
+  const hoverClasses = hover ? "hover:shadow-xl hover:border-gray-300 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer" : "";
   const clickableClasses = onClick ? "cursor-pointer" : "";
 
   const content = (
@@ -24,15 +24,23 @@ export function Card({ children, className = "", hover = false, onClick }: CardP
   if (onClick) {
     return (
       <motion.div
-        whileHover={hover ? { scale: 1.02 } : {}}
+        whileHover={hover ? { scale: 1.02, y: -4 } : { scale: 1.01 }}
         whileTap={onClick ? { scale: 0.98 } : {}}
         onClick={onClick}
+        transition={{ duration: 0.2, ease: "easeOut" }}
       >
         {content}
       </motion.div>
     );
   }
 
-  return hover ? <motion.div whileHover={{ scale: 1.02 }}>{content}</motion.div> : content;
+  return hover ? (
+    <motion.div 
+      whileHover={{ scale: 1.02, y: -4 }} 
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
+      {content}
+    </motion.div>
+  ) : content;
 }
 
