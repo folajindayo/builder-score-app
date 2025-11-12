@@ -316,6 +316,15 @@ export function randomItem<T>(array: T[]): T | undefined {
   return array[Math.floor(Math.random() * array.length)];
 }
 
+/**
+ * Calculates the sum of numbers in an array
+ * @param array - The array of numbers
+ * @returns The sum of all numbers
+ */
+export function sum(array: number[]): number {
+  return array.reduce((acc, val) => acc + val, 0);
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
