@@ -76,6 +76,9 @@ export interface SearchResponse {
 }
 
 // BuilderScore API Types (builderscore.xyz)
+/**
+ * User data from the leaderboard API
+ */
 export interface LeaderboardUser {
   id: number;
   distributed_at: string | null;
