@@ -60,3 +60,51 @@ export async function batchPromises<T>(
   return results;
 }
 
+/**
+ * Delays execution for a specified number of milliseconds
+ */
+export function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Executes promises sequentially (one after another)
+ */
+export async function sequentialPromises<T>(
+  promises: (() => Promise<T>)[]
+): Promise<T[]> {
+  const results: T[] = [];
+  for (const promiseFn of promises) {
+    const result = await promiseFn();
+    results.push(result);
+  }
+  return results;
+}
+
+/**
+ * Executes promises with a concurrency limit
+ */
+export async function limitConcurrency<T>(
+  promises: (() => Promise<T>)[],
+  limit: number
+): Promise<T[]> {
+  const results: T[] = [];
+  const executing: Promise<void>[] = [];
+
+  for (const promiseFn of promises) {
+    const promise = promiseFn().then((result) => {
+      results.push(result);
+      executing.splice(executing.indexOf(promise), 1);
+    });
+
+    executing.push(promise);
+
+    if (executing.length >= limit) {
+      await Promise.race(executing);
+    }
+  }
+
+  await Promise.all(executing);
+  return results;
+}
+
