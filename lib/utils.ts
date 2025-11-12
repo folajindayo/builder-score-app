@@ -265,6 +265,17 @@ export function chunk<T>(array: T[], size: number): T[][] {
   return chunks;
 }
 
+/**
+ * Flattens a nested array one level deep
+ * @param array - The array to flatten
+ * @returns A flattened array
+ */
+export function flatten<T>(array: (T | T[])[]): T[] {
+  return array.reduce((acc, item) => {
+    return acc.concat(Array.isArray(item) ? item : [item]);
+  }, [] as T[]);
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
