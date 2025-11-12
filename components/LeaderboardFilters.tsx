@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, useCallback } from "react";
 import type { LeaderboardFilters } from "@/types/talent";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Sponsor slugs - ordered list
 const SPONSOR_SLUGS = [
@@ -121,54 +121,76 @@ export const LeaderboardFilters = memo(function LeaderboardFilters({
           <label className="block text-xs font-medium text-gray-700 mb-1.5">
             Duration
           </label>
-          {sponsorSlug ? (
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => handleGrantDurationChange("allTime")}
-                disabled={sponsorSlug === "all"}
-                className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
-                  grantDuration === "allTime"
-                    ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                    : sponsorSlug === "all"
-                    ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                }`}
+          <AnimatePresence mode="wait">
+            {sponsorSlug ? (
+              <motion.div
+                key="duration-buttons"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-wrap gap-2"
               >
-                All Time
-              </button>
-              {sponsorSlug !== "all" && GRANT_IDS[sponsorSlug] && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => handleGrantDurationChange("thisWeek")}
-                    className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
-                      grantDuration === "thisWeek"
-                        ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    This Week
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleGrantDurationChange("lastWeek")}
-                    className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
-                      grantDuration === "lastWeek"
-                        ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    Last Week
-                  </button>
-                </>
-              )}
-            </div>
-          ) : (
-            <div className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 text-gray-400">
-              Select a sponsor to see duration options
-            </div>
-          )}
+                <motion.button
+                  type="button"
+                  onClick={() => handleGrantDurationChange("allTime")}
+                  disabled={sponsorSlug === "all"}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
+                    grantDuration === "allTime"
+                      ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                      : sponsorSlug === "all"
+                      ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  All Time
+                </motion.button>
+                {sponsorSlug !== "all" && GRANT_IDS[sponsorSlug] && (
+                  <>
+                    <motion.button
+                      type="button"
+                      onClick={() => handleGrantDurationChange("thisWeek")}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
+                        grantDuration === "thisWeek"
+                          ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      This Week
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      onClick={() => handleGrantDurationChange("lastWeek")}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
+                        grantDuration === "lastWeek"
+                          ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      Last Week
+                    </motion.button>
+                  </>
+                )}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="placeholder"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 text-gray-400"
+              >
+                Select a sponsor to see duration options
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
       <div className="mt-4 flex justify-end gap-2">
