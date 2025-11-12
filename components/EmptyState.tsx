@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 interface EmptyStateProps {
   title: string;
   description?: string;
@@ -32,7 +34,7 @@ const noResultsIllustration = (
   </svg>
 );
 
-export function EmptyState({
+export const EmptyState = memo(function EmptyState({
   title,
   description,
   icon,
@@ -58,5 +60,5 @@ export function EmptyState({
       {action && <div>{action}</div>}
     </div>
   );
-}
+});
 
