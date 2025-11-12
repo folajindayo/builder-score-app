@@ -1,173 +1,71 @@
 /**
- * String manipulation utilities
+ * String manipulation utility functions
  */
 
 /**
- * Removes whitespace from both ends of a string
+ * Generates a URL-friendly slug from a string
+ * @param text - The text to convert to a slug
+ * @returns URL-friendly slug
  */
-export function trim(str: string): string {
-  return str.trim();
-}
-
-/**
- * Removes whitespace from the start of a string
- */
-export function trimStart(str: string): string {
-  return str.trimStart();
-}
-
-/**
- * Removes whitespace from the end of a string
- */
-export function trimEnd(str: string): string {
-  return str.trimEnd();
-}
-
-/**
- * Converts string to lowercase
- */
-export function toLowerCase(str: string): string {
-  return str.toLowerCase();
-}
-
-/**
- * Converts string to uppercase
- */
-export function toUpperCase(str: string): string {
-  return str.toUpperCase();
-}
-
-/**
- * Reverses a string
- */
-export function reverse(str: string): string {
-  return str.split('').reverse().join('');
-}
-
-/**
- * Checks if string starts with a substring
- */
-export function startsWith(str: string, searchString: string): boolean {
-  return str.startsWith(searchString);
-}
-
-/**
- * Checks if string ends with a substring
- */
-export function endsWith(str: string, searchString: string): boolean {
-  return str.endsWith(searchString);
-}
-
-/**
- * Replaces all occurrences of a substring
- */
-export function replaceAll(str: string, search: string, replace: string): string {
-  return str.split(search).join(replace);
-}
-
-/**
- * Pads string to a certain length
- */
-export function padStart(str: string, length: number, padString: string = ' '): string {
-  return str.padStart(length, padString);
-}
-
-/**
- * Pads string at the end to a certain length
- */
-export function padEnd(str: string, length: number, padString: string = ' '): string {
-  return str.padEnd(length, padString);
-}
-
-/**
- * Removes HTML tags from a string
- */
-export function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '');
-}
-
-/**
- * Escapes HTML special characters
- */
-export function escapeHtml(str: string): string {
-  const map: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
-  };
-  return str.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-/**
- * Unescapes HTML entities
- */
-export function unescapeHtml(str: string): string {
-  const map: Record<string, string> = {
-    '&amp;': '&',
-    '&lt;': '<',
-    '&gt;': '>',
-    '&quot;': '"',
-    '&#039;': "'",
-  };
-  return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m) => map[m]);
-}
-
-/**
- * Splits string by delimiter and trims each part
- */
-export function splitAndTrim(str: string, delimiter: string): string[] {
-  return str.split(delimiter).map((s) => s.trim()).filter((s) => s.length > 0);
-}
-
-/**
- * Joins array of strings with delimiter
- */
-export function join(array: string[], delimiter: string = ''): string {
-  return array.join(delimiter);
-}
-
-/**
- * Checks if string contains a substring (case-insensitive)
- */
-export function containsIgnoreCase(str: string, searchString: string): boolean {
-  return str.toLowerCase().includes(searchString.toLowerCase());
-}
-
-/**
- * Extracts words from a string
- */
-export function extractWords(str: string): string[] {
-  return str.match(/\b\w+\b/g) || [];
-}
-
-/**
- * Counts words in a string
- */
-export function countWords(str: string): number {
-  return extractWords(str).length;
-}
-
-/**
- * Converts string to slug format
- */
-export function slugify(str: string): string {
-  return str
+export function generateSlug(text: string): string {
+  return text
     .toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
 }
 
 /**
- * Converts slug back to readable string
+ * Highlights search terms in text
+ * @param text - The text to highlight in
+ * @param searchTerm - The term to highlight
+ * @param highlightClass - CSS class for highlighting (default: 'highlight')
+ * @returns Text with highlighted terms
  */
-export function unslugify(slug: string): string {
-  return slug
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+export function highlightText(text: string, searchTerm: string, highlightClass: string = 'highlight'): string {
+  if (!searchTerm) return text;
+  const regex = new RegExp(`(${searchTerm})`, 'gi');
+  return text.replace(regex, `<span class="${highlightClass}">$1</span>`);
 }
 
+/**
+ * Matches a string against a search term (case-insensitive)
+ * @param text - The text to search in
+ * @param searchTerm - The search term
+ * @returns True if match found, false otherwise
+ */
+export function matchesSearchTerm(text: string, searchTerm: string): boolean {
+  if (!text || !searchTerm) return false;
+  return text.toLowerCase().includes(searchTerm.toLowerCase());
+}
+
+/**
+ * Pluralizes a word based on count
+ * @param count - The count to check
+ * @param singular - Singular form of the word
+ * @param plural - Plural form (optional, adds 's' if not provided)
+ * @returns Pluralized string
+ */
+export function pluralize(count: number, singular: string, plural?: string): string {
+  return count === 1 ? singular : (plural || `${singular}s`);
+}
+
+/**
+ * Truncates text at word boundary
+ * @param text - The text to truncate
+ * @param maxLength - Maximum length
+ * @returns Truncated text at word boundary
+ */
+export function truncateAtWord(text: string, maxLength: number): string {
+  if (!text || text.length <= maxLength) return text;
+  
+  const truncated = text.slice(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(' ');
+  
+  if (lastSpace > 0) {
+    return truncated.slice(0, lastSpace) + '...';
+  }
+  
+  return truncated + '...';
+}
