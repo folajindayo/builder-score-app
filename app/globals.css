@@ -52,3 +52,12 @@ textarea:focus-visible {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* Ripple animation */
+@keyframes ripple {
+  to {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
