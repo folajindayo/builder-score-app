@@ -42,7 +42,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </p>
         )}
         {helperText && !error && (
-          <p id={`${props.id}-helper`} className="mt-1 text-sm text-gray-500">
+          <p id={`${props.id}-helper`} className="mt-1 text-sm text-gray-700">
             {helperText}
           </p>
         )}
