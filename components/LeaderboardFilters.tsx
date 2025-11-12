@@ -87,7 +87,7 @@ export function LeaderboardFilters({
     onFilterChange(filters);
   };
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setSponsorSlug("");
     setGrantDuration("allTime");
     onFilterChange({ page: 1 });
