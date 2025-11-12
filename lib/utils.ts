@@ -667,4 +667,27 @@ export function formatDateRange(startDate: string, endDate: string): string {
   }
 }
 
+/**
+ * Converts a date to a specific timezone
+ * @param dateString - The date string to convert
+ * @param timezone - The target timezone (e.g., "America/New_York")
+ * @returns Formatted date string in the target timezone
+ */
+export function convertToTimezone(dateString: string, timezone: string): string {
+  try {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: timezone,
+      timeZoneName: "short",
+    }).format(date);
+  } catch {
+    return dateString;
+  }
+}
+
 
