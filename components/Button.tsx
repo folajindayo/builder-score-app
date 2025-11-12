@@ -8,6 +8,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "md" | "lg";
   children: ReactNode;
   loading?: boolean;
+  ariaLabel?: string;
 }
 
 export function Button({
@@ -17,6 +18,7 @@ export function Button({
   loading = false,
   disabled,
   className = "",
+  ariaLabel,
   ...props
 }: ButtonProps) {
   const variantClasses = {
@@ -41,6 +43,7 @@ export function Button({
       whileTap={{ scale: disabled || loading ? 1 : 0.98 }}
       disabled={disabled || loading}
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
       {...props}
     >
       {loading ? (
