@@ -134,6 +134,26 @@ export function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
+/**
+ * Throttles a function to limit how often it can be called
+ * @param func - The function to throttle
+ * @param delay - The delay in milliseconds
+ * @returns A throttled version of the function
+ */
+export function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let lastCall = 0;
+  return (...args: Parameters<T>) => {
+    const now = Date.now();
+    if (now - lastCall >= delay) {
+      lastCall = now;
+      func(...args);
+    }
+  };
+}
+
 // Clamp number between min and max
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
