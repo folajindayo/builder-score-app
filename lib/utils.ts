@@ -325,6 +325,16 @@ export function sum(array: number[]): number {
   return array.reduce((acc, val) => acc + val, 0);
 }
 
+/**
+ * Calculates the average of numbers in an array
+ * @param array - The array of numbers
+ * @returns The average or 0 if array is empty
+ */
+export function average(array: number[]): number {
+  if (array.length === 0) return 0;
+  return sum(array) / array.length;
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
