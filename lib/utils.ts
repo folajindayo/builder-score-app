@@ -276,6 +276,22 @@ export function flatten<T>(array: (T | T[])[]): T[] {
   }, [] as T[]);
 }
 
+/**
+ * Calculates the difference between two arrays
+ * @param array1 - First array
+ * @param array2 - Second array
+ * @returns An object with added and removed items
+ */
+export function arrayDiff<T>(array1: T[], array2: T[]): { added: T[]; removed: T[] } {
+  const set1 = new Set(array1);
+  const set2 = new Set(array2);
+
+  const added = array2.filter((item) => !set1.has(item));
+  const removed = array1.filter((item) => !set2.has(item));
+
+  return { added, removed };
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
