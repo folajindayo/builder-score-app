@@ -747,4 +747,16 @@ export function formatDuration(milliseconds: number): string {
   return `${seconds}s`;
 }
 
+/**
+ * Formats cryptocurrency amounts with appropriate precision
+ * @param amount - The crypto amount
+ * @param symbol - The crypto symbol (e.g., "ETH", "BTC")
+ * @param maxDecimals - Maximum decimal places (default: 6)
+ * @returns Formatted crypto string (e.g., "1.234567 ETH")
+ */
+export function formatCrypto(amount: number, symbol: string, maxDecimals: number = 6): string {
+  const formatted = amount.toFixed(maxDecimals).replace(/\.?0+$/, '');
+  return `${formatted} ${symbol}`;
+}
+
 
