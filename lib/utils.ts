@@ -1,15 +1,30 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+/**
+ * Merges class names using clsx and tailwind-merge
+ * @param inputs - Class values to merge
+ * @returns Merged class string
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Formats a wallet address with ellipsis
+ * @param address - The wallet address to format
+ * @returns Formatted address string (e.g., "0x1234...5678")
+ */
 export function formatAddress(address: string): string {
   if (!address) return "";
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
+/**
+ * Formats a score number to 2 decimal places
+ * @param score - The score to format
+ * @returns Formatted score string
+ */
 export function formatScore(score: number): string {
   return score.toFixed(2);
 }
@@ -23,6 +38,11 @@ export function formatNumber(num: number): string {
   return new Intl.NumberFormat("en-US").format(num);
 }
 
+/**
+ * Formats a date string to a readable format
+ * @param dateString - The date string to format
+ * @returns Formatted date string (e.g., "Jan 1, 2024, 12:00 PM")
+ */
 export function formatDate(dateString: string): string {
   try {
     const date = new Date(dateString);
@@ -50,13 +70,22 @@ export function isValidWalletAddress(address: string): boolean {
   return /^0x[a-fA-F0-9]{40}$/.test(address);
 }
 
-// Truncate text with ellipsis
+/**
+ * Truncates text with ellipsis if it exceeds max length
+ * @param text - The text to truncate
+ * @param maxLength - Maximum length before truncation
+ * @returns Truncated text with ellipsis if needed
+ */
 export function truncateText(text: string, maxLength: number): string {
   if (!text || text.length <= maxLength) return text;
   return `${text.slice(0, maxLength)}...`;
 }
 
-// Capitalize first letter of string
+/**
+ * Capitalizes the first letter of a string
+ * @param text - The text to capitalize
+ * @returns Text with first letter capitalized
+ */
 export function capitalize(text: string): string {
   if (!text) return text;
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
