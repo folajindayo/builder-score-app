@@ -2,6 +2,7 @@
 
 import { ButtonHTMLAttributes, ReactNode, useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { buttonPress } from "@/lib/micro-interactions";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button style variant */
