@@ -345,6 +345,16 @@ export function min(array: number[]): number | undefined {
   return Math.min(...array);
 }
 
+/**
+ * Finds the maximum value in an array
+ * @param array - The array of numbers
+ * @returns The maximum value or undefined if array is empty
+ */
+export function max(array: number[]): number | undefined {
+  if (array.length === 0) return undefined;
+  return Math.max(...array);
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
