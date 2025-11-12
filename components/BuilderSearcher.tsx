@@ -215,6 +215,7 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
             type="submit"
             disabled={loading}
             className="flex-1 md:flex-none px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+            aria-label={loading ? "Searching..." : "Search builders"}
           >
             {loading ? "Searching..." : "Search"}
           </motion.button>
