@@ -2084,7 +2084,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
       {viewMode === 'table' ? (
         <div className="overflow-x-auto rounded-xl" role="region" aria-label="Leaderboard table">
           <table className="w-full rounded-xl overflow-hidden" role="table" aria-label="Builders leaderboard">
-          <thead>
+          <thead className="sticky top-0 z-10 bg-gray-50">
             <tr className="border-b border-gray-200 bg-gray-50">
               {visibleColumns.position && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
