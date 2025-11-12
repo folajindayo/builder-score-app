@@ -690,4 +690,22 @@ export function convertToTimezone(dateString: string, timezone: string): string 
   }
 }
 
+/**
+ * Compares two dates and returns which is earlier/later
+ * @param date1 - First date string
+ * @param date2 - Second date string
+ * @returns -1 if date1 is earlier, 1 if date2 is earlier, 0 if equal
+ */
+export function compareDates(date1: string, date2: string): number {
+  try {
+    const d1 = new Date(date1).getTime();
+    const d2 = new Date(date2).getTime();
+    if (d1 < d2) return -1;
+    if (d1 > d2) return 1;
+    return 0;
+  } catch {
+    return 0;
+  }
+}
+
 
