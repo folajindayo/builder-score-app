@@ -12,6 +12,7 @@ const BuilderScore = dynamic(() => import("@/components/BuilderScore").then(mod 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
+      <SkipLink href="#main-content" />
       <header className="bg-white border-b border-gray-200">
         <div className="mx-[200px] px-6 py-4">
           <div className="flex items-center justify-between">
@@ -37,7 +38,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-[200px] px-6 py-8">
+      <main id="main-content" className="mx-[200px] px-6 py-8">
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <h2 className="text-3xl font-bold text-gray-900">
