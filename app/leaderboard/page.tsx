@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { WalletButton } from "@/components/WalletButton";
-import { Leaderboard } from "@/components/Leaderboard";
-import { LeaderboardFilters } from "@/components/LeaderboardFilters";
+import dynamic from "next/dynamic";
 import type { LeaderboardFilters as LeaderboardFiltersType } from "@/types/talent";
 import Link from "next/link";
 import { LoadingProgressBar } from "@/components/LoadingProgressBar";
+import { Breadcrumb } from "@/components/Breadcrumb";
+
+const Leaderboard = dynamic(() => import("@/components/Leaderboard").then(mod => ({ default: mod.Leaderboard })));
+const LeaderboardFilters = dynamic(() => import("@/components/LeaderboardFilters").then(mod => ({ default: mod.LeaderboardFilters })));
 
 export default function LeaderboardPage() {
   const [filters, setFilters] = useState<LeaderboardFiltersType>({
