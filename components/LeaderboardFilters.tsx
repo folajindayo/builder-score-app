@@ -3,6 +3,7 @@
 import { useState, useEffect, memo, useCallback } from "react";
 import type { LeaderboardFilters } from "@/types/talent";
 import { motion, AnimatePresence } from "framer-motion";
+import { FilterChip } from "@/components/FilterChip";
 
 // Sponsor slugs - ordered list
 const SPONSOR_SLUGS = [
@@ -193,6 +194,28 @@ export const LeaderboardFilters = memo(function LeaderboardFilters({
           </AnimatePresence>
         </div>
       </div>
+      {hasFilters && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 pb-2 border-b border-gray-200">
+          <span className="text-xs font-medium text-gray-500">Active filters:</span>
+          {sponsorSlug && (
+            <FilterChip
+              label={SPONSOR_SLUGS.find((s) => s.value === sponsorSlug)?.label || sponsorSlug}
+              variant="active"
+              onRemove={() => {
+                setSponsorSlug("");
+                setGrantDuration("allTime");
+              }}
+            />
+          )}
+          {grantDuration !== "allTime" && (
+            <FilterChip
+              label={grantDuration === "thisWeek" ? "This Week" : "Last Week"}
+              variant="active"
+              onRemove={() => setGrantDuration("allTime")}
+            />
+          )}
+        </div>
+      )}
       <div className="mt-4 flex justify-end gap-2">
         {hasFilters && (
           <button
