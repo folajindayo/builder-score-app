@@ -1,42 +1,56 @@
 "use client";
 
-import { getInitials } from "@/lib/utils";
+import { Image } from "@/components/Image";
 
 interface AvatarProps {
   src?: string;
-  alt?: string;
-  name?: string;
-  size?: "sm" | "md" | "lg" | "xl";
+  alt: string;
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  fallback?: string;
   className?: string;
 }
 
-export function Avatar({ src, alt, name, size = "md", className = "" }: AvatarProps) {
-  const sizeClasses = {
-    sm: "w-8 h-8 text-xs",
-    md: "w-10 h-10 text-sm",
-    lg: "w-12 h-12 text-base",
-    xl: "w-16 h-16 text-lg",
-  };
+const sizeClasses = {
+  xs: "w-6 h-6 text-xs",
+  sm: "w-8 h-8 text-sm",
+  md: "w-10 h-10 text-base",
+  lg: "w-12 h-12 text-lg",
+  xl: "w-16 h-16 text-xl",
+};
 
-  if (src) {
-    return (
-      <img
-        src={src}
-        alt={alt || name || "Avatar"}
-        className={`rounded-full object-cover ${sizeClasses[size]} ${className}`}
-      />
-    );
-  }
+const sizePixels = {
+  xs: 24,
+  sm: 32,
+  md: 40,
+  lg: 48,
+  xl: 64,
+};
 
-  const initials = name ? getInitials(name) : "?";
+export function Avatar({
+  src,
+  alt,
+  size = "md",
+  fallback,
+  className = "",
+}: AvatarProps) {
+  const displayFallback = fallback || alt.charAt(0).toUpperCase();
 
   return (
     <div
-      className={`rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold ${sizeClasses[size]} ${className}`}
-      aria-label={name || "Avatar"}
+      className={`${sizeClasses[size]} rounded-full overflow-hidden flex items-center justify-center bg-gray-200 text-gray-600 font-medium ${className}`}
     >
-      {initials}
+      {src ? (
+        <Image
+          src={src}
+          alt={alt}
+          width={sizePixels[size]}
+          height={sizePixels[size]}
+          objectFit="cover"
+          className="w-full h-full"
+        />
+      ) : (
+        <span>{displayFallback}</span>
+      )}
     </div>
   );
 }
-
