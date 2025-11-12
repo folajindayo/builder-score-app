@@ -62,10 +62,18 @@ export function Accordion({ items, allowMultiple = false, className = "" }: Acco
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="p-4 text-gray-700">{item.content}</div>
+                  <motion.div
+                    initial={{ y: -10 }}
+                    animate={{ y: 0 }}
+                    exit={{ y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="p-4 text-gray-700"
+                  >
+                    {item.content}
+                  </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
