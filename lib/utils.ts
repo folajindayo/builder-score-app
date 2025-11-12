@@ -123,6 +123,17 @@ export function formatLargeNumber(num: number): string {
   return num.toString();
 }
 
+/**
+ * Validates an email address format
+ * @param email - The email address to validate
+ * @returns True if valid, false otherwise
+ */
+export function isValidEmail(email: string): boolean {
+  if (!email) return false;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 // Clamp number between min and max
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
