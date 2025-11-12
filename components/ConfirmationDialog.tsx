@@ -1,70 +1,63 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { Modal } from "@/components/Modal";
+import { Button } from "@/components/Button";
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
   title: string;
   message: string;
   confirmText?: string;
   cancelText?: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-  variant?: "danger" | "warning" | "info";
+  variant?: "default" | "danger" | "warning";
+  loading?: boolean;
 }
 
 export function ConfirmationDialog({
   isOpen,
+  onClose,
+  onConfirm,
   title,
   message,
   confirmText = "Confirm",
   cancelText = "Cancel",
-  onConfirm,
-  onCancel,
-  variant = "info",
+  variant = "default",
+  loading = false,
 }: ConfirmationDialogProps) {
-  if (!isOpen) return null;
+  const handleConfirm = () => {
+    onConfirm();
+  };
 
-  const variantStyles = {
+  const variantClasses = {
+    default: "bg-blue-600 hover:bg-blue-700",
     danger: "bg-red-600 hover:bg-red-700",
     warning: "bg-yellow-600 hover:bg-yellow-700",
-    info: "bg-blue-600 hover:bg-blue-700",
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-description"
-      >
-        <h3 id="dialog-title" className="text-lg font-semibold text-gray-900 mb-2">
-          {title}
-        </h3>
-        <p id="dialog-description" className="text-sm text-gray-600 mb-6">
-          {message}
-        </p>
+    <Modal isOpen={isOpen} onClose={onClose} title={title}>
+      <div className="p-6">
+        <p className="text-gray-700 mb-6">{message}</p>
         <div className="flex justify-end gap-3">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            disabled={loading}
           >
             {cancelText}
-          </button>
-          <button
-            onClick={onConfirm}
-            className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${variantStyles[variant]}`}
+          </Button>
+          <Button
+            className={variantClasses[variant]}
+            onClick={handleConfirm}
+            disabled={loading}
+            loading={loading}
           >
             {confirmText}
-          </button>
+          </Button>
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </Modal>
   );
 }
-
