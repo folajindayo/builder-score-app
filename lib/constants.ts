@@ -1,38 +1,71 @@
 /**
- * Application-wide constants
+ * Application constants
  */
 
-export const DEFAULT_PAGE_SIZE = 30;
-export const MAX_COMPARISON_BUILDERS = 3;
-export const DEFAULT_REFRESH_INTERVAL = 60; // seconds
+/**
+ * Default pagination settings
+ */
+export const DEFAULT_PAGE_SIZE = 20;
+export const DEFAULT_PAGE = 1;
 
-// API Configuration
-export const API_TIMEOUT = 30000; // 30 seconds
-export const MAX_RETRIES = 3;
-export const RETRY_DELAY = 1000; // 1 second
+/**
+ * Scroll thresholds
+ */
+export const SCROLL_TO_TOP_THRESHOLD = 300;
 
-// UI Configuration
-export const DEBOUNCE_DELAY = 300; // milliseconds
-export const TOAST_DURATION = 3000; // milliseconds
-export const ANIMATION_DURATION = 200; // milliseconds
+/**
+ * Animation durations (in milliseconds)
+ */
+export const ANIMATION_DURATION = {
+  FAST: 150,
+  NORMAL: 300,
+  SLOW: 500,
+};
 
-export const SPONSOR_SLUGS = [
-  "walletconnect",
-  "celo",
-  "base",
-  "base-summer",
-  "syndicate",
-  "talent-protocol",
-] as const;
+/**
+ * Debounce delays (in milliseconds)
+ */
+export const DEBOUNCE_DELAY = {
+  SEARCH: 300,
+  INPUT: 500,
+  RESIZE: 250,
+};
 
-export const GRANT_IDS = {
-  walletconnect: {
-    thisWeek: 710,
-    lastWeek: 704,
-  },
-  celo: {
-    thisWeek: 716,
-    lastWeek: 291,
-  },
+/**
+ * Local storage keys
+ */
+export const STORAGE_KEYS = {
+  BUILDER_NOTES: 'builderNotes',
+  BOOKMARKED_BUILDERS: 'bookmarkedBuilders',
+  FILTER_PREFERENCES: 'filterPreferences',
+  VIEW_PREFERENCES: 'viewPreferences',
 } as const;
 
+/**
+ * API configuration
+ */
+export const API_CONFIG = {
+  DEFAULT_TIMEOUT: 10000,
+  MAX_RETRIES: 3,
+  RETRY_DELAY: 1000,
+} as const;
+
+/**
+ * UI configuration
+ */
+export const UI_CONFIG = {
+  MAX_SEARCH_RESULTS: 100,
+  ITEMS_PER_PAGE: [10, 20, 50, 100],
+  TOOLTIP_DELAY: 300,
+} as const;
+
+/**
+ * Color themes
+ */
+export const THEME_COLORS = {
+  PRIMARY: '#3b82f6',
+  SECONDARY: '#6b7280',
+  SUCCESS: '#10b981',
+  WARNING: '#f59e0b',
+  ERROR: '#ef4444',
+} as const;
