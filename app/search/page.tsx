@@ -9,6 +9,7 @@ import Link from "next/link";
 const BuilderSearcher = dynamic(() => import("@/components/BuilderSearcher").then(mod => ({ default: mod.BuilderSearcher })));
 const SearchResults = dynamic(() => import("@/components/SearchResults").then(mod => ({ default: mod.SearchResults })));
 import { motion } from "framer-motion";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 export default function SearchPage() {
   const [filters, setFilters] = useState<SearchFilters>({});
@@ -87,6 +88,7 @@ export default function SearchPage() {
           <SearchResults filters={filters} />
         </motion.div>
       </main>
+      <ScrollToTop />
     </div>
   );
 }

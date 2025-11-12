@@ -7,6 +7,7 @@ import type { LeaderboardFilters as LeaderboardFiltersType } from "@/types/talen
 import Link from "next/link";
 import { LoadingProgressBar } from "@/components/LoadingProgressBar";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 const Leaderboard = dynamic(() => import("@/components/Leaderboard").then(mod => ({ default: mod.Leaderboard })));
 const LeaderboardFilters = dynamic(() => import("@/components/LeaderboardFilters").then(mod => ({ default: mod.LeaderboardFilters })));
@@ -83,6 +84,7 @@ export default function LeaderboardPage() {
 
         <Leaderboard filters={filters} />
       </main>
+      <ScrollToTop />
     </div>
   );
 }
