@@ -6,6 +6,7 @@ import { getBuilderScore, getBuilderProfile } from "@/lib/talent-api";
 import type { BuilderScore, BuilderProfile } from "@/types/talent";
 import { formatScore, formatNumber, formatDate, copyToClipboard, formatAddress } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { useToastContext } from "@/components/ToastProvider";
 
 export const BuilderScore = memo(function BuilderScore() {
   const { address, isConnected } = useAccount();
@@ -14,6 +15,7 @@ export const BuilderScore = memo(function BuilderScore() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const toast = useToastContext();
 
   useEffect(() => {
     if (!isConnected || !address) {
@@ -36,7 +38,9 @@ export const BuilderScore = memo(function BuilderScore() {
         setScore(scoreData);
         setProfile(profileData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch builder score");
+        const errorMessage = err instanceof Error ? err.message : "Failed to fetch builder score";
+        setError(errorMessage);
+        toast.error(errorMessage);
         console.error("Error fetching builder data:", err);
       } finally {
         setLoading(false);
@@ -110,7 +114,10 @@ export const BuilderScore = memo(function BuilderScore() {
     const success = await copyToClipboard(address);
     if (success) {
       setCopied(true);
+      toast.success("Address copied to clipboard");
       setTimeout(() => setCopied(false), 2000);
+    } else {
+      toast.error("Failed to copy address");
     }
   };
 
@@ -125,8 +132,11 @@ export const BuilderScore = memo(function BuilderScore() {
       ]);
       setScore(scoreData);
       setProfile(profileData);
+      toast.success("Builder score refreshed");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch builder score");
+      const errorMessage = err instanceof Error ? err.message : "Failed to fetch builder score";
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error("Error fetching builder data:", err);
     } finally {
       setLoading(false);

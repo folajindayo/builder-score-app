@@ -5,6 +5,7 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { wagmiAdapter } from "@/config/appkit";
 import { mainnet } from "@reown/appkit/networks";
+import { ToastProvider } from "@/components/ToastProvider";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || "placeholder-project-id";
 
@@ -32,7 +33,11 @@ const queryClient = new QueryClient();
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          {children}
+        </ToastProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 }
