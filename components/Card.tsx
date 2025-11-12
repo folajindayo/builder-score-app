@@ -11,7 +11,7 @@ interface CardProps {
 }
 
 export function Card({ children, className = "", hover = false, onClick }: CardProps) {
-  const baseClasses = "bg-white rounded-xl border-2 border-gray-200 shadow-sm";
+  const baseClasses = "bg-white/80 backdrop-blur-sm rounded-xl border-2 border-gray-200/50 shadow-sm";
   const hoverClasses = hover ? "hover:shadow-xl hover:border-gray-300 hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer" : "";
   const clickableClasses = onClick ? "cursor-pointer" : "";
 
