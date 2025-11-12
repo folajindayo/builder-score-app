@@ -154,6 +154,32 @@ export function throttle<T extends (...args: any[]) => any>(
   };
 }
 
+/**
+ * Parses a URL and returns its components
+ * @param url - The URL to parse
+ * @returns An object with URL components or null if invalid
+ */
+export function parseURL(url: string): {
+  protocol: string;
+  hostname: string;
+  pathname: string;
+  search: string;
+  hash: string;
+} | null {
+  try {
+    const urlObj = new URL(url);
+    return {
+      protocol: urlObj.protocol,
+      hostname: urlObj.hostname,
+      pathname: urlObj.pathname,
+      search: urlObj.search,
+      hash: urlObj.hash,
+    };
+  } catch {
+    return null;
+  }
+}
+
 // Clamp number between min and max
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
