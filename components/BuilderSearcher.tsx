@@ -17,6 +17,17 @@ export const BuilderSearcher = memo(function BuilderSearcher({ onSearch, loading
   const [maxScore, setMaxScore] = useState("");
   const [skills, setSkills] = useState("");
   const [credentials, setCredentials] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  
+  // Common search suggestions
+  const suggestions = [
+    { type: "skill", value: "Solidity" },
+    { type: "skill", value: "React" },
+    { type: "skill", value: "TypeScript" },
+    { type: "skill", value: "JavaScript" },
+    { type: "credential", value: "Ethereum Developer" },
+    { type: "credential", value: "Open Source Contributor" },
+  ];
 
   const debouncedSearch = useDebounce((filters: SearchFilters) => {
     onSearch(filters);
@@ -180,7 +191,7 @@ export const BuilderSearcher = memo(function BuilderSearcher({ onSearch, loading
           </div>
         </div>
 
-        <div>
+        <div className="relative">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Skills (comma-separated)
           </label>
@@ -188,10 +199,32 @@ export const BuilderSearcher = memo(function BuilderSearcher({ onSearch, loading
             type="text"
             value={skills}
             onChange={(e) => handleSkillsChange(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             placeholder="Solidity, React, TypeScript"
             className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             aria-label="Skills"
           />
+          {showSuggestions && (
+            <div className="absolute z-10 w-full mt-1 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-48 overflow-auto">
+              {suggestions.filter(s => s.type === "skill").map((suggestion, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    const currentSkills = skills ? skills.split(",").map(s => s.trim()) : [];
+                    if (!currentSkills.includes(suggestion.value)) {
+                      handleSkillsChange([...currentSkills, suggestion.value].join(", "));
+                    }
+                    setShowSuggestions(false);
+                  }}
+                  className="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-900 transition-colors"
+                >
+                  {suggestion.value}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div>
