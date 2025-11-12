@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useDebounce } from "@/lib/hooks";
 import type { SearchFilters } from "@/types/talent";
 import { motion } from "framer-motion";
@@ -10,7 +10,7 @@ interface BuilderSearcherProps {
   loading?: boolean;
 }
 
-export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
+export const BuilderSearcher = memo(function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
   const [address, setAddress] = useState("");
   const [ensName, setEnsName] = useState("");
   const [minScore, setMinScore] = useState("");
