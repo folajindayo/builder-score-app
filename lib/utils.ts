@@ -338,6 +338,38 @@ export function randomItem<T>(array: T[]): T | undefined {
 }
 
 /**
+ * Removes an item from an array by value
+ * @param array - The array to remove from
+ * @param item - The item to remove
+ * @returns A new array with the item removed
+ */
+export function removeItem<T>(array: T[], item: T): T[] {
+  return array.filter((i) => i !== item);
+}
+
+/**
+ * Removes an item from an array by index
+ * @param array - The array to remove from
+ * @param index - The index to remove
+ * @returns A new array with the item at index removed
+ */
+export function removeItemAtIndex<T>(array: T[], index: number): T[] {
+  if (index < 0 || index >= array.length) return array;
+  return [...array.slice(0, index), ...array.slice(index + 1)];
+}
+
+/**
+ * Inserts an item into an array at a specific index
+ * @param array - The array to insert into
+ * @param item - The item to insert
+ * @param index - The index to insert at
+ * @returns A new array with the item inserted
+ */
+export function insertItem<T>(array: T[], item: T, index: number): T[] {
+  return [...array.slice(0, index), item, ...array.slice(index)];
+}
+
+/**
  * Calculates the sum of numbers in an array
  * @param array - The array of numbers
  * @returns The sum of all numbers
