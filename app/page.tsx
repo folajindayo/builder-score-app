@@ -1,8 +1,13 @@
 import { WalletButton } from "@/components/WalletButton";
-import { BuilderScore } from "@/components/BuilderScore";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { LoadingProgressBar } from "@/components/LoadingProgressBar";
+import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+
+const BuilderScore = dynamic(() => import("@/components/BuilderScore").then(mod => ({ default: mod.BuilderScore })), {
+  loading: () => <div className="p-8 bg-white rounded-xl border-2 border-gray-200 shadow-md animate-pulse">Loading...</div>,
+});
 
 export default function Home() {
   return (
