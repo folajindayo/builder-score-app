@@ -138,6 +138,7 @@ npm run lint
 
 ## Documentation
 
+- [Keyboard Shortcuts Guide](./docs/KEYBOARD_SHORTCUTS.md) - Complete guide to all keyboard shortcuts
 - [ReownKit (AppKit) Documentation](https://docs.reown.com/appkit/overview)
 - [WalletConnect Wallet SDK Documentation](https://docs.walletconnect.network/wallet-sdk/overview)
 - [Talent Protocol Documentation](https://docs.talentprotocol.com/docs/developers/get-started)
