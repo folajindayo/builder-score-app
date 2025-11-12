@@ -373,6 +373,24 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
   }).format(amount);
 }
 
+// Format currency without symbol
+export function formatCurrencyAmount(amount: number, decimals: number = 2): string {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(amount);
+}
+
+// Format currency with compact notation (e.g., $1.2K, $1.5M)
+export function formatCompactCurrency(amount: number, currency: string = 'USD'): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(amount);
+}
+
 // Format relative time (e.g., "2 hours ago")
 export function formatRelativeTime(dateString: string): string {
   try {
