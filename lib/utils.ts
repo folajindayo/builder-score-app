@@ -234,6 +234,23 @@ export function uniqueBy<T>(array: T[], keyFn: (item: T) => string | number): T[
   });
 }
 
+/**
+ * Sorts an array of objects by a key function
+ * @param array - The array to sort
+ * @param keyFn - Function that returns the value to sort by
+ * @param order - 'asc' for ascending, 'desc' for descending
+ * @returns A new sorted array
+ */
+export function sortBy<T>(array: T[], keyFn: (item: T) => number | string, order: "asc" | "desc" = "asc"): T[] {
+  return [...array].sort((a, b) => {
+    const aVal = keyFn(a);
+    const bVal = keyFn(b);
+    if (aVal < bVal) return order === "asc" ? -1 : 1;
+    if (aVal > bVal) return order === "asc" ? 1 : -1;
+    return 0;
+  });
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
