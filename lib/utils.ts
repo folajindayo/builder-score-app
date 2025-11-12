@@ -759,4 +759,48 @@ export function formatCrypto(amount: number, symbol: string, maxDecimals: number
   return `${formatted} ${symbol}`;
 }
 
+/**
+ * Formats token amounts with smart precision
+ * @param amount - The token amount
+ * @param decimals - Number of decimals the token uses
+ * @returns Formatted token amount string
+ */
+export function formatTokenAmount(amount: number, decimals: number = 18): string {
+  const value = amount / Math.pow(10, decimals);
+  if (value >= 1) {
+    return value.toFixed(2);
+  }
+  return value.toFixed(Math.min(decimals, 8));
+}
+
+/**
+ * Calculates exchange rate between two currencies
+ * @param amount - The amount to convert
+ * @param rate - The exchange rate
+ * @returns Converted amount
+ */
+export function convertCurrency(amount: number, rate: number): number {
+  return amount * rate;
+}
+
+/**
+ * Formats number with specific decimal precision
+ * @param value - The number to format
+ * @param precision - Number of decimal places
+ * @returns Formatted number string
+ */
+export function formatDecimalPrecision(value: number, precision: number): string {
+  return value.toFixed(precision);
+}
+
+/**
+ * Formats number in scientific notation
+ * @param value - The number to format
+ * @param precision - Number of significant figures
+ * @returns Scientific notation string
+ */
+export function formatScientific(value: number, precision: number = 2): string {
+  return value.toExponential(precision);
+}
+
 
