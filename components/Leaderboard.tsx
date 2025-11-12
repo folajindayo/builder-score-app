@@ -23,10 +23,14 @@ import type { LeaderboardUser } from "@/types/talent";
 import { Skeleton } from "@/components/Skeleton";
 import { Badge } from "@/components/Badge";
 
-// All sponsor slugs
+/**
+ * All available sponsor slugs for filtering
+ */
 const ALL_SPONSOR_SLUGS = ["walletconnect", "celo", "base", "base-summer", "syndicate", "talent-protocol"];
 
-// Extended user type with earnings breakdown
+/**
+ * Extended user type that includes earnings breakdown data
+ */
 interface UserWithEarningsBreakdown extends LeaderboardUser {
   earningsBreakdown?: Array<{
     sponsor: string;
