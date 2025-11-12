@@ -22,6 +22,7 @@ import { BuilderProfileModal } from "@/components/BuilderProfileModal";
 import type { LeaderboardUser } from "@/types/talent";
 import { Skeleton } from "@/components/Skeleton";
 import { Badge } from "@/components/Badge";
+import { arrayToCSV, downloadCSV } from "@/lib/csv-utils";
 
 /**
  * All available sponsor slugs for filtering
