@@ -250,25 +250,30 @@ export const LeaderboardFilters = memo(function LeaderboardFilters({
           )}
         </div>
       )}
-      <div className="mt-4 flex justify-end gap-2">
+      <div className="mt-4 flex justify-between items-center">
         {hasFilters && (
           <button
             type="button"
             onClick={handleClear}
             disabled={loading}
-            className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 rounded-xl transition-colors"
+            className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 rounded-xl transition-colors flex items-center gap-2"
           >
-            Clear
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Clear All
           </button>
         )}
-        <button
-          type="button"
-          onClick={handleApplyFilters}
-          disabled={loading}
-          className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl transition-colors shadow-sm"
-        >
-          {loading ? "Applying..." : "Apply"}
-        </button>
+        <div className="ml-auto">
+          <button
+            type="button"
+            onClick={handleApplyFilters}
+            disabled={loading}
+            className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl transition-colors shadow-sm"
+          >
+            {loading ? "Applying..." : "Apply"}
+          </button>
+        </div>
       </div>
     </div>
   );
