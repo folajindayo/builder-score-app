@@ -27,6 +27,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           } ${className}`}
           aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? `${props.id}-error` : helperText ? `${props.id}-helper` : undefined}
+          aria-label={props['aria-label'] || label || 'Select option'}
           {...props}
         >
           {options.map((option) => (

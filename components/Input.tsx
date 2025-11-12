@@ -26,6 +26,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           } ${className}`}
           aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? `${props.id}-error` : helperText ? `${props.id}-helper` : undefined}
+          aria-label={props['aria-label'] || label || props.placeholder || 'Input field'}
           {...props}
         />
         {error && (
