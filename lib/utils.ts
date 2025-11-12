@@ -341,6 +341,36 @@ export function uniqueBy<T>(array: T[], keyFn: (item: T) => string | number): T[
 }
 
 /**
+ * Filters an array by multiple conditions (AND logic)
+ * @param array - The array to filter
+ * @param filters - Array of filter functions
+ * @returns A filtered array
+ */
+export function filterByMultiple<T>(array: T[], filters: Array<(item: T) => boolean>): T[] {
+  return array.filter((item) => filters.every((filter) => filter(item)));
+}
+
+/**
+ * Filters an array by a value range
+ * @param array - The array to filter
+ * @param keyFn - Function that returns the value to compare
+ * @param min - Minimum value (inclusive)
+ * @param max - Maximum value (inclusive)
+ * @returns A filtered array
+ */
+export function filterByRange<T>(
+  array: T[],
+  keyFn: (item: T) => number,
+  min: number,
+  max: number
+): T[] {
+  return array.filter((item) => {
+    const value = keyFn(item);
+    return value >= min && value <= max;
+  });
+}
+
+/**
  * Sorts an array of objects by a key function
  * @param array - The array to sort
  * @param keyFn - Function that returns the value to sort by
