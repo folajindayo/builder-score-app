@@ -131,6 +131,7 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
               onChange={(e) => handleAddressChange(e.target.value)}
               placeholder="0x..."
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              aria-label="Wallet Address"
             />
           </div>
           <div>
