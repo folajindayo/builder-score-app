@@ -155,6 +155,27 @@ export function throttle<T extends (...args: any[]) => any>(
 }
 
 /**
+ * Debounces a function to delay its execution until after a specified time has passed
+ * @param func - The function to debounce
+ * @param delay - The delay in milliseconds
+ * @returns A debounced version of the function
+ */
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: NodeJS.Timeout | null = null;
+  return (...args: Parameters<T>) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
+
+/**
  * Parses a URL and returns its components
  * @param url - The URL to parse
  * @returns An object with URL components or null if invalid
