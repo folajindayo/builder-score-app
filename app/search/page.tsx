@@ -27,7 +27,7 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm sticky top-0 z-10" role="banner">
+      <header className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 shadow-sm sticky top-0 z-10" role="banner">
         <nav className="mx-[200px] px-4 sm:px-6 lg:px-8 py-5" role="navigation" aria-label="Main navigation">
           <div className="flex items-center justify-between">
             <motion.h1 
