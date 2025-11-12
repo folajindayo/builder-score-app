@@ -14,3 +14,51 @@ export function isValidENS(name: string): boolean {
   return ensRegex.test(name.toLowerCase());
 }
 
+/**
+ * Validates URL format with improved checks
+ * @param url - The URL to validate
+ * @returns True if valid URL, false otherwise
+ */
+export function isValidURL(url: string): boolean {
+  if (!url) return false;
+  try {
+    const urlObj = new URL(url);
+    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Validates form field is not empty
+ * @param value - The form field value
+ * @returns True if not empty, false otherwise
+ */
+export function isNotEmpty(value: string | null | undefined): boolean {
+  return value !== null && value !== undefined && value.trim().length > 0;
+}
+
+/**
+ * Validates a value matches a schema pattern
+ * @param value - The value to validate
+ * @param pattern - RegExp pattern to match
+ * @returns True if matches pattern, false otherwise
+ */
+export function matchesPattern(value: string, pattern: RegExp): boolean {
+  return pattern.test(value);
+}
+
+/**
+ * Sanitizes user input by removing dangerous characters
+ * @param input - The input string to sanitize
+ * @returns Sanitized string
+ */
+export function sanitizeInput(input: string): string {
+  if (!input) return '';
+  // Remove HTML tags and dangerous characters
+  return input
+    .replace(/<[^>]*>/g, '')
+    .replace(/[<>'"]/g, '')
+    .trim();
+}
+
