@@ -1,21 +1,37 @@
 "use client";
 
 interface DividerProps {
-  text?: string;
+  orientation?: "horizontal" | "vertical";
+  spacing?: "sm" | "md" | "lg";
   className?: string;
 }
 
-export function Divider({ text, className = "" }: DividerProps) {
-  if (text) {
+const spacingClasses = {
+  sm: "my-2",
+  md: "my-4",
+  lg: "my-6",
+};
+
+export function Divider({
+  orientation = "horizontal",
+  spacing = "md",
+  className = "",
+}: DividerProps) {
+  if (orientation === "vertical") {
     return (
-      <div className={`flex items-center my-4 ${className}`}>
-        <div className="flex-1 border-t-2 border-gray-200"></div>
-        <span className="px-4 text-sm text-gray-500 font-medium">{text}</span>
-        <div className="flex-1 border-t-2 border-gray-200"></div>
-      </div>
+      <div
+        className={`inline-block w-px h-full bg-gray-200 ${className}`}
+        role="separator"
+        aria-orientation="vertical"
+      />
     );
   }
 
-  return <div className={`border-t-2 border-gray-200 my-4 ${className}`}></div>;
+  return (
+    <hr
+      className={`border-0 border-t border-gray-200 ${spacingClasses[spacing]} ${className}`}
+      role="separator"
+      aria-orientation="horizontal"
+    />
+  );
 }
-
