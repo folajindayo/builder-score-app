@@ -122,6 +122,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
   const [showStats, setShowStats] = useState(false);
   const [sortBy, setSortBy] = useState<'position' | 'score' | 'earnings' | 'mcap'>('position');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState({
     position: true,
     name: true,
@@ -1471,6 +1472,34 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               </button>
             )}
             <div className="flex items-center gap-2">
+              <div className="relative">
+                <button
+                  onClick={() => setShowColumnMenu(!showColumnMenu)}
+                  className="px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl transition-colors flex items-center gap-1.5 shadow-sm"
+                  title="Toggle columns"
+                  aria-label="Toggle column visibility"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                  Columns
+                </button>
+                {showColumnMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20 p-2">
+                    {Object.entries(visibleColumns).map(([key, visible]) => (
+                      <label key={key} className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={visible}
+                          onChange={(e) => setVisibleColumns(prev => ({ ...prev, [key]: e.target.checked }))}
+                          className="rounded"
+                        />
+                        <span className="text-sm text-gray-700 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button
                 onClick={handleExportCSV}
                 disabled={!data || !data.users.length}
