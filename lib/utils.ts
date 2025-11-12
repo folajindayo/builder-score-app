@@ -14,6 +14,11 @@ export function formatScore(score: number): string {
   return score.toFixed(2);
 }
 
+/**
+ * Formats a number with US locale formatting
+ * @param num - The number to format
+ * @returns Formatted number string
+ */
 export function formatNumber(num: number): string {
   return new Intl.NumberFormat("en-US").format(num);
 }
