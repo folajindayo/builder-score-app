@@ -68,6 +68,38 @@ class APICache {
 export const apiCache = new APICache();
 
 /**
+ * Response cache with TTL
+ */
+export class ResponseCache {
+  private cache: Map<string, { data: unknown; expiresAt: number }> = new Map();
+
+  set<T>(key: string, data: T, ttl: number = 60000): void {
+    this.cache.set(key, {
+      data,
+      expiresAt: Date.now() + ttl,
+    });
+  }
+
+  get<T>(key: string): T | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+
+    if (Date.now() > entry.expiresAt) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return entry.data as T;
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+}
+
+export const responseCache = new ResponseCache();
+
+/**
  * Request deduplication map
  */
 const pendingRequests = new Map<string, Promise<unknown>>();
