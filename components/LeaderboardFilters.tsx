@@ -107,8 +107,34 @@ export const LeaderboardFilters = memo(function LeaderboardFilters({
     ? GRANT_IDS[sponsorSlug][grantDuration] 
     : null;
 
+  const applyPreset = useCallback((preset: typeof FILTER_PRESETS[number]) => {
+    setSponsorSlug(preset.sponsor);
+    setGrantDuration(preset.duration);
+    const filters: LeaderboardFilters = { page: 1 };
+    if (preset.sponsor !== "all") {
+      filters.sponsor_slug = preset.sponsor;
+      if (GRANT_IDS[preset.sponsor] && preset.duration !== "allTime") {
+        filters.grant_id = GRANT_IDS[preset.sponsor][preset.duration];
+      }
+    }
+    onFilterChange(filters);
+  }, [onFilterChange]);
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+      <div className="mb-4 flex flex-wrap gap-2 items-center">
+        <span className="text-xs font-medium text-gray-500">Presets:</span>
+        {FILTER_PRESETS.map((preset) => (
+          <button
+            key={preset.label}
+            type="button"
+            onClick={() => applyPreset(preset)}
+            className="px-3 py-1 text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-lg transition-colors"
+          >
+            {preset.label}
+          </button>
+        ))}
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1.5">
