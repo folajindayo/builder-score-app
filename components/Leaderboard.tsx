@@ -1515,6 +1515,20 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   </svg>
                 </button>
               </div>
+              <button
+                onClick={() => setAutoRefresh(!autoRefresh)}
+                className={`px-3 py-2 text-sm border rounded-xl transition-colors flex items-center gap-1.5 shadow-sm ${
+                  autoRefresh
+                    ? 'bg-green-50 hover:bg-green-100 text-green-700 border-green-200'
+                    : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
+                }`}
+                title={autoRefresh ? `Auto-refresh every ${refreshInterval}s` : 'Enable auto-refresh'}
+              >
+                <svg className={`w-4 h-4 ${autoRefresh ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                {autoRefresh ? `${refreshInterval}s` : 'Auto'}
+              </button>
               <div className="relative">
                 <button
                   onClick={() => setShowColumnMenu(!showColumnMenu)}
