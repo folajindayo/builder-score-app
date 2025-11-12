@@ -38,6 +38,8 @@ export function Button({
     ghost: "text-gray-900 hover:bg-gray-100",
     danger: "bg-red-600 hover:bg-red-700 text-white",
   };
+  
+  // Ensure WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
 
   const sizeClasses = {
     sm: "px-3 py-1.5 text-sm",

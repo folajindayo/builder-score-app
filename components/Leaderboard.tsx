@@ -23,6 +23,8 @@ import type { LeaderboardUser } from "@/types/talent";
 import { Skeleton } from "@/components/Skeleton";
 import { Badge } from "@/components/Badge";
 import { arrayToCSV, downloadCSV } from "@/lib/csv-utils";
+import { Avatar } from "@/components/Avatar";
+import { generateBuilderAltText } from "@/lib/alt-text-utils";
 
 /**
  * All available sponsor slugs for filtering
@@ -2072,22 +2074,18 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                       </td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
-                          {user.profile.image_url ? (
-                            <img
-                              src={user.profile.image_url}
-                              alt={user.profile.display_name || user.profile.name}
-                              className="w-8 h-8 rounded-lg object-cover flex-shrink-0 shadow-sm"
-                              onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                              }}
-                            />
-                          ) : (
-                            <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
-                              <span className="text-xs font-medium text-gray-500">
-                                {user.leaderboard_position}
-                              </span>
-                            </div>
-                          )}
+                          <Avatar
+                            src={user.profile.image_url || undefined}
+                            alt={generateBuilderAltText(
+                              user.profile.display_name,
+                              user.profile.name,
+                              user.leaderboard_position
+                            )}
+                            size="sm"
+                            fallback={`#${user.leaderboard_position}`}
+                            position={user.leaderboard_position}
+                            className="flex-shrink-0"
+                          />
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
                               <div className="text-sm font-medium text-gray-900 truncate">
@@ -2303,22 +2301,18 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   {visibleColumns.name && (
                     <td className="px-4 py-4">
                     <div className="flex items-center gap-2 min-w-0">
-                      {user.profile.image_url ? (
-                        <img
-                          src={user.profile.image_url}
-                          alt={user.profile.display_name || user.profile.name || `Builder ${user.id} profile picture`}
-                          className="w-8 h-8 rounded-lg object-cover flex-shrink-0 shadow-sm"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
-                          <span className="text-xs font-medium text-gray-500">
-                            {user.leaderboard_position}
-                          </span>
-                        </div>
-                      )}
+                      <Avatar
+                        src={user.profile.image_url || undefined}
+                        alt={generateBuilderAltText(
+                          user.profile.display_name,
+                          user.profile.name,
+                          user.leaderboard_position
+                        )}
+                        size="sm"
+                        fallback={`#${user.leaderboard_position || user.id}`}
+                        position={user.leaderboard_position || undefined}
+                        className="flex-shrink-0"
+                      />
                       <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
                             <p className="text-sm font-medium text-gray-900 truncate">
@@ -2640,22 +2634,18 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    {user.profile.image_url ? (
-                      <img
-                        src={user.profile.image_url}
-                        alt={user.profile.display_name || user.profile.name}
-                        className="w-12 h-12 rounded-lg object-cover flex-shrink-0 shadow-sm"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
+                    <Avatar
+                      src={user.profile.image_url || undefined}
+                      alt={generateBuilderAltText(
+                        user.profile.display_name,
+                        user.profile.name,
+                        user.leaderboard_position
+                      )}
+                      size="md"
+                      fallback={`#${user.leaderboard_position || user.id}`}
+                      position={user.leaderboard_position || undefined}
+                      className="flex-shrink-0"
                       />
-                    ) : (
-                      <div className="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
-                        <span className="text-xs font-medium text-gray-500">
-                          {user.leaderboard_position || idx + 1}
-                        </span>
-                      </div>
-                    )}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 mb-1">
                         <p className="text-sm font-semibold text-gray-900 truncate">
@@ -2785,20 +2775,17 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   return (
                     <div key={user.id} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                       <div className="flex items-center gap-3 mb-4">
-                        {user.profile.image_url ? (
-                          <img
-                            src={user.profile.image_url}
-                            alt={user.profile.display_name || user.profile.name}
-                            className="w-12 h-12 rounded-lg object-cover shadow-sm"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        ) : (
-                          <div className="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center shadow-sm">
-                            <span className="text-xs font-medium text-gray-500">#{user.leaderboard_position || 0}</span>
-                          </div>
-                        )}
+                        <Avatar
+                          src={user.profile.image_url || undefined}
+                          alt={generateBuilderAltText(
+                            user.profile.display_name,
+                            user.profile.name,
+                            user.leaderboard_position
+                          )}
+                          size="md"
+                          fallback={`#${user.leaderboard_position || 0}`}
+                          position={user.leaderboard_position || undefined}
+                        />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-900 truncate">
                             {user.profile.display_name || user.profile.name || "Anonymous"}
@@ -2933,6 +2920,7 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
           )}
         </div>
       )}
+      </div>
 
       {/* Pagination (only for single sponsor mode) */}
       {filters.sponsor_slug && data.pagination.last_page > 1 && (
@@ -3014,9 +3002,8 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
               »»
             </button>
           </div>
-        </div>
+        </nav>
       )}
-      </div>
 
       {selectedBuilder && (
         <BuilderProfileModal

@@ -1,13 +1,34 @@
 "use client";
 
 import { Image } from "@/components/Image";
+import { generateProfileAltText } from "@/lib/alt-text-utils";
 
+/**
+ * Avatar component for displaying user profile pictures.
+ * Automatically generates meaningful alt text when not provided.
+ * 
+ * @example
+ * <Avatar src="/avatar.jpg" alt="John Doe" size="lg" />
+ * <Avatar alt="Jane Smith" fallback="JS" size="md" />
+ */
 interface AvatarProps {
   src?: string;
-  alt: string;
+  /**
+   * Alt text for the avatar. If not provided, will be generated from fallback or name.
+   * For better accessibility, always provide a meaningful alt text.
+   */
+  alt?: string;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
+  /**
+   * Fallback text to display when image is not available.
+   * Also used to generate alt text if alt prop is not provided.
+   */
   fallback?: string;
   className?: string;
+  /**
+   * Optional context for generating better alt text (e.g., leaderboard position).
+   */
+  position?: number;
 }
 
 const sizeClasses = {
@@ -32,24 +53,36 @@ export function Avatar({
   size = "md",
   fallback,
   className = "",
+  position,
 }: AvatarProps) {
-  const displayFallback = fallback || alt.charAt(0).toUpperCase();
+  // Generate alt text if not provided
+  const altText =
+    alt ||
+    generateProfileAltText(
+      fallback,
+      fallback,
+      position
+    );
+
+  const displayFallback = fallback || (alt ? alt.charAt(0).toUpperCase() : "?");
 
   return (
     <div
       className={`${sizeClasses[size]} rounded-full overflow-hidden flex items-center justify-center bg-gray-200 text-gray-600 font-medium ${className}`}
+      role="img"
+      aria-label={altText}
     >
       {src ? (
         <Image
           src={src}
-          alt={alt}
+          alt={altText}
           width={sizePixels[size]}
           height={sizePixels[size]}
           objectFit="cover"
           className="w-full h-full"
         />
       ) : (
-        <span>{displayFallback}</span>
+        <span aria-hidden="true">{displayFallback}</span>
       )}
     </div>
   );
