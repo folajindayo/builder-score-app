@@ -5,6 +5,7 @@ import { useAccount, useDisconnect } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
 import { formatAddress } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Tooltip } from "@/components/Tooltip";
 
 export const WalletButton = memo(function WalletButton() {
   const { address, isConnected } = useAccount();
@@ -23,27 +24,31 @@ export const WalletButton = memo(function WalletButton() {
             {formatAddress(address)}
           </span>
         </motion.div>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => disconnect()}
-          className="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
-        >
-          Disconnect
-        </motion.button>
+        <Tooltip content="Disconnect your wallet">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => disconnect()}
+            className="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+          >
+            Disconnect
+          </motion.button>
+        </Tooltip>
       </div>
     );
   }
 
   return (
-    <motion.button
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      onClick={() => open()}
-      className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
-    >
-      Connect Wallet
-    </motion.button>
+    <Tooltip content="Connect your wallet to view your builder score">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => open()}
+        className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+      >
+        Connect Wallet
+      </motion.button>
+    </Tooltip>
   );
 }
 
