@@ -95,6 +95,11 @@ export function generateId(prefix: string = ''): string {
   return `${prefix}${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
+// Sleep/delay utility
+export function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
