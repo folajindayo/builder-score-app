@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { WalletButton } from "@/components/WalletButton";
-import { BuilderSearcher } from "@/components/BuilderSearcher";
-import { SearchResults } from "@/components/SearchResults";
+import dynamic from "next/dynamic";
 import type { SearchFilters } from "@/types/talent";
 import Link from "next/link";
+
+const BuilderSearcher = dynamic(() => import("@/components/BuilderSearcher").then(mod => ({ default: mod.BuilderSearcher })));
+const SearchResults = dynamic(() => import("@/components/SearchResults").then(mod => ({ default: mod.SearchResults })));
 import { motion } from "framer-motion";
 
 export default function SearchPage() {
