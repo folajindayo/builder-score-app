@@ -90,6 +90,11 @@ export function isEmpty(value: any): boolean {
   return false;
 }
 
+// Generate unique ID
+export function generateId(prefix: string = ''): string {
+  return `${prefix}${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
