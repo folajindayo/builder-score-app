@@ -2821,22 +2821,24 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
       {/* Pagination (only for single sponsor mode) */}
       {filters.sponsor_slug && data.pagination.last_page > 1 && (
-        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-          <p className="text-sm text-gray-500">
+        <nav className="px-6 py-4 border-t border-gray-200 flex items-center justify-between" aria-label="Pagination">
+          <p className="text-sm text-gray-500" aria-live="polite">
             Page {data.pagination.current_page} of {data.pagination.last_page}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" role="group" aria-label="Pagination controls">
             <button
               onClick={() => handlePageChange(1)}
               disabled={page === 1 || loading}
-              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              aria-label="First page"
             >
               ««
             </button>
             <button
               onClick={() => handlePageChange(page - 1)}
               disabled={page === 1 || loading}
-              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              aria-label="Previous page"
             >
               ‹
             </button>
@@ -2856,11 +2858,13 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                   key={pageNum}
                   onClick={() => handlePageChange(pageNum)}
                   disabled={loading}
-                  className={`px-3 py-1.5 text-sm border rounded-lg transition-colors ${
+                  className={`px-3 py-1.5 text-sm border rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none ${
                     pageNum === page
                       ? "bg-blue-600 text-white border-blue-600"
                       : "border-gray-300 hover:bg-gray-50"
                   }`}
+                  aria-label={`Page ${pageNum}`}
+                  aria-current={pageNum === page ? "page" : undefined}
                 >
                   {pageNum}
                 </button>
@@ -2881,14 +2885,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
             <button
               onClick={() => handlePageChange(page + 1)}
               disabled={page === data.pagination.last_page || loading}
-              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              aria-label="Next page"
             >
               ›
             </button>
             <button
               onClick={() => handlePageChange(data.pagination.last_page)}
               disabled={page === data.pagination.last_page || loading}
-              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              aria-label="Last page"
             >
               »»
             </button>
