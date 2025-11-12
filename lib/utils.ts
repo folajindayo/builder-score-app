@@ -199,6 +199,23 @@ export function randomString(length: number = 8): string {
   return result;
 }
 
+/**
+ * Groups an array of items by a key function
+ * @param array - The array to group
+ * @param keyFn - Function that returns the key for each item
+ * @returns An object with keys and arrays of items
+ */
+export function groupBy<T>(array: T[], keyFn: (item: T) => string): Record<string, T[]> {
+  return array.reduce((result, item) => {
+    const key = keyFn(item);
+    if (!result[key]) {
+      result[key] = [];
+    }
+    result[key].push(item);
+    return result;
+  }, {} as Record<string, T[]>);
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
