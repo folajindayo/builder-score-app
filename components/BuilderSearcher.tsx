@@ -227,6 +227,7 @@ export function BuilderSearcher({ onSearch, loading }: BuilderSearcherProps) {
               onClick={handleClear}
               disabled={loading}
               className="px-6 py-3 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 rounded-lg font-semibold transition-all shadow-sm hover:shadow"
+              aria-label="Clear all filters"
             >
               Clear
             </motion.button>
