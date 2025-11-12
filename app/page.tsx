@@ -11,7 +11,7 @@ const BuilderScore = dynamic(() => import("@/components/BuilderScore").then(mod 
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <SkipLink href="#main-content" />
       <header className="bg-white border-b border-gray-200" role="banner">
         <nav className="mx-[200px] px-6 py-4" role="navigation" aria-label="Main navigation">
