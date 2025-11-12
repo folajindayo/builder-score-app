@@ -306,6 +306,16 @@ export function shuffle<T>(array: T[]): T[] {
   return shuffled;
 }
 
+/**
+ * Picks a random item from an array
+ * @param array - The array to pick from
+ * @returns A random item or undefined if array is empty
+ */
+export function randomItem<T>(array: T[]): T | undefined {
+  if (array.length === 0) return undefined;
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
