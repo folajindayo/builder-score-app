@@ -67,3 +67,30 @@ class APICache {
 
 export const apiCache = new APICache();
 
+/**
+ * Request deduplication map
+ */
+const pendingRequests = new Map<string, Promise<unknown>>();
+
+/**
+ * Deduplicates concurrent requests with the same key
+ */
+export async function deduplicateRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>
+): Promise<T> {
+  // If there's already a pending request, return its promise
+  if (pendingRequests.has(key)) {
+    return pendingRequests.get(key) as Promise<T>;
+  }
+
+  // Create new request
+  const promise = fetcher().finally(() => {
+    // Remove from pending requests when done
+    pendingRequests.delete(key);
+  });
+
+  pendingRequests.set(key, promise);
+  return promise;
+}
+
