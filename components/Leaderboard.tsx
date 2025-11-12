@@ -1486,6 +1486,9 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                 </button>
                 {showColumnMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20 p-2">
+                    <div className="mb-2 pb-2 border-b border-gray-200">
+                      <span className="text-xs font-medium text-gray-500 px-2">Columns</span>
+                    </div>
                     {Object.entries(visibleColumns).map(([key, visible]) => (
                       <label key={key} className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer">
                         <input
@@ -1497,6 +1500,27 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                         <span className="text-sm text-gray-700 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
                       </label>
                     ))}
+                    <div className="mt-2 pt-2 border-t border-gray-200">
+                      <span className="text-xs font-medium text-gray-500 px-2">Density</span>
+                      <div className="mt-1 space-y-1">
+                        {(['compact', 'normal', 'comfortable'] as const).map((density) => (
+                          <button
+                            key={density}
+                            onClick={() => {
+                              setTableDensity(density);
+                              setShowColumnMenu(false);
+                            }}
+                            className={`w-full text-left px-2 py-1 text-sm rounded transition-colors ${
+                              tableDensity === density
+                                ? 'bg-blue-50 text-blue-700'
+                                : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            {density.charAt(0).toUpperCase() + density.slice(1)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
