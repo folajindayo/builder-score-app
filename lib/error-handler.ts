@@ -63,3 +63,45 @@ export function logError(error: unknown, context?: string): void {
   console.error(logMessage, error);
 }
 
+/**
+ * Wraps an async function with error handling
+ */
+export async function withErrorHandling<T>(
+  fn: () => Promise<T>,
+  onError?: (error: unknown) => void
+): Promise<T | null> {
+  try {
+    return await fn();
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    } else {
+      logError(error);
+    }
+    return null;
+  }
+}
+
+/**
+ * Retries a function with exponential backoff
+ */
+export async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  initialDelay: number = 1000
+): Promise<T> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (attempt < maxRetries) {
+        const delay = initialDelay * Math.pow(2, attempt);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+  throw lastError;
+}
+
