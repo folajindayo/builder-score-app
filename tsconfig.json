@@ -20,7 +20,8 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "importsNotUsedAsValues": "remove"
   },
   "include": [
     "next-env.d.ts",
