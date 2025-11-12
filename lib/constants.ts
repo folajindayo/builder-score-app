@@ -1,5 +1,5 @@
 /**
- * Application constants
+ * Application constants and configuration
  */
 
 /**
@@ -7,6 +7,17 @@
  */
 export const DEFAULT_PAGE_SIZE = 20;
 export const DEFAULT_PAGE = 1;
+
+/**
+ * Application configuration
+ */
+export const APP_CONFIG = {
+  NAME: 'Builder Score',
+  VERSION: '1.0.0',
+  DESCRIPTION: 'Onchain builder reputation score and searcher',
+  API_BASE_URL: process.env.NEXT_PUBLIC_TALENT_API_URL || 'https://api.talentprotocol.com/v1',
+  PROJECT_ID: process.env.NEXT_PUBLIC_PROJECT_ID || '',
+} as const;
 
 /**
  * Scroll thresholds
