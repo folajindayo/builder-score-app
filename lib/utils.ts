@@ -147,6 +147,35 @@ export function formatLargeNumber(num: number): string {
 }
 
 /**
+ * Formats a number with commas as thousand separators
+ * @param num - The number to format
+ * @returns Formatted number string (e.g., "1,234,567")
+ */
+export function formatNumberWithCommas(num: number): string {
+  return new Intl.NumberFormat('en-US').format(num);
+}
+
+/**
+ * Formats a number with a specific number of decimal places
+ * @param num - The number to format
+ * @param decimals - Number of decimal places
+ * @returns Formatted number string
+ */
+export function formatNumberDecimals(num: number, decimals: number = 2): string {
+  return num.toFixed(decimals);
+}
+
+/**
+ * Formats a number as a percentage
+ * @param num - The number to format (0-1 range)
+ * @param decimals - Number of decimal places
+ * @returns Formatted percentage string
+ */
+export function formatAsPercentage(num: number, decimals: number = 1): string {
+  return `${(num * 100).toFixed(decimals)}%`;
+}
+
+/**
  * Validates an email address format
  * @param email - The email address to validate
  * @returns True if valid, false otherwise
