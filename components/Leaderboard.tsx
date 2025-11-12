@@ -20,6 +20,7 @@ import {
 import { TrophyIcon } from "@/components/TrophyIcon";
 import { BuilderProfileModal } from "@/components/BuilderProfileModal";
 import type { LeaderboardUser } from "@/types/talent";
+import { Skeleton } from "@/components/Skeleton";
 
 // All sponsor slugs
 const ALL_SPONSOR_SLUGS = ["walletconnect", "celo", "base", "base-summer", "syndicate", "talent-protocol"];
@@ -1233,12 +1234,85 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
 
   if (loading && !data) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div className="p-6">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-gray-50 rounded mb-2 animate-pulse"></div>
-          ))}
-        </div>
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-200 bg-gray-50">
+              {visibleColumns.position && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">#</th>
+              )}
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12"></th>
+              {visibleColumns.name && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member Name</th>
+              )}
+              {visibleColumns.score && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+              )}
+              {visibleColumns.earnings && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Earnings</th>
+              )}
+              {visibleColumns.rankChange && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank Change</th>
+              )}
+              {visibleColumns.mcap && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MCAP</th>
+              )}
+              {visibleColumns.actions && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              )}
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {[...Array(10)].map((_, i) => (
+              <tr key={i} className="hover:bg-gray-50">
+                {visibleColumns.position && (
+                  <td className="px-4 py-4">
+                    <Skeleton width="2rem" height="1rem" />
+                  </td>
+                )}
+                <td className="px-4 py-4">
+                  <Skeleton width="1.5rem" height="1.5rem" rounded />
+                </td>
+                {visibleColumns.name && (
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-2">
+                      <Skeleton width="2rem" height="2rem" rounded />
+                      <Skeleton width="8rem" height="1rem" />
+                    </div>
+                  </td>
+                )}
+                {visibleColumns.score && (
+                  <td className="px-4 py-4">
+                    <Skeleton width="4rem" height="1rem" />
+                  </td>
+                )}
+                {visibleColumns.earnings && (
+                  <td className="px-4 py-4">
+                    <Skeleton width="6rem" height="1rem" />
+                  </td>
+                )}
+                {visibleColumns.rankChange && (
+                  <td className="px-4 py-4">
+                    <Skeleton width="3rem" height="1rem" />
+                  </td>
+                )}
+                {visibleColumns.mcap && (
+                  <td className="px-4 py-4">
+                    <Skeleton width="5rem" height="1rem" />
+                  </td>
+                )}
+                {visibleColumns.actions && (
+                  <td className="px-4 py-4">
+                    <div className="flex gap-2">
+                      <Skeleton width="2rem" height="2rem" rounded />
+                      <Skeleton width="2rem" height="2rem" rounded />
+                    </div>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }
