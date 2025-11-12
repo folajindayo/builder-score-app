@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, memo, useMemo } from "react";
+import { useEffect, useState, memo, useMemo, useCallback } from "react";
 import { useAccount } from "wagmi";
 import { getBuilderScore, getBuilderProfile } from "@/lib/talent-api";
 import type { BuilderScore, BuilderProfile } from "@/types/talent";
@@ -109,7 +109,7 @@ export const BuilderScore = memo(function BuilderScore() {
     );
   }
 
-  const handleCopyAddress = async () => {
+  const handleCopyAddress = useCallback(async () => {
     if (!address) return;
     const success = await copyToClipboard(address);
     if (success) {
@@ -119,9 +119,9 @@ export const BuilderScore = memo(function BuilderScore() {
     } else {
       toast.error("Failed to copy address");
     }
-  };
+  }, [address, toast]);
 
-  const handleRefresh = async () => {
+  const handleRefresh = useCallback(async () => {
     if (!address) return;
     setLoading(true);
     setError(null);
@@ -141,7 +141,7 @@ export const BuilderScore = memo(function BuilderScore() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [address, toast]);
 
   return (
     <motion.div
