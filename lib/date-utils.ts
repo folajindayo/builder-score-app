@@ -58,3 +58,42 @@ export function isFuture(date: Date | string): boolean {
   return d.getTime() > Date.now();
 }
 
+/**
+ * Formats a date as a short date string (e.g., "Jan 15, 2024")
+ */
+export function formatShortDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(d);
+}
+
+/**
+ * Formats a date as a long date string (e.g., "January 15, 2024")
+ */
+export function formatLongDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(d);
+}
+
+/**
+ * Formats a date with time (e.g., "Jan 15, 2024 at 3:30 PM")
+ */
+export function formatDateTime(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(d);
+}
+
