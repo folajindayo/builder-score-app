@@ -56,7 +56,7 @@ export default function SearchPage() {
         </nav>
       </header>
 
-      <main className="mx-[200px] px-4 sm:px-6 lg:px-8 py-10" role="main">
+      <main className="mx-[200px] px-4 sm:px-6 lg:px-8 py-10" role="main" aria-label="Search page main content">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -71,23 +71,34 @@ export default function SearchPage() {
           </p>
         </motion.div>
 
-        <motion.div
+        <motion.section
+          role="search"
+          aria-label="Builder search"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
           <BuilderSearcher onSearch={handleSearch} loading={loading} />
-        </motion.div>
+        </motion.section>
 
-        <motion.div
+        <motion.section
+          role="region"
+          aria-label="Search results"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
           <SearchResults filters={filters} />
-        </motion.div>
+        </motion.section>
       </main>
+      <footer role="contentinfo" aria-label="Site footer" className="bg-white/90 border-t border-gray-200/50 mt-12">
+        <div className="mx-[200px] px-4 sm:px-6 lg:px-8 py-4">
+          <p className="text-sm text-gray-500 text-center">
+            Powered by Talent Protocol
+          </p>
+        </div>
+      </footer>
       <ScrollToTop />
     </div>
   );

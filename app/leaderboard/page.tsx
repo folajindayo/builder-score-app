@@ -61,7 +61,7 @@ export default function LeaderboardPage() {
         </nav>
       </header>
 
-      <main className="mx-[200px] px-6 py-8" role="main">
+      <main className="mx-[200px] px-6 py-8" role="main" aria-label="Leaderboard main content">
         <div className="mb-6">
           <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Leaderboard" }]} />
           <div className="flex items-center gap-2 mb-2 mt-4">
@@ -74,16 +74,25 @@ export default function LeaderboardPage() {
           </p>
         </div>
 
-        <div className="mb-6">
+        <section role="region" aria-label="Leaderboard filters" className="mb-6">
           <LeaderboardFilters
             onFilterChange={handleFilterChange}
             loading={loading}
             initialFilters={filters}
           />
-        </div>
+        </section>
 
-        <Leaderboard filters={filters} />
+        <section role="region" aria-label="Leaderboard table">
+          <Leaderboard filters={filters} />
+        </section>
       </main>
+      <footer role="contentinfo" aria-label="Site footer" className="bg-white border-t border-gray-200 mt-12">
+        <div className="mx-[200px] px-6 py-4">
+          <p className="text-sm text-gray-500 text-center">
+            Powered by Talent Protocol
+          </p>
+        </div>
+      </footer>
       <ScrollToTop />
     </div>
   );

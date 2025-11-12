@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { LoadingProgressBar } from "@/components/LoadingProgressBar";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+import { SkipLink } from "@/components/SkipLink";
 
 const BuilderScore = dynamic(() => import("@/components/BuilderScore").then(mod => ({ default: mod.BuilderScore })), {
   loading: () => <div className="p-8 bg-white rounded-xl border-2 border-gray-200 shadow-md animate-pulse">Loading...</div>,
@@ -38,7 +39,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <main id="main-content" className="mx-[200px] px-6 py-8">
+      <main id="main-content" className="mx-[200px] px-6 py-8" role="main" aria-label="Main content">
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <h2 className="text-3xl font-bold text-gray-900">
@@ -52,6 +53,13 @@ export default function Home() {
 
         <BuilderScore />
       </main>
+      <footer role="contentinfo" aria-label="Site footer" className="bg-white border-t border-gray-200 mt-12">
+        <div className="mx-[200px] px-6 py-4">
+          <p className="text-sm text-gray-500 text-center">
+            Powered by Talent Protocol
+          </p>
+        </div>
+      </footer>
       <KeyboardShortcuts
         shortcuts={[
           { keys: ["/"], description: "Focus search" },
