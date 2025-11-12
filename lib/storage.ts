@@ -54,3 +54,44 @@ export function clearStorage(): void {
   }
 }
 
+/**
+ * Check if localStorage is available
+ * @returns True if localStorage is available, false otherwise
+ */
+export function isStorageAvailable(): boolean {
+  try {
+    const test = '__storage_test__';
+    localStorage.setItem(test, test);
+    localStorage.removeItem(test);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Get all keys from localStorage
+ * @returns Array of all storage keys
+ */
+export function getAllStorageKeys(): string[] {
+  try {
+    return Object.keys(localStorage);
+  } catch (error) {
+    console.error("Error getting localStorage keys:", error);
+    return [];
+  }
+}
+
+/**
+ * Check if a key exists in localStorage
+ * @param key - The storage key
+ * @returns True if key exists, false otherwise
+ */
+export function hasStorageItem(key: string): boolean {
+  try {
+    return localStorage.getItem(key) !== null;
+  } catch {
+    return false;
+  }
+}
+
