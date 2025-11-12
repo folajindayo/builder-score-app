@@ -69,15 +69,19 @@ export function Dropdown({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             className="absolute z-50 w-full mt-1 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
-            {options.map((option) => (
-              <button
+            {options.map((option, index) => (
+              <motion.button
                 key={option.value}
                 type="button"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.02 }}
                 onClick={() => {
                   onChange(option.value);
                   setIsOpen(false);
@@ -88,7 +92,7 @@ export function Dropdown({
                 } ${option.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {option.label}
-              </button>
+              </motion.button>
             ))}
           </motion.div>
         )}
