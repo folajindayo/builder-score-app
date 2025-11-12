@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { searchBuilders } from "@/lib/talent-api";
 import type { SearchFilters, SearchResult } from "@/types/talent";
 import { formatAddress, formatScore } from "@/lib/utils";
@@ -10,7 +10,7 @@ interface SearchResultsProps {
   filters: SearchFilters;
 }
 
-export function SearchResults({ filters }: SearchResultsProps) {
+export const SearchResults = memo(function SearchResults({ filters }: SearchResultsProps) {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -204,6 +204,6 @@ export function SearchResults({ filters }: SearchResultsProps) {
       )}
     </div>
   );
-}
+});
 
 
