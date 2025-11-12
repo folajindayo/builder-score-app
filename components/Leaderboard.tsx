@@ -1388,8 +1388,28 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
     });
   };
 
+  // Announce data updates to screen readers
+  useEffect(() => {
+    if (data && !loading) {
+      const count = filteredUsers.length;
+      const announcement = document.createElement("div");
+      announcement.setAttribute("role", "status");
+      announcement.setAttribute("aria-live", "polite");
+      announcement.setAttribute("aria-atomic", "true");
+      announcement.className = "sr-only";
+      announcement.textContent = `Leaderboard updated. Showing ${count} ${count === 1 ? 'builder' : 'builders'}.`;
+      document.body.appendChild(announcement);
+      setTimeout(() => {
+        if (document.body.contains(announcement)) {
+          document.body.removeChild(announcement);
+        }
+      }, 1000);
+    }
+  }, [data, loading, filteredUsers.length]);
+
   return (
     <>
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true" id="leaderboard-announcements"></div>
       <div className="bg-white rounded-lg border border-gray-200">
       {/* Header Section */}
       <div className="p-6 border-b border-gray-200">
