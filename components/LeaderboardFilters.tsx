@@ -43,7 +43,7 @@ export function LeaderboardFilters({
     }
   }, [sponsorSlug, grantDuration]);
 
-  const handleSponsorSlugChange = (value: string) => {
+  const handleSponsorSlugChange = useCallback((value: string) => {
     setSponsorSlug(value);
     // If "all" sponsors selected, force "allTime" duration
     if (value === "all") {
@@ -55,9 +55,9 @@ export function LeaderboardFilters({
       // For sponsors without grant IDs, default to "allTime"
       setGrantDuration("allTime");
     }
-  };
+  }, []);
 
-  const handleGrantDurationChange = (value: "thisWeek" | "lastWeek" | "allTime") => {
+  const handleGrantDurationChange = useCallback((value: "thisWeek" | "lastWeek" | "allTime") => {
     setGrantDuration(value);
   };
 
