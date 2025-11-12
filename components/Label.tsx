@@ -1,18 +1,27 @@
 "use client";
 
-import { LabelHTMLAttributes, ReactNode } from "react";
+import { ReactNode } from "react";
 
-interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
+interface LabelProps {
   children: ReactNode;
+  htmlFor?: string;
   required?: boolean;
+  className?: string;
 }
 
-export function Label({ children, required = false, className = "", ...props }: LabelProps) {
+export function Label({
+  children,
+  htmlFor,
+  required = false,
+  className = "",
+}: LabelProps) {
   return (
-    <label className={`block text-sm font-semibold text-gray-700 ${className}`} {...props}>
+    <label
+      htmlFor={htmlFor}
+      className={`block text-sm font-medium text-gray-700 mb-1 ${className}`}
+    >
       {children}
       {required && <span className="text-red-500 ml-1">*</span>}
     </label>
   );
 }
-
