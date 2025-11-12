@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WalletButton } from "@/components/WalletButton";
 import dynamic from "next/dynamic";
 import type { LeaderboardFilters as LeaderboardFiltersType } from "@/types/talent";
@@ -21,6 +21,10 @@ export default function LeaderboardPage() {
       : undefined,
   });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = "Leaderboard - Builder Score";
+  }, []);
 
   const handleFilterChange = (newFilters: LeaderboardFiltersType) => {
     setFilters({ ...newFilters, page: 1 }); // Reset to page 1 when filters change

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WalletButton } from "@/components/WalletButton";
 import dynamic from "next/dynamic";
 import type { SearchFilters } from "@/types/talent";
@@ -13,6 +13,10 @@ import { motion } from "framer-motion";
 export default function SearchPage() {
   const [filters, setFilters] = useState<SearchFilters>({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = "Search Builders - Builder Score";
+  }, []);
 
   const handleSearch = (newFilters: SearchFilters) => {
     setFilters(newFilters);
