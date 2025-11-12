@@ -216,6 +216,24 @@ export function groupBy<T>(array: T[], keyFn: (item: T) => string): Record<strin
   }, {} as Record<string, T[]>);
 }
 
+/**
+ * Removes duplicate items from an array based on a key function
+ * @param array - The array to deduplicate
+ * @param keyFn - Function that returns the unique key for each item
+ * @returns An array with duplicates removed
+ */
+export function uniqueBy<T>(array: T[], keyFn: (item: T) => string | number): T[] {
+  const seen = new Set<string | number>();
+  return array.filter((item) => {
+    const key = keyFn(item);
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
