@@ -301,5 +301,5 @@ export const BuilderScore = memo(function BuilderScore() {
       )}
     </motion.div>
   );
-}
+});
 
