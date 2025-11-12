@@ -43,6 +43,13 @@ export const LeaderboardFilters = memo(function LeaderboardFilters({
 }: LeaderboardFiltersProps) {
   const [sponsorSlug, setSponsorSlug] = useState(initialFilters.sponsor_slug || "");
   const [grantDuration, setGrantDuration] = useState<"thisWeek" | "lastWeek" | "allTime">("thisWeek");
+  const [filterHistory, setFilterHistory] = useState<LeaderboardFilters[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('filterHistory');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
 
   // Auto-set grant ID based on sponsor and duration (controlled from code)
   useEffect(() => {
@@ -93,6 +100,13 @@ export const LeaderboardFilters = memo(function LeaderboardFilters({
       }
     }
 
+    // Save to history
+    const newHistory = [filters, ...filterHistory.filter(f => JSON.stringify(f) !== JSON.stringify(filters))].slice(0, 5);
+    setFilterHistory(newHistory);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('filterHistory', JSON.stringify(newHistory));
+    }
+
     onFilterChange(filters);
   };
 
@@ -134,6 +148,39 @@ export const LeaderboardFilters = memo(function LeaderboardFilters({
             {preset.label}
           </button>
         ))}
+        {filterHistory.length > 0 && (
+          <>
+            <span className="text-xs font-medium text-gray-500 ml-2">History:</span>
+            {filterHistory.slice(0, 3).map((filters, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  if (filters.sponsor_slug) {
+                    setSponsorSlug(filters.sponsor_slug);
+                    if (filters.grant_id) {
+                      const sponsor = Object.keys(GRANT_IDS).find(s => 
+                        GRANT_IDS[s].thisWeek === filters.grant_id || GRANT_IDS[s].lastWeek === filters.grant_id
+                      );
+                      if (sponsor) {
+                        setGrantDuration(GRANT_IDS[sponsor].thisWeek === filters.grant_id ? "thisWeek" : "lastWeek");
+                      }
+                    } else {
+                      setGrantDuration("allTime");
+                    }
+                  } else {
+                    setSponsorSlug("all");
+                    setGrantDuration("allTime");
+                  }
+                  onFilterChange(filters);
+                }}
+                className="px-3 py-1 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg transition-colors"
+              >
+                {filters.sponsor_slug || "All"} {filters.grant_id ? `(${filters.grant_id})` : ""}
+              </button>
+            ))}
+          </>
+        )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
