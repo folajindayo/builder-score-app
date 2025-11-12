@@ -6,6 +6,7 @@ import { Leaderboard } from "@/components/Leaderboard";
 import { LeaderboardFilters } from "@/components/LeaderboardFilters";
 import type { LeaderboardFilters as LeaderboardFiltersType } from "@/types/talent";
 import Link from "next/link";
+import { LoadingProgressBar } from "@/components/LoadingProgressBar";
 
 export default function LeaderboardPage() {
   const [filters, setFilters] = useState<LeaderboardFiltersType>({
@@ -26,6 +27,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <LoadingProgressBar isLoading={loading} />
       <header className="bg-white border-b border-gray-200">
         <div className="mx-[200px] px-6 py-4">
           <div className="flex items-center justify-between">
