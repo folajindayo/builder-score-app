@@ -85,3 +85,42 @@ export function isValidInteger(value: unknown): value is number {
   return isValidNumber(value) && Number.isInteger(value);
 }
 
+/**
+ * Validates wallet address format and returns result with error message
+ */
+export function validateWalletAddress(address: string): { valid: boolean; error?: string } {
+  if (!address) {
+    return { valid: false, error: 'Wallet address is required' };
+  }
+  if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    return { valid: false, error: 'Invalid wallet address format' };
+  }
+  return { valid: true };
+}
+
+/**
+ * Validates score range
+ */
+export function validateScoreRange(min: number, max: number): { valid: boolean; error?: string } {
+  if (min < 0 || max < 0) {
+    return { valid: false, error: 'Scores must be non-negative' };
+  }
+  if (min > max) {
+    return { valid: false, error: 'Minimum score must be less than or equal to maximum score' };
+  }
+  return { valid: true };
+}
+
+/**
+ * Validates email format and returns result with error message
+ */
+export function validateEmail(email: string): { valid: boolean; error?: string } {
+  if (!email) {
+    return { valid: false, error: 'Email is required' };
+  }
+  if (!isValidEmailAddress(email)) {
+    return { valid: false, error: 'Invalid email format' };
+  }
+  return { valid: true };
+}
+
