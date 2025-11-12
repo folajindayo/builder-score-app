@@ -51,3 +51,37 @@ export function isNonNegative(value: number): boolean {
   return value >= 0;
 }
 
+/**
+ * Validates if a string is a valid URL
+ */
+export function isValidURL(value: string): boolean {
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Validates if a string is a valid email address
+ */
+export function isValidEmailAddress(value: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(value);
+}
+
+/**
+ * Validates if a value is a valid number
+ */
+export function isValidNumber(value: unknown): value is number {
+  return typeof value === "number" && !isNaN(value) && isFinite(value);
+}
+
+/**
+ * Validates if a value is a valid integer
+ */
+export function isValidInteger(value: unknown): value is number {
+  return isValidNumber(value) && Number.isInteger(value);
+}
+
