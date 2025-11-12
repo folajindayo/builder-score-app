@@ -124,6 +124,9 @@ export interface Pagination {
   total: number;
 }
 
+/**
+ * Filters for leaderboard queries
+ */
 export interface LeaderboardFilters {
   per_page?: number;
   page?: number;
