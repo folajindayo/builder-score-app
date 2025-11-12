@@ -1,39 +1,63 @@
 "use client";
 
-import { InputHTMLAttributes, forwardRef } from "react";
-
-interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
+interface SwitchProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
   label?: string;
-  error?: string;
+  disabled?: boolean;
+  size?: "sm" | "md" | "lg";
+  className?: string;
 }
 
-export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
-  ({ label, error, className = "", ...props }, ref) => {
-    return (
-      <div className="flex items-center">
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            ref={ref}
-            type="checkbox"
-            className="sr-only peer"
-            aria-invalid={error ? "true" : "false"}
-            aria-describedby={error ? `${props.id}-error` : undefined}
-            {...props}
+const sizeClasses = {
+  sm: "w-8 h-4",
+  md: "w-11 h-6",
+  lg: "w-14 h-7",
+};
+
+const thumbSizeClasses = {
+  sm: "w-3 h-3",
+  md: "w-5 h-5",
+  lg: "w-6 h-6",
+};
+
+const translateClasses = {
+  sm: "translate-x-4",
+  md: "translate-x-5",
+  lg: "translate-x-7",
+};
+
+export function Switch({
+  checked,
+  onChange,
+  label,
+  disabled = false,
+  size = "md",
+  className = "",
+}: SwitchProps) {
+  return (
+    <label className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}>
+      <div className="relative">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+          disabled={disabled}
+          className="sr-only"
+        />
+        <div
+          className={`${sizeClasses[size]} rounded-full transition-colors ${
+            checked ? "bg-blue-600" : "bg-gray-300"
+          } ${disabled ? "cursor-not-allowed" : ""}`}
+        >
+          <div
+            className={`${thumbSizeClasses[size]} absolute top-0.5 left-0.5 bg-white rounded-full transition-transform ${
+              checked ? translateClasses[size] : ""
+            }`}
           />
-          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          {label && (
-            <span className="ml-3 text-sm font-medium text-gray-700">{label}</span>
-          )}
-        </label>
-        {error && (
-          <p id={`${props.id}-error`} className="mt-1 text-sm text-red-600" role="alert">
-            {error}
-          </p>
-        )}
+        </div>
       </div>
-    );
-  }
-);
-
-Switch.displayName = "Switch";
-
+      {label && <span className="text-sm text-gray-700">{label}</span>}
+    </label>
+  );
+}
