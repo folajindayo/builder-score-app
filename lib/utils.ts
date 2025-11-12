@@ -335,6 +335,16 @@ export function average(array: number[]): number {
   return sum(array) / array.length;
 }
 
+/**
+ * Finds the minimum value in an array
+ * @param array - The array of numbers
+ * @returns The minimum value or undefined if array is empty
+ */
+export function min(array: number[]): number | undefined {
+  if (array.length === 0) return undefined;
+  return Math.min(...array);
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
