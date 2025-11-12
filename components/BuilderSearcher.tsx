@@ -18,6 +18,13 @@ export const BuilderSearcher = memo(function BuilderSearcher({ onSearch, loading
   const [skills, setSkills] = useState("");
   const [credentials, setCredentials] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<SearchFilters[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('recentSearches');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
   
   // Common search suggestions
   const suggestions = [
@@ -99,14 +106,23 @@ export const BuilderSearcher = memo(function BuilderSearcher({ onSearch, loading
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch({
+    const filters: SearchFilters = {
       address: address || undefined,
       ensName: ensName || undefined,
       minScore: minScore ? Number(minScore) : undefined,
       maxScore: maxScore ? Number(maxScore) : undefined,
       skills: skills ? skills.split(",").map((s) => s.trim()) : undefined,
       credentials: credentials ? credentials.split(",").map((c) => c.trim()) : undefined,
-    });
+    };
+    
+    // Save to recent searches
+    const newRecent = [filters, ...recentSearches.filter(s => JSON.stringify(s) !== JSON.stringify(filters))].slice(0, 5);
+    setRecentSearches(newRecent);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('recentSearches', JSON.stringify(newRecent));
+    }
+    
+    onSearch(filters);
   };
 
   const handleClear = () => {
@@ -127,9 +143,34 @@ export const BuilderSearcher = memo(function BuilderSearcher({ onSearch, loading
       animate={{ opacity: 1, y: 0 }}
       className="p-6 bg-white rounded-xl border-2 border-gray-200 shadow-lg"
     >
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">
-        Search Builders
-      </h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">
+          Search Builders
+        </h2>
+        {recentSearches.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs text-gray-500 self-center">Recent:</span>
+            {recentSearches.slice(0, 3).map((search, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setAddress(search.address || "");
+                  setEnsName(search.ensName || "");
+                  setMinScore(search.minScore?.toString() || "");
+                  setMaxScore(search.maxScore?.toString() || "");
+                  setSkills(search.skills?.join(", ") || "");
+                  setCredentials(search.credentials?.join(", ") || "");
+                  onSearch(search);
+                }}
+                className="px-2 py-1 text-xs bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded transition-colors"
+              >
+                {search.address || search.ensName || "Search"}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
