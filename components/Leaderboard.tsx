@@ -21,6 +21,7 @@ import { TrophyIcon } from "@/components/TrophyIcon";
 import { BuilderProfileModal } from "@/components/BuilderProfileModal";
 import type { LeaderboardUser } from "@/types/talent";
 import { Skeleton } from "@/components/Skeleton";
+import { Badge } from "@/components/Badge";
 
 // All sponsor slugs
 const ALL_SPONSOR_SLUGS = ["walletconnect", "celo", "base", "base-summer", "syndicate", "talent-protocol"];
@@ -2180,6 +2181,16 @@ export function Leaderboard({ filters = {} }: LeaderboardProps) {
                             <p className="text-sm font-medium text-gray-900 truncate">
                               {user.profile.display_name || user.profile.name || "Anonymous"}
                             </p>
+                            {user.profile.human_checkmark && (
+                              <Badge variant="success" size="sm" className="flex-shrink-0">
+                                Verified
+                              </Badge>
+                            )}
+                            {user.profile.verified_nationality && (
+                              <Badge variant="info" size="sm" className="flex-shrink-0">
+                                Nationality
+                              </Badge>
+                            )}
                             {category && (
                               <div className="flex items-center gap-1 flex-shrink-0" title={getCategoryLabel(category)}>
                                 <TrophyIcon category={category} className="w-4 h-4" />
