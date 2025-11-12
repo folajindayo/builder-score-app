@@ -253,6 +253,39 @@ export function parseURL(url: string): {
   }
 }
 
+/**
+ * Builds a URL from components
+ * @param components - URL components
+ * @returns A complete URL string
+ */
+export function buildURL(components: {
+  protocol?: string;
+  hostname: string;
+  pathname?: string;
+  search?: string;
+  hash?: string;
+}): string {
+  const protocol = components.protocol || 'https:';
+  const pathname = components.pathname || '/';
+  const search = components.search || '';
+  const hash = components.hash || '';
+  return `${protocol}//${components.hostname}${pathname}${search}${hash}`;
+}
+
+/**
+ * Adds query parameters to a URL
+ * @param url - The base URL
+ * @param params - Query parameters object
+ * @returns URL with query parameters
+ */
+export function addQueryParams(url: string, params: Record<string, string | number>): string {
+  const urlObj = new URL(url);
+  Object.entries(params).forEach(([key, value]) => {
+    urlObj.searchParams.set(key, String(value));
+  });
+  return urlObj.toString();
+}
+
 // Clamp number between min and max
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
