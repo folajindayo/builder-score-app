@@ -46,6 +46,12 @@ export default function Home() {
 
         <BuilderScore />
       </main>
+      <KeyboardShortcuts
+        shortcuts={[
+          { keys: ["/"], description: "Focus search" },
+          { keys: ["Esc"], description: "Close modals" },
+        ]}
+      />
     </div>
   );
 }
