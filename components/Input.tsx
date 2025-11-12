@@ -3,8 +3,11 @@
 import { InputHTMLAttributes, forwardRef } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  /** Label text for the input */
   label?: string;
+  /** Error message to display */
   error?: string;
+  /** Helper text to display below the input */
   helperText?: string;
 }
 

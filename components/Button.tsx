@@ -4,10 +4,15 @@ import { ButtonHTMLAttributes, ReactNode, useState, useRef } from "react";
 import { motion } from "framer-motion";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Button style variant */
   variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  /** Button size */
   size?: "sm" | "md" | "lg";
+  /** Button content */
   children: ReactNode;
+  /** Whether the button is in loading state */
   loading?: boolean;
+  /** Accessible label for the button */
   ariaLabel?: string;
 }
 
