@@ -1,12 +1,14 @@
 "use client";
 
 import { ButtonHTMLAttributes } from "react";
+import { Tooltip } from "@/components/Tooltip";
 
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: React.ReactNode;
   label: string;
   variant?: "default" | "primary" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
+  showTooltip?: boolean;
 }
 
 export function IconButton({
@@ -15,6 +17,7 @@ export function IconButton({
   variant = "default",
   size = "md",
   className = "",
+  showTooltip = true,
   ...props
 }: IconButtonProps) {
   const variantClasses = {
@@ -30,7 +33,7 @@ export function IconButton({
     lg: "p-3",
   };
 
-  return (
+  const button = (
     <button
       className={`inline-flex items-center justify-center rounded-lg transition-colors ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       aria-label={label}
@@ -39,5 +42,11 @@ export function IconButton({
       {icon}
     </button>
   );
+
+  if (showTooltip) {
+    return <Tooltip content={label}>{button}</Tooltip>;
+  }
+
+  return button;
 }
 
