@@ -1,0 +1,1 @@
+export const COLORS = { PRIMARY: '#3B82F6' };
