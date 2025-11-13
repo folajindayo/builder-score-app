@@ -1,0 +1,1 @@
+describe('Card', () => { it('renders children', () => { render(<Card>Content</Card>); expect(screen.getByText('Content')).toBeInTheDocument(); }); });
