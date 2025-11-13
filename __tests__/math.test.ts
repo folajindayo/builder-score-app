@@ -1,0 +1,1 @@
+describe('math', () => { it('clamps values', () => { expect(clamp(5, 0, 3)).toBe(3); }); });
