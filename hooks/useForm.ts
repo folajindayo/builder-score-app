@@ -1,0 +1,1 @@
+export function useForm() { return { values: {}, handleChange: () => {} }; }
