@@ -1,0 +1,1 @@
+export function debounceFn<T>(fn: T, ms: number): T { return fn; }
