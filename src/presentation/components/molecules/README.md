@@ -1,70 +1,107 @@
-# Molecules
+# Molecules - Composite Components
 
-Molecules are simple groups of atoms that function together as a unit. They are the smallest compositions in our design system.
+Molecules are composite components built by combining multiple atoms together. They represent simple, reusable groups of UI elements that function together as a unit.
 
-## Characteristics
+## Principles
 
-- **Composed of Atoms**: Built from multiple atomic components
-- **Single Responsibility**: Serve one specific purpose
-- **Reusable**: Used in multiple contexts
-- **Context-Aware**: May have some domain knowledge
+- **Atomic Composition**: Built from atoms
+- **Single Purpose**: Each molecule serves one specific use case
+- **Reusable**: Can be used in multiple organisms
+- **Self-Contained**: Manage their own state and behavior
+- **Accessible**: Maintain ARIA compliance
+- **Tested**: Include comprehensive tests
 
-## Examples
+## Available Molecules
 
-- FormField (Label + Input + HelperText + ErrorMessage)
-- SearchBar (Input + Button + Icon)
-- SocialLink (Icon + Link)
-- InputGroup (Label + Input + Button)
-- Rating (Multiple Star Icons)
-- Breadcrumb Item (Link + Separator)
-- MenuItem (Icon + Text + Badge)
+### Forms
+- **FormField** - Label + Input/Select/Textarea + Error/Helper text
+- **SearchBar** - Input + Search Icon + Clear button
+- **ButtonGroup** - Multiple buttons grouped together
 
-## Usage Guidelines
+### Feedback
+- **Alert** - Icon + Title + Description + Close button
+- **Toast** - Notification message with auto-dismiss
+- **EmptyState** - Icon + Title + Description + Action
+- **Skeleton** - Loading placeholder
 
-1. **Combine Atoms**: Use existing atoms as building blocks
-2. **Keep it Simple**: Don't make molecules too complex
-3. **Single Purpose**: Each molecule should do one thing
-4. **Props Interface**: Clear and well-documented props
-5. **Variants**: Support different visual variants
+### Navigation
+- **Breadcrumb** - Navigation trail with separators
+- **TabItem** - Individual tab with badge
+- **MenuItem** - Menu option with icon and shortcut
 
-## Composition Example
+### Data Display
+- **CardHeader** - Avatar + Title + Subtitle + Actions
+- **StatCard** - Label + Value + Trend indicator
+- **ListItem** - Avatar/Icon + Content + Actions
+- **ProgressBar** - Label + Progress + Percentage
+- **AvatarGroup** - Overlapping avatars with overflow
 
-```typescript
-export function FormField({
-  label,
-  error,
-  helperText,
-  required,
-  ...inputProps
-}: FormFieldProps) {
+## Usage Example
+
+\`\`\`tsx
+import { FormField, SearchBar, Alert } from '@molecules';
+import { Input, Button } from '@atoms';
+
+function Example() {
   return (
-    <div className="form-field">
-      <Label required={required}>{label}</Label>
-      <Input {...inputProps} error={!!error} />
-      {helperText && <HelperText>{helperText}</HelperText>}
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+    <div>
+      <Alert
+        variant="success"
+        title="Success"
+        description="Your changes have been saved."
+      />
+      
+      <FormField
+        label="Email"
+        isRequired
+        errorText="Invalid email format"
+      >
+        <Input type="email" placeholder="you@example.com" />
+      </FormField>
+
+      <SearchBar
+        placeholder="Search..."
+        onSearch={(value) => console.log(value)}
+      />
     </div>
   );
 }
-```
+\`\`\`
 
-## Story Organization
+## Design Patterns
 
-Each molecule story should show:
-- Basic usage
-- With different atom variants
-- Different states (normal, error, disabled)
-- Real-world examples
+### Composition
+Molecules compose atoms to create meaningful UI patterns:
+- FormField = Label + Input + Text
+- SearchBar = Input + IconButton
+- CardHeader = Avatar + Heading + Text + Actions
 
-## File Structure
+### State Management
+Most molecules manage their own internal state:
+- SearchBar manages input value
+- Toast manages auto-dismiss timer
+- ProgressBar calculates percentage
 
-```
-molecules/
-├── FormField/
-│   ├── FormField.tsx
-│   ├── FormField.stories.tsx
-│   ├── FormField.test.tsx
-│   └── index.ts
-└── ...
-```
+### Prop Drilling
+Molecules accept props for both:
+1. Their own behavior
+2. Passing through to child atoms
 
+### Event Handling
+Molecules can:
+- Handle events internally
+- Expose callbacks for parent components
+- Forward events to atoms
+
+## Testing
+
+Each molecule should have:
+- Unit tests for logic and state
+- Component tests for rendering
+- Interaction tests for user actions
+- Integration tests with atoms
+- Accessibility tests
+
+## Next Steps
+
+Use these molecules to build **Organisms** (complex, feature-specific components) in the next phase.
