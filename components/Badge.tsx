@@ -5,6 +5,8 @@ interface BadgeProps {
   variant?: "default" | "success" | "warning" | "error" | "info";
   size?: "sm" | "md" | "lg";
   className?: string;
+  pulse?: boolean;
+  interactive?: boolean;
 }
 
 export function Badge({
@@ -12,6 +14,8 @@ export function Badge({
   variant = "default",
   size = "md",
   className = "",
+  pulse = false,
+  interactive = false,
 }: BadgeProps) {
   const variantClasses = {
     default: "bg-gray-100 text-gray-800",
@@ -29,7 +33,9 @@ export function Badge({
 
   return (
     <span
-      className={`inline-flex items-center rounded-full font-medium ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`inline-flex items-center rounded-full font-medium ${variantClasses[variant]} ${sizeClasses[size]} ${
+        pulse ? "animate-pulse" : ""
+      } ${interactive ? "hover:scale-105 transition-transform cursor-pointer" : ""} ${className}`}
     >
       {children}
     </span>
