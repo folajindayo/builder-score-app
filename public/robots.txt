@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /profile/*/edit
+
+Sitemap: https://builderscore.xyz/sitemap.xml
+
