@@ -1,0 +1,1 @@
+describe('Button', () => { it('renders', () => { render(<Button>Test</Button>); expect(screen.getByText('Test')).toBeInTheDocument(); }); });
