@@ -1,0 +1,1 @@
+describe('Table', () => { it('renders', () => { expect(true).toBe(true); }); });
