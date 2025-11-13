@@ -3,4 +3,6 @@
  */
 
 export * from './ScoreCalculationService';
+export * from './LeaderboardService';
+export * from './AchievementService';
 
