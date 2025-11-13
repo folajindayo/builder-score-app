@@ -1,3 +1,0 @@
-# Components
-
-Component library docs.

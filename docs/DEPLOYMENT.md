@@ -1,3 +1,0 @@
-# Deployment
-
-Deploy to production.
