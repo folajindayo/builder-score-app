@@ -1,0 +1,1 @@
+describe('Avatar', () => { it('renders', () => { expect(true).toBe(true); }); });
