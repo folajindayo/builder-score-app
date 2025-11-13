@@ -1,0 +1,1 @@
+describe('string', () => { it('converts to kebab-case', () => { expect(toKebabCase('HelloWorld')).toBe('hello-world'); }); });
