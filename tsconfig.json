@@ -24,7 +24,26 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@domain/*": ["./src/domain/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+      "@presentation/*": ["./src/presentation/*"],
+      "@components/*": ["./src/presentation/components/*"],
+      "@atoms/*": ["./src/presentation/components/atoms/*"],
+      "@molecules/*": ["./src/presentation/components/molecules/*"],
+      "@organisms/*": ["./src/presentation/components/organisms/*"],
+      "@templates/*": ["./src/presentation/components/templates/*"],
+      "@features/*": ["./src/presentation/features/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@utils/*": ["./utils/*"],
+      "@lib/*": ["./lib/*"],
+      "@types/*": ["./types/*"],
+      "@constants/*": ["./constants/*"],
+      "@services/*": ["./services/*"],
+      "@store/*": ["./store/*"],
+      "@contexts/*": ["./contexts/*"],
+      "@providers/*": ["./providers/*"],
+      "@styles/*": ["./styles/*"]
     },
     "importsNotUsedAsValues": "remove"
   },
