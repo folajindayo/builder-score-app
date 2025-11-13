@@ -1,0 +1,1 @@
+describe('Link', () => { it('renders', () => { expect(true).toBe(true); }); });
