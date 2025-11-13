@@ -1,0 +1,1 @@
+describe('url', () => { it('builds URLs', () => { expect(buildUrl('/api', {id: 1})).toContain('id=1'); }); });
