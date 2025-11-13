@@ -1,0 +1,1 @@
+describe('api', () => { it('makes GET requests', async () => { const data = await api.get('/test'); expect(data).toBeDefined(); }); });
