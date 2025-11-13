@@ -1,0 +1,1 @@
+describe('validation', () => { it('validates emails', () => { expect(isValidEmail('test@test.com')).toBe(true); }); });
