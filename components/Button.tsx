@@ -1,14 +1,14 @@
 'use client';
 
-import { ButtonHTMLAttributes, ReactNode, useState, useRef } from 'react';
+import { ButtonHTMLAttributes, ReactNode, useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { buttonPress } from '@/lib/micro-interactions';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button style variant */
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success';
   /** Button size */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   /** Button content */
   children: ReactNode;
   /** Whether the button is in loading state */
@@ -17,6 +17,14 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   ariaLabel?: string;
   /** Custom ripple color */
   rippleColor?: string;
+  /** Icon to display before text */
+  leftIcon?: ReactNode;
+  /** Icon to display after text */
+  rightIcon?: ReactNode;
+  /** Full width button */
+  fullWidth?: boolean;
+  /** Show focus ring */
+  showFocusRing?: boolean;
 }
 
 export function Button({
@@ -28,30 +36,38 @@ export function Button({
   className = '',
   ariaLabel,
   rippleColor = 'white',
+  leftIcon,
+  rightIcon,
+  fullWidth = false,
+  showFocusRing = true,
   ...props
 }: ButtonProps) {
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+  const [isFocused, setIsFocused] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const rippleIdRef = useRef(0);
 
   const variantClasses = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white',
-    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',
-    outline: 'border-2 border-blue-600 text-blue-700 hover:bg-blue-50',
-    ghost: 'text-gray-900 hover:bg-gray-100',
-    danger: 'bg-red-600 hover:bg-red-700 text-white',
+    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
+    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900 focus:ring-gray-400',
+    outline: 'border-2 border-blue-600 text-blue-700 hover:bg-blue-50 focus:ring-blue-500',
+    ghost: 'text-gray-900 hover:bg-gray-100 focus:ring-gray-300',
+    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
+    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500',
   };
 
   // Ensure WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
 
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'px-3 py-1.5 text-sm gap-1.5',
+    md: 'px-4 py-2 text-base gap-2',
+    lg: 'px-6 py-3 text-lg gap-2.5',
+    xl: 'px-8 py-4 text-xl gap-3',
   };
 
-  const baseClasses =
-    'font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden';
+  const baseClasses = `font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden flex items-center justify-center ${
+    fullWidth ? 'w-full' : ''
+  } ${showFocusRing && isFocused ? 'ring-4 ring-opacity-50' : ''}`;
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled || loading) return;
@@ -73,6 +89,22 @@ export function Button({
     props.onClick?.(e);
   };
 
+  useEffect(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    const handleFocus = () => setIsFocused(true);
+    const handleBlur = () => setIsFocused(false);
+
+    button.addEventListener('focus', handleFocus);
+    button.addEventListener('blur', handleBlur);
+
+    return () => {
+      button.removeEventListener('focus', handleFocus);
+      button.removeEventListener('blur', handleBlur);
+    };
+  }, []);
+
   return (
     <motion.button
       ref={buttonRef}
@@ -82,6 +114,7 @@ export function Button({
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
       onClick={handleClick}
+      tabIndex={disabled ? -1 : 0}
       {...props}
     >
       {ripples.map((ripple) => (
@@ -120,7 +153,11 @@ export function Button({
           <span aria-hidden="true">Loading...</span>
         </span>
       ) : (
-        children
+        <>
+          {leftIcon && <span className="inline-flex shrink-0">{leftIcon}</span>}
+          <span className="inline-flex items-center">{children}</span>
+          {rightIcon && <span className="inline-flex shrink-0">{rightIcon}</span>}
+        </>
       )}
     </motion.button>
   );
