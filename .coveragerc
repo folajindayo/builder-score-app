@@ -1,0 +1,31 @@
+# Coverage configuration
+# This file provides additional documentation for coverage settings
+
+[run]
+# Paths to include in coverage
+source = .
+
+# Patterns to omit from coverage
+omit = 
+    */node_modules/*
+    */.next/*
+    */coverage/*
+    */__tests__/*
+    */e2e/*
+    *.config.*
+    *.setup.*
+
+[report]
+# Reporting options
+precision = 2
+show_missing = True
+skip_covered = False
+
+[html]
+# HTML report directory
+directory = coverage/html
+
+[json]
+# JSON report output
+output = coverage/coverage.json
+
