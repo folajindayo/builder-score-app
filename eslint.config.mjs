@@ -56,6 +56,102 @@ const eslintConfig = defineConfig([
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'prefer-const': 'error',
       'no-var': 'error',
+
+      // Architecture layer boundaries - enforce Clean Architecture principles
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/infrastructure/**', '**/presentation/**'],
+              message: 'Domain layer cannot depend on infrastructure or presentation layers.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Domain layer - strictest rules (no external dependencies)
+    files: ['src/domain/**/*.ts', 'src/domain/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/infrastructure/**', '**/presentation/**', 'react', 'next/**'],
+              message: 'Domain layer must not depend on infrastructure, presentation, or framework code.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Infrastructure layer - can depend on domain, not presentation
+    files: ['src/infrastructure/**/*.ts', 'src/infrastructure/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/presentation/**', 'react', 'next/**'],
+              message: 'Infrastructure layer must not depend on presentation layer or UI frameworks.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Presentation layer - can depend on everything but follow Atomic Design hierarchy
+    files: ['src/presentation/components/atoms/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/molecules/**', '**/organisms/**', '**/templates/**', '**/features/**'],
+              message: 'Atoms cannot import from molecules, organisms, templates, or features.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/presentation/components/molecules/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/organisms/**', '**/templates/**', '**/features/**'],
+              message: 'Molecules cannot import from organisms, templates, or features.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/presentation/components/organisms/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/templates/**', '**/features/**'],
+              message: 'Organisms cannot import from templates or features.',
+            },
+          ],
+        },
+      ],
     },
   },
 ]);
