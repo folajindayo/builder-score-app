@@ -179,3 +179,210 @@ Tests run automatically on:
 
 Coverage reports are uploaded to CI artifacts for review.
 
+## Test Organization
+
+### Directory Structure
+
+```
+builder-score-app/
+├── __tests__/                  # Unit and integration tests
+│   ├── fixtures/               # Test data fixtures
+│   ├── mocks/                  # MSW handlers and mocks
+│   ├── custom-matchers.ts      # Custom Jest matchers
+│   ├── test-helpers.ts         # Test utility functions
+│   └── test-utils.tsx          # React Testing Library setup
+├── e2e/                        # End-to-end tests
+│   ├── homepage.spec.ts
+│   └── search.spec.ts
+├── visual-tests/               # Visual regression tests
+│   ├── homepage-visual.spec.ts
+│   └── components-visual.spec.ts
+└── [feature]/__tests__/        # Co-located component tests
+    └── ComponentName.test.tsx
+```
+
+### Naming Conventions
+
+- **Unit/Integration Tests**: `*.test.ts` or `*.test.tsx`
+- **E2E Tests**: `*.spec.ts`
+- **Visual Tests**: `*-visual.spec.ts`
+- **Test Utilities**: `test-*.ts` or `*-utils.ts`
+- **Mocks**: `*.mock.ts` or within `__tests__/mocks/`
+
+## Testing Patterns
+
+### Component Testing Pattern
+
+```typescript
+import { renderWithProviders, screen, userEvent } from '@/__tests__/test-utils';
+import { MyComponent } from './MyComponent';
+
+describe('MyComponent', () => {
+  it('should render with default props', () => {
+    renderWithProviders(<MyComponent />);
+    expect(screen.getByText('Expected Text')).toBeInTheDocument();
+  });
+
+  it('should handle user interaction', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<MyComponent />);
+    
+    const button = screen.getByRole('button', { name: /click me/i });
+    await user.click(button);
+    
+    expect(screen.getByText('Clicked')).toBeInTheDocument();
+  });
+});
+```
+
+### Hook Testing Pattern
+
+```typescript
+import { renderHook, waitFor } from '@testing-library/react';
+import { useMyHook } from './useMyHook';
+
+describe('useMyHook', () => {
+  it('should return initial value', () => {
+    const { result } = renderHook(() => useMyHook());
+    expect(result.current.value).toBe(initialValue);
+  });
+
+  it('should update value', async () => {
+    const { result } = renderHook(() => useMyHook());
+    
+    act(() => {
+      result.current.setValue('new value');
+    });
+    
+    await waitFor(() => {
+      expect(result.current.value).toBe('new value');
+    });
+  });
+});
+```
+
+### API Testing Pattern
+
+```typescript
+import { server } from '@/__tests__/mocks/server';
+import { http, HttpResponse } from 'msw';
+
+describe('API Integration', () => {
+  it('should fetch data successfully', async () => {
+    const response = await fetch('/api/data');
+    const data = await response.json();
+    
+    expect(response.ok).toBe(true);
+    expect(data).toHaveProperty('results');
+  });
+
+  it('should handle API errors', async () => {
+    server.use(
+      http.get('/api/data', () => {
+        return HttpResponse.json({ error: 'Not found' }, { status: 404 });
+      })
+    );
+    
+    const response = await fetch('/api/data');
+    expect(response.status).toBe(404);
+  });
+});
+```
+
+## Code Coverage Goals
+
+### Minimum Thresholds
+
+- Statements: 70%
+- Branches: 70%
+- Functions: 70%
+- Lines: 70%
+
+### Target Coverage
+
+- Critical paths: 100%
+- Business logic: 90%
+- UI components: 80%
+- Utility functions: 95%
+
+### Exclusions
+
+The following are excluded from coverage:
+
+- Configuration files
+- Test files
+- Type definitions
+- Generated code
+- Development tools
+
+## Continuous Improvement
+
+### Coverage Tracking
+
+Monitor coverage trends:
+
+```bash
+# Generate coverage badge
+npm run test:coverage
+```
+
+### Test Quality Metrics
+
+- Tests should be fast (<100ms per test)
+- Tests should be independent
+- Tests should be deterministic
+- Tests should be meaningful
+
+### Regular Review
+
+- Review test failures weekly
+- Update snapshots quarterly
+- Refactor flaky tests immediately
+- Add tests for bug fixes
+
+## Troubleshooting Guide
+
+### Common Issues
+
+#### Test Timeout
+
+```typescript
+// Increase timeout for slow tests
+it('slow test', async () => {
+  // ...
+}, 10000); // 10 second timeout
+```
+
+#### Async Issues
+
+```typescript
+// Use waitFor for async updates
+await waitFor(() => {
+  expect(element).toBeInTheDocument();
+});
+```
+
+#### Mock Issues
+
+```typescript
+// Reset mocks between tests
+afterEach(() => {
+  jest.clearAllMocks();
+});
+```
+
+### Performance Issues
+
+- Use `--maxWorkers=50%` for parallel execution
+- Mock expensive operations
+- Use shallow rendering when appropriate
+- Clean up resources in `afterEach`
+
+## Resources
+
+- [Jest Documentation](https://jestjs.io/docs/getting-started)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- [Playwright Documentation](https://playwright.dev/docs/intro)
+- [Testing Best Practices](https://testingjavascript.com/)
+- [MSW Documentation](https://mswjs.io/docs/)
+
