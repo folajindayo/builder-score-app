@@ -1,0 +1,1 @@
+export function useClickOutside(ref: any, handler: Function) {}
