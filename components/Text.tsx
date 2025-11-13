@@ -4,12 +4,16 @@ import { ReactNode } from 'react';
 
 interface TextProps {
   children: ReactNode;
-  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl';
-  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
-  color?: 'default' | 'muted' | 'primary' | 'secondary' | 'error' | 'success';
-  align?: 'left' | 'center' | 'right';
+  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl';
+  weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
+  color?: 'default' | 'muted' | 'primary' | 'secondary' | 'error' | 'success' | 'warning';
+  align?: 'left' | 'center' | 'right' | 'justify';
   className?: string;
-  as?: 'p' | 'span' | 'div';
+  as?: 'p' | 'span' | 'div' | 'label';
+  truncate?: boolean;
+  lineClamp?: number;
+  italic?: boolean;
+  underline?: boolean;
 }
 
 const sizeClasses = {
@@ -18,9 +22,11 @@ const sizeClasses = {
   base: 'text-base',
   lg: 'text-lg',
   xl: 'text-xl',
+  '2xl': 'text-2xl',
 };
 
 const weightClasses = {
+  light: 'font-light',
   normal: 'font-normal',
   medium: 'font-medium',
   semibold: 'font-semibold',
@@ -34,12 +40,14 @@ const colorClasses = {
   secondary: 'text-gray-500',
   error: 'text-red-600',
   success: 'text-green-600',
+  warning: 'text-yellow-600',
 };
 
 const alignClasses = {
   left: 'text-left',
   center: 'text-center',
   right: 'text-right',
+  justify: 'text-justify',
 };
 
 export function Text({
@@ -50,10 +58,18 @@ export function Text({
   align = 'left',
   className = '',
   as: Component = 'p',
+  truncate = false,
+  lineClamp,
+  italic = false,
+  underline = false,
 }: TextProps) {
+  const lineClampClass = lineClamp ? `line-clamp-${lineClamp}` : '';
+  
   return (
     <Component
-      className={`${sizeClasses[size]} ${weightClasses[weight]} ${colorClasses[color]} ${alignClasses[align]} ${className}`}
+      className={`${sizeClasses[size]} ${weightClasses[weight]} ${colorClasses[color]} ${alignClasses[align]} ${
+        truncate ? 'truncate' : ''
+      } ${lineClampClass} ${italic ? 'italic' : ''} ${underline ? 'underline' : ''} ${className}`}
     >
       {children}
     </Component>
