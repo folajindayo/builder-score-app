@@ -1,0 +1,1 @@
+describe('Modal', () => { it('shows when open', () => { render(<Modal isOpen={true}>Content</Modal>); expect(screen.getByText('Content')).toBeInTheDocument(); }); });
