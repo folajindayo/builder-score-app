@@ -1,5 +1,16 @@
 import '@testing-library/jest-dom';
 import './__tests__/custom-matchers';
+import { server } from './__tests__/mocks/server';
+
+// Establish API mocking before all tests
+beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }));
+
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests
+afterEach(() => server.resetHandlers());
+
+// Clean up after the tests are finished
+afterAll(() => server.close());
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
