@@ -1,0 +1,1 @@
+describe('formatting', () => { it('formats numbers', () => { expect(formatNumber(1000)).toBe('1,000'); }); });
