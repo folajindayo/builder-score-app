@@ -1,0 +1,1 @@
+describe('date', () => { it('adds days', () => { const date = new Date('2024-01-01'); expect(addDays(date, 1).getDate()).toBe(2); }); });
