@@ -15,6 +15,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   /** Accessible label for the button */
   ariaLabel?: string;
+  /** Custom ripple color */
+  rippleColor?: string;
 }
 
 export function Button({
@@ -25,6 +27,7 @@ export function Button({
   disabled,
   className = "",
   ariaLabel,
+  rippleColor = "white",
   ...props
 }: ButtonProps) {
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
@@ -83,7 +86,7 @@ export function Button({
       {ripples.map((ripple) => (
         <span
           key={ripple.id}
-          className="absolute rounded-full bg-white opacity-30 pointer-events-none"
+          className="absolute rounded-full opacity-30 pointer-events-none"
           style={{
             left: ripple.x,
             top: ripple.y,
@@ -91,6 +94,7 @@ export function Button({
             height: 0,
             transform: 'translate(-50%, -50%)',
             animation: 'ripple 0.6s ease-out',
+            backgroundColor: rippleColor,
           }}
         />
       ))}
