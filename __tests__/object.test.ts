@@ -1,0 +1,1 @@
+describe('object', () => { it('deep clones', () => { const obj = {a: 1}; expect(deepClone(obj)).toEqual(obj); }); });
