@@ -1,89 +1,171 @@
-# Organisms
+# Organisms - Complex Components
 
-Organisms are relatively complex components composed of molecules, atoms, and sometimes other organisms. They form distinct sections of an interface.
+Organisms are complex, feature-specific UI components that combine atoms and molecules to form distinct sections of an interface.
 
-## Characteristics
+## Principles
 
-- **Complex Compositions**: Built from molecules and atoms
-- **Distinct Sections**: Form recognizable sections of UI
-- **Reusable Across Contexts**: Can be used in different pages
-- **May Contain Logic**: Can have internal state and behavior
-- **Context-Aware**: Often domain-specific
+- **Feature Complete**: Organisms are complete, functional sections
+- **Composed**: Built from atoms and molecules
+- **Context-Specific**: Designed for specific use cases
+- **Stateful**: Often manage complex state
+- **Reusable**: Can be used across different templates
+- **Business Logic**: May contain application logic
 
-## Examples
+## Available Organisms
 
-- Navigation Bar
-- Modal Dialog
-- Data Table (with sorting, filtering, pagination)
-- Form (with validation and submission)
-- Card (with header, content, footer)
-- Dropdown Menu
-- Accordion
-- Tabs
-- File Upload
-- Toast Notification System
+### Navigation
+- **Navbar** - Complete navigation bar with logo, links, avatar
+- **Sidebar** - Navigation sidebar with grouped sections
+- **Breadcrumb** - Navigation trail (molecule, but complex)
 
-## Usage Guidelines
+### Data Display
+- **Card** - Complete card with header, body, footer
+- **DataTable** - Table with sorting, filtering, pagination
+- **Tabs** - Complete tab system with content panels
 
-1. **Compose from Smaller Parts**: Use molecules and atoms
-2. **Encapsulate Complexity**: Hide complex behavior
-3. **Provide Clear API**: Well-documented props interface
-4. **Support Customization**: Allow styling and behavior overrides
-5. **Accessibility**: Ensure keyboard navigation and ARIA support
+### Overlays
+- **Modal** - Dialog overlay with actions
+- **DropdownMenu** - Dropdown menu with items and placement
 
-## Composition Example
+### Forms
+- **Form** - Complete form with validation and submission
 
-```typescript
-export function Modal({
-  isOpen,
-  onClose,
-  title,
-  children,
-  footer,
-}: ModalProps) {
+### Pagination
+- **Pagination** - Complete pagination controls
+
+## Component Hierarchy
+
+\`\`\`
+Organisms (Complex, Feature-Specific)
+├── Molecules (Composite, Single Purpose)
+│   ├── Atoms (Basic, Fundamental)
+│   └── Atoms
+└── Molecules
+    ├── Atoms
+    └── Atoms
+\`\`\`
+
+## Usage Example
+
+\`\`\`tsx
+import { Card, DataTable, Modal, Form } from '@organisms';
+import { FormField } from '@molecules';
+import { Input, Button } from '@atoms';
+
+function UserManagement() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
-    <Portal>
-      {isOpen && (
-        <>
-          <Overlay onClick={onClose} />
-          <Dialog>
-            <Header>
-              <Heading>{title}</Heading>
-              <CloseButton onClick={onClose} />
-            </Header>
-            <Content>{children}</Content>
-            {footer && <Footer>{footer}</Footer>}
-          </Dialog>
-        </>
-      )}
-    </Portal>
+    <div>
+      <Card
+        header={{
+          title: 'Users',
+          subtitle: 'Manage your team members',
+          actions: (
+            <Button onClick={() => setIsModalOpen(true)}>
+              Add User
+            </Button>
+          ),
+        }}
+      >
+        <DataTable
+          columns={[
+            { key: 'name', header: 'Name', accessor: (row) => row.name },
+            { key: 'email', header: 'Email', accessor: (row) => row.email },
+          ]}
+          data={users}
+          onRowClick={(user) => console.log(user)}
+        />
+      </Card>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Add New User"
+      >
+        <Form
+          onSubmit={handleSubmit}
+          submitButton={{ label: 'Create User' }}
+        >
+          <FormField label="Name" isRequired>
+            <Input name="name" />
+          </FormField>
+          <FormField label="Email" isRequired>
+            <Input name="email" type="email" />
+          </FormField>
+        </Form>
+      </Modal>
+    </div>
   );
 }
-```
+\`\`\`
 
-## Story Organization
+## Design Patterns
 
-Each organism story should demonstrate:
-- Basic usage
-- All variants and sizes
-- Different content scenarios
-- Interactive behavior
-- Edge cases
-- Accessibility features
+### Composition
+Organisms use composition to build complex UIs:
+- Card = CardHeader + Content + Footer
+- DataTable = Table + Sorting + Pagination
+- Form = FormFields + Validation + Submission
+- Modal = Overlay + Dialog + Actions
 
-## File Structure
+### State Management
+Organisms typically manage:
+- UI state (open/closed, active tabs)
+- Data state (table data, form values)
+- Loading states
+- Error states
 
-```
-organisms/
-├── Modal/
-│   ├── Modal.tsx
-│   ├── components/        # Sub-components
-│   │   ├── Header.tsx
-│   │   ├── Content.tsx
-│   │   └── Footer.tsx
-│   ├── Modal.stories.tsx
-│   ├── Modal.test.tsx
-│   └── index.ts
-└── ...
-```
+### Props Pattern
+Organisms accept:
+1. **Data props**: Content to display
+2. **Config props**: Behavior configuration
+3. **Handler props**: Event callbacks
+4. **Composition props**: Child components
 
+### Context
+Some organisms may use React Context for:
+- Theming
+- Authentication
+- Global state
+
+## Best Practices
+
+### Keep Organisms Focused
+Each organism should have one clear responsibility:
+- ✅ DataTable handles data display
+- ✅ Form handles data collection
+- ❌ Don't create "god components" that do everything
+
+### Composable Design
+Make organisms work well together:
+- Card can contain any content
+- Modal can contain any organism
+- Tabs can switch between any panels
+
+### Accessibility
+Ensure all organisms are accessible:
+- Proper ARIA roles
+- Keyboard navigation
+- Focus management
+- Screen reader support
+
+### Performance
+Optimize complex organisms:
+- Memoize expensive calculations
+- Virtual scrolling for large lists
+- Lazy loading for modals/tabs
+- Debounce user input
+
+## Testing
+
+Each organism should have:
+- Unit tests for logic
+- Integration tests with atoms/molecules
+- E2E tests for user flows
+- Accessibility tests
+- Performance tests
+
+## Next Steps
+
+Use these organisms to build **Templates** (page-level layouts) in the next phase.
