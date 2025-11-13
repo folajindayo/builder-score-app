@@ -1,0 +1,1 @@
+describe('storage', () => { it('sets and gets', () => { storage.set('key', 'value'); expect(storage.get('key')).toBe('value'); }); });
