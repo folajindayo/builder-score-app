@@ -2,7 +2,7 @@
  * Animation presets for consistent animations across the app
  */
 
-import { Variants } from "framer-motion";
+import { Variants } from 'framer-motion';
 
 /**
  * Fade in animation
@@ -76,7 +76,7 @@ export const bounce: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: 'spring',
       stiffness: 300,
       damping: 20,
     },
@@ -114,22 +114,21 @@ export const transitions = {
     ease: [0.4, 0, 0.2, 1],
   },
   spring: {
-    type: "spring",
+    type: 'spring',
     stiffness: 300,
     damping: 30,
   },
   bounce: {
-    type: "spring",
+    type: 'spring',
     stiffness: 400,
     damping: 10,
   },
   fast: {
     duration: 0.15,
-    ease: "easeOut",
+    ease: 'easeOut',
   },
   slow: {
     duration: 0.5,
-    ease: "easeInOut",
+    ease: 'easeInOut',
   },
 };
-

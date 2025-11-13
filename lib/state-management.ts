@@ -1,6 +1,6 @@
 /**
  * State management utilities and patterns
- * 
+ *
  * Provides reusable patterns for managing complex state,
  * reducing the number of useState calls and improving performance.
  */
@@ -10,7 +10,7 @@ import { useReducer, useCallback, useMemo } from 'react';
 /**
  * Generic reducer action type
  */
-export type Action<T> = 
+export type Action<T> =
   | { type: 'SET'; payload: T }
   | { type: 'RESET'; payload?: T }
   | { type: 'UPDATE'; payload: Partial<T> }
@@ -101,7 +101,10 @@ export function useToggle(initialValue: boolean = false) {
 /**
  * Set state reducer
  */
-function setReducer<T>(state: Set<T>, action: { type: 'ADD' | 'REMOVE' | 'CLEAR' | 'SET'; payload?: T | Set<T> }): Set<T> {
+function setReducer<T>(
+  state: Set<T>,
+  action: { type: 'ADD' | 'REMOVE' | 'CLEAR' | 'SET'; payload?: T | Set<T> }
+): Set<T> {
   switch (action.type) {
     case 'ADD':
       if (action.payload !== undefined) {
@@ -151,13 +154,16 @@ export function useSet<T>(initialValue: Set<T> = new Set()) {
     dispatch({ type: 'SET', payload: items });
   }, []);
 
-  const toggle = useCallback((item: T) => {
-    if (state.has(item)) {
-      dispatch({ type: 'REMOVE', payload: item });
-    } else {
-      dispatch({ type: 'ADD', payload: item });
-    }
-  }, [state]);
+  const toggle = useCallback(
+    (item: T) => {
+      if (state.has(item)) {
+        dispatch({ type: 'REMOVE', payload: item });
+      } else {
+        dispatch({ type: 'ADD', payload: item });
+      }
+    },
+    [state]
+  );
 
   return {
     value: state,
@@ -254,10 +260,7 @@ type AsyncAction<T> =
   | { type: 'ERROR'; payload: Error }
   | { type: 'RESET' };
 
-function asyncReducer<T>(
-  state: AsyncState<T>,
-  action: AsyncAction<T>
-): AsyncState<T> {
+function asyncReducer<T>(state: AsyncState<T>, action: AsyncAction<T>): AsyncState<T> {
   switch (action.type) {
     case 'LOADING':
       return { ...state, loading: true, error: null };
@@ -380,6 +383,3 @@ export function useUIState(initialState: Partial<UIState> = {}) {
     reset: () => dispatch({ type: 'RESET' }),
   };
 }
-
-
-

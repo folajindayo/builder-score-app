@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { Label } from "@/components/Label";
-import { HelperText } from "@/components/HelperText";
+import { ReactNode } from 'react';
+import { Label } from '@/components/Label';
+import { HelperText } from '@/components/HelperText';
 
 interface FieldProps {
   children: ReactNode;
@@ -21,7 +21,7 @@ export function Field({
   required = false,
   error,
   helperText,
-  className = "",
+  className = '',
 }: FieldProps) {
   return (
     <div className={className}>
@@ -31,13 +31,8 @@ export function Field({
         </Label>
       )}
       {children}
-      {error && (
-        <HelperText variant="error">{error}</HelperText>
-      )}
-      {helperText && !error && (
-        <HelperText>{helperText}</HelperText>
-      )}
+      {error && <HelperText variant="error">{error}</HelperText>}
+      {helperText && !error && <HelperText>{helperText}</HelperText>}
     </div>
   );
 }
-

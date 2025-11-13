@@ -6,9 +6,6 @@
   "autoAcceptChanges": false,
   "ignoreLastBuildOnBranch": "main",
   "skip": "dependabot/**",
-  "externals": [
-    "public/**"
-  ],
+  "externals": ["public/**"],
   "debug": false
 }
-

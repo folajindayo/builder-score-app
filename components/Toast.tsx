@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export type ToastType = "success" | "error" | "info" | "warning";
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 interface ToastProps {
   message: string;
@@ -12,7 +12,7 @@ interface ToastProps {
   onClose: () => void;
 }
 
-export function Toast({ message, type = "info", duration = 3000, onClose }: ToastProps) {
+export function Toast({ message, type = 'info', duration = 3000, onClose }: ToastProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
@@ -22,10 +22,10 @@ export function Toast({ message, type = "info", duration = 3000, onClose }: Toas
   }, [duration, onClose]);
 
   const typeStyles = {
-    success: "bg-green-50 border-green-200 text-green-800",
-    error: "bg-red-50 border-red-200 text-red-800",
-    info: "bg-blue-50 border-blue-200 text-blue-800",
-    warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
+    success: 'bg-green-50 border-green-200 text-green-800',
+    error: 'bg-red-50 border-red-200 text-red-800',
+    info: 'bg-blue-50 border-blue-200 text-blue-800',
+    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
   };
 
   return (
@@ -44,7 +44,12 @@ export function Toast({ message, type = "info", duration = 3000, onClose }: Toas
           aria-label="Close notification"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -59,7 +64,12 @@ interface ToastContainerProps {
 
 export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2" role="region" aria-label="Notifications" aria-live="assertive">
+    <div
+      className="fixed top-4 right-4 z-50 space-y-2"
+      role="region"
+      aria-label="Notifications"
+      aria-live="assertive"
+    >
       <AnimatePresence>
         {toasts.map((toast) => (
           <Toast
@@ -73,4 +83,3 @@ export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
     </div>
   );
 }
-

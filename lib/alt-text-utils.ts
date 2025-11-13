@@ -1,6 +1,6 @@
 /**
  * Utilities for generating and validating alt text for images.
- * 
+ *
  * Alt text is crucial for accessibility. Follow these guidelines:
  * - Informative images: Describe the image content and context
  * - Decorative images: Use empty string "" and add aria-hidden="true"
@@ -21,7 +21,7 @@ export function generateProfileAltText(
   name?: string | null,
   position?: number | null
 ): string {
-  const userName = displayName || name || "Anonymous";
+  const userName = displayName || name || 'Anonymous';
   if (position !== undefined && position !== null) {
     return `Profile picture of ${userName}, ranked #${position}`;
   }
@@ -40,7 +40,7 @@ export function generateBuilderAltText(
   name?: string | null,
   position?: number | null
 ): string {
-  const builderName = displayName || name || "Anonymous builder";
+  const builderName = displayName || name || 'Anonymous builder';
   if (position !== undefined && position !== null) {
     return `Profile picture of ${builderName}, ranked #${position} on the leaderboard`;
   }
@@ -62,35 +62,36 @@ export function validateAltText(
   suggestion?: string;
 } {
   if (isDecorative) {
-    if (alt !== "") {
+    if (alt !== '') {
       return {
         isValid: false,
-        warning: "Decorative images should have empty alt text",
+        warning: 'Decorative images should have empty alt text',
         suggestion: 'Use alt="" and add aria-hidden="true"',
       };
     }
     return { isValid: true };
   }
 
-  if (!alt || alt.trim() === "") {
+  if (!alt || alt.trim() === '') {
     return {
       isValid: false,
-      warning: "Informative images must have alt text",
-      suggestion: "Provide a description of the image content and context",
+      warning: 'Informative images must have alt text',
+      suggestion: 'Provide a description of the image content and context',
     };
   }
 
   if (alt.length > 125) {
     return {
       isValid: true,
-      warning: "Alt text is very long",
-      suggestion: "Consider providing a shorter description or using a longdesc attribute for complex images",
+      warning: 'Alt text is very long',
+      suggestion:
+        'Consider providing a shorter description or using a longdesc attribute for complex images',
     };
   }
 
   // Check for common mistakes
   const lowerAlt = alt.toLowerCase();
-  if (lowerAlt.startsWith("image of") || lowerAlt.startsWith("picture of")) {
+  if (lowerAlt.startsWith('image of') || lowerAlt.startsWith('picture of')) {
     return {
       isValid: true,
       suggestion: "Avoid redundant phrases like 'image of' or 'picture of'",
@@ -106,33 +107,30 @@ export function validateAltText(
  * @param context Optional context about where/how the icon is used
  * @returns Descriptive alt text for the icon
  */
-export function generateIconAltText(
-  iconName: string,
-  context?: string
-): string {
+export function generateIconAltText(iconName: string, context?: string): string {
   const iconDescriptions: Record<string, string> = {
-    search: "Search",
-    close: "Close",
-    menu: "Menu",
-    settings: "Settings",
-    user: "User profile",
-    home: "Home",
-    back: "Go back",
-    next: "Next",
-    previous: "Previous",
-    first: "First",
-    last: "Last",
-    download: "Download",
-    share: "Share",
-    print: "Print",
-    refresh: "Refresh",
-    expand: "Expand",
-    collapse: "Collapse",
-    check: "Check",
-    error: "Error",
-    warning: "Warning",
-    info: "Information",
-    success: "Success",
+    search: 'Search',
+    close: 'Close',
+    menu: 'Menu',
+    settings: 'Settings',
+    user: 'User profile',
+    home: 'Home',
+    back: 'Go back',
+    next: 'Next',
+    previous: 'Previous',
+    first: 'First',
+    last: 'Last',
+    download: 'Download',
+    share: 'Share',
+    print: 'Print',
+    refresh: 'Refresh',
+    expand: 'Expand',
+    collapse: 'Collapse',
+    check: 'Check',
+    error: 'Error',
+    warning: 'Warning',
+    info: 'Information',
+    success: 'Success',
   };
 
   const baseDescription = iconDescriptions[iconName.toLowerCase()] || iconName;
@@ -153,11 +151,10 @@ export function isDecorativeImage(context?: {
   isPattern?: boolean;
 }): boolean {
   if (!context) return false;
-  
+
   return !!(
     context.isBackground ||
     context.isPattern ||
     (context.isIcon && context.hasAdjacentText)
   );
 }
-

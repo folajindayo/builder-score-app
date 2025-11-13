@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect } from "react";
-import { Input } from "@/components/Input";
+import { useState, useRef, useEffect } from 'react';
+import { Input } from '@/components/Input';
 
 interface InlineEditProps {
   value: string;
@@ -17,8 +17,8 @@ export function InlineEdit({
   value,
   onSave,
   onCancel,
-  placeholder = "Click to edit",
-  className = "",
+  placeholder = 'Click to edit',
+  className = '',
   editable = true,
   multiline = false,
 }: InlineEditProps) {
@@ -57,10 +57,10 @@ export function InlineEdit({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !multiline) {
+    if (e.key === 'Enter' && !multiline) {
       e.preventDefault();
       handleSave();
-    } else if (e.key === "Escape") {
+    } else if (e.key === 'Escape') {
       e.preventDefault();
       handleCancel();
     }
@@ -100,7 +100,7 @@ export function InlineEdit({
       role="button"
       tabIndex={editable ? 0 : -1}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
+        if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleStartEdit();
         }
@@ -110,4 +110,3 @@ export function InlineEdit({
     </span>
   );
 }
-

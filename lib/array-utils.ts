@@ -22,7 +22,7 @@ export function paginate<T>(array: T[], page: number, pageSize: number): T[] {
  */
 export function intersection<T>(array1: T[], array2: T[]): T[] {
   const set2 = new Set(array2);
-  return array1.filter(item => set2.has(item));
+  return array1.filter((item) => set2.has(item));
 }
 
 /**
@@ -68,4 +68,3 @@ export async function batchProcess<T>(
     await callback(batch, Math.floor(i / batchSize));
   }
 }
-

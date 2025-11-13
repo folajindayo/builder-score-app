@@ -26,9 +26,5 @@ export async function withTimeout<T>(
   ms: number,
   timeoutMessage: string = 'Operation timed out'
 ): Promise<T> {
-  return Promise.race([
-    promise,
-    timeoutReject<T>(ms, timeoutMessage),
-  ]);
+  return Promise.race([promise, timeoutReject<T>(ms, timeoutMessage)]);
 }
-

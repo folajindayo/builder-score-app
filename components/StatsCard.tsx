@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Card } from "@/components/Card";
-import { motion } from "framer-motion";
+import { Card } from '@/components/Card';
+import { motion } from 'framer-motion';
 
 interface StatsCardProps {
   title: string;
@@ -16,14 +16,7 @@ interface StatsCardProps {
   className?: string;
 }
 
-export function StatsCard({
-  title,
-  value,
-  subtitle,
-  icon,
-  trend,
-  className = "",
-}: StatsCardProps) {
+export function StatsCard({ title, value, subtitle, icon, trend, className = '' }: StatsCardProps) {
   return (
     <Card className={className}>
       <div className="flex items-start justify-between">
@@ -41,25 +34,18 @@ export function StatsCard({
             {trend && (
               <span
                 className={`text-sm font-medium ${
-                  trend.isPositive ? "text-green-600" : "text-red-600"
+                  trend.isPositive ? 'text-green-600' : 'text-red-600'
                 }`}
               >
-                {trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)}%
+                {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}%
               </span>
             )}
           </div>
-          {subtitle && (
-            <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
         </div>
-        {icon && (
-          <div className="flex-shrink-0 text-gray-400">{icon}</div>
-        )}
+        {icon && <div className="flex-shrink-0 text-gray-400">{icon}</div>}
       </div>
-      {trend && (
-        <p className="text-xs text-gray-500 mt-2">{trend.label}</p>
-      )}
+      {trend && <p className="text-xs text-gray-500 mt-2">{trend.label}</p>}
     </Card>
   );
 }
-

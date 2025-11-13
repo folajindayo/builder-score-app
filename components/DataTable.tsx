@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 export interface Column<T> {
   key: keyof T | string;
@@ -22,15 +22,11 @@ export function DataTable<T extends Record<string, any>>({
   data,
   columns,
   onRowClick,
-  className = "",
-  emptyMessage = "No data available",
+  className = '',
+  emptyMessage = 'No data available',
 }: DataTableProps<T>) {
   if (data.length === 0) {
-    return (
-      <div className="text-center py-8 text-gray-500">
-        {emptyMessage}
-      </div>
-    );
+    return <div className="text-center py-8 text-gray-500">{emptyMessage}</div>;
   }
 
   return (
@@ -54,11 +50,11 @@ export function DataTable<T extends Record<string, any>>({
             <tr
               key={rowIndex}
               onClick={() => onRowClick?.(row)}
-              className={onRowClick ? "cursor-pointer hover:bg-gray-50" : ""}
+              className={onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''}
             >
               {columns.map((column, colIndex) => (
                 <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {column.render ? column.render(row) : String(row[column.key as keyof T] || "")}
+                  {column.render ? column.render(row) : String(row[column.key as keyof T] || '')}
                 </td>
               ))}
             </tr>
@@ -68,4 +64,3 @@ export function DataTable<T extends Record<string, any>>({
     </div>
   );
 }
-

@@ -1,29 +1,25 @@
-"use client";
+'use client';
 
 interface SpinnerProps {
-  size?: "sm" | "md" | "lg" | "xl";
-  variant?: "default" | "primary" | "secondary";
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  variant?: 'default' | 'primary' | 'secondary';
   className?: string;
 }
 
 const sizeClasses = {
-  sm: "w-4 h-4",
-  md: "w-6 h-6",
-  lg: "w-8 h-8",
-  xl: "w-12 h-12",
+  sm: 'w-4 h-4',
+  md: 'w-6 h-6',
+  lg: 'w-8 h-8',
+  xl: 'w-12 h-12',
 };
 
 const variantClasses = {
-  default: "text-gray-600",
-  primary: "text-blue-600",
-  secondary: "text-gray-400",
+  default: 'text-gray-600',
+  primary: 'text-blue-600',
+  secondary: 'text-gray-400',
 };
 
-export function Spinner({
-  size = "md",
-  variant = "default",
-  className = "",
-}: SpinnerProps) {
+export function Spinner({ size = 'md', variant = 'default', className = '' }: SpinnerProps) {
   return (
     <svg
       className={`animate-spin ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
@@ -32,14 +28,7 @@ export function Spinner({
       viewBox="0 0 24 24"
       aria-label="Loading"
     >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"
         fill="currentColor"
@@ -48,4 +37,3 @@ export function Spinner({
     </svg>
   );
 }
-

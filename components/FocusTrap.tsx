@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, ReactNode } from "react";
+import { useEffect, useRef, ReactNode } from 'react';
 
 interface FocusTrapProps {
   children: ReactNode;
@@ -8,11 +8,7 @@ interface FocusTrapProps {
   className?: string;
 }
 
-export function FocusTrap({
-  children,
-  active = true,
-  className = "",
-}: FocusTrapProps) {
+export function FocusTrap({ children, active = true, className = '' }: FocusTrapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,7 +29,7 @@ export function FocusTrap({
     const lastElement = focusableElements[focusableElements.length - 1];
 
     const handleTabKey = (e: KeyboardEvent) => {
-      if (e.key !== "Tab") {
+      if (e.key !== 'Tab') {
         return;
       }
 
@@ -50,11 +46,11 @@ export function FocusTrap({
       }
     };
 
-    container.addEventListener("keydown", handleTabKey);
+    container.addEventListener('keydown', handleTabKey);
     firstElement.focus();
 
     return () => {
-      container.removeEventListener("keydown", handleTabKey);
+      container.removeEventListener('keydown', handleTabKey);
     };
   }, [active]);
 
@@ -64,4 +60,3 @@ export function FocusTrap({
     </div>
   );
 }
-

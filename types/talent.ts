@@ -156,4 +156,3 @@ export interface LeaderboardFilters {
   grant_id?: number;
   search?: string;
 }
-

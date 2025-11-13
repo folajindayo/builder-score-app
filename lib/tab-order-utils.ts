@@ -18,13 +18,11 @@ export function getFocusableElements(container: HTMLElement | Document = documen
     '[contenteditable="true"]',
   ].join(', ');
 
-  return Array.from(container.querySelectorAll<HTMLElement>(selector)).filter(
-    (el) => {
-      // Filter out hidden elements
-      const style = window.getComputedStyle(el);
-      return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-    }
-  );
+  return Array.from(container.querySelectorAll<HTMLElement>(selector)).filter((el) => {
+    // Filter out hidden elements
+    const style = window.getComputedStyle(el);
+    return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+  });
 }
 
 /**
@@ -135,10 +133,7 @@ export function validateTabOrder(container: HTMLElement | Document = document): 
  * @param elements Array of elements to set tab order for
  * @param startIndex Starting tabindex value (defaults to 0, which uses natural order)
  */
-export function setTabOrder(
-  elements: HTMLElement[],
-  startIndex: number = 0
-): void {
+export function setTabOrder(elements: HTMLElement[], startIndex: number = 0): void {
   elements.forEach((el, index) => {
     if (startIndex === 0) {
       // Use natural order - remove explicit tabindex
@@ -175,6 +170,3 @@ export function createLogicalTabOrder(container: HTMLElement | Document = docume
   // Set tab order based on visual position
   setTabOrder(sortedElements, 0);
 }
-
-
-

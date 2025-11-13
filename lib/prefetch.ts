@@ -1,6 +1,6 @@
 /**
  * Prefetching strategies for data
- * 
+ *
  * Provides utilities for prefetching data to improve perceived performance
  * and reduce loading times when users navigate to pages.
  */
@@ -179,4 +179,3 @@ export async function prefetchCritical<T>(
     )
   );
 }
-

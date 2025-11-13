@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 interface UseIntersectionObserverOptions {
   threshold?: number | number[];
@@ -8,9 +8,7 @@ interface UseIntersectionObserverOptions {
   rootMargin?: string;
 }
 
-export function useIntersectionObserver(
-  options: UseIntersectionObserverOptions = {}
-) {
+export function useIntersectionObserver(options: UseIntersectionObserverOptions = {}) {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
   const elementRef = useRef<HTMLElement | null>(null);
@@ -29,7 +27,7 @@ export function useIntersectionObserver(
       {
         threshold: options.threshold ?? 0.1,
         root: options.root ?? null,
-        rootMargin: options.rootMargin ?? "0px",
+        rootMargin: options.rootMargin ?? '0px',
       }
     );
 
@@ -42,4 +40,3 @@ export function useIntersectionObserver(
 
   return { elementRef, isIntersecting, hasIntersected };
 }
-

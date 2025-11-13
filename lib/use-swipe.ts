@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useRef, useState, TouchEvent } from "react";
+import { useRef, useState, TouchEvent } from 'react';
 
 interface SwipeHandlers {
   onSwipeLeft?: () => void;
@@ -78,4 +78,3 @@ export function useSwipe({
     onTouchEnd,
   };
 }
-

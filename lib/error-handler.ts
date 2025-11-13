@@ -31,10 +31,10 @@ export function createError(
  */
 export function isAppError(error: unknown): error is AppError {
   return (
-    typeof error === "object" &&
+    typeof error === 'object' &&
     error !== null &&
-    "message" in error &&
-    typeof (error as AppError).message === "string"
+    'message' in error &&
+    typeof (error as AppError).message === 'string'
   );
 }
 
@@ -48,10 +48,10 @@ export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
   }
-  if (typeof error === "string") {
+  if (typeof error === 'string') {
     return error;
   }
-  return "An unknown error occurred";
+  return 'An unknown error occurred';
 }
 
 /**
@@ -104,4 +104,3 @@ export async function retryWithBackoff<T>(
   }
   throw lastError;
 }
-

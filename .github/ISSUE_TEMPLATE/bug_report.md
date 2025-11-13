@@ -68,4 +68,3 @@ Paste console errors here
 - [ ] All users
 - [ ] Specific user group (describe):
 - [ ] Rare occurrence
-

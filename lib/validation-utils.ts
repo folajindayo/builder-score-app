@@ -61,4 +61,3 @@ export function sanitizeInput(input: string): string {
     .replace(/[<>'"]/g, '')
     .trim();
 }
-

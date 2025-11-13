@@ -82,6 +82,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -270,4 +271,3 @@ Maintainers handle releases:
 - Contact maintainers
 
 Thank you for contributing! 🎉
-

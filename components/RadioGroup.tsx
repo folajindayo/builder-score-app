@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { Radio } from "@/components/Radio";
+import { ReactNode } from 'react';
+import { Radio } from '@/components/Radio';
 
 interface RadioOption {
   value: string;
@@ -14,15 +14,15 @@ interface RadioGroupProps {
   value: string;
   onChange: (value: string) => void;
   name: string;
-  direction?: "row" | "column";
-  spacing?: "sm" | "md" | "lg";
+  direction?: 'row' | 'column';
+  spacing?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
 const spacingClasses = {
-  sm: "gap-2",
-  md: "gap-3",
-  lg: "gap-4",
+  sm: 'gap-2',
+  md: 'gap-3',
+  lg: 'gap-4',
 };
 
 export function RadioGroup({
@@ -30,13 +30,13 @@ export function RadioGroup({
   value,
   onChange,
   name,
-  direction = "column",
-  spacing = "md",
-  className = "",
+  direction = 'column',
+  spacing = 'md',
+  className = '',
 }: RadioGroupProps) {
   return (
     <div
-      className={`flex ${direction === "row" ? "flex-row" : "flex-col"} ${spacingClasses[spacing]} ${className}`}
+      className={`flex ${direction === 'row' ? 'flex-row' : 'flex-col'} ${spacingClasses[spacing]} ${className}`}
       role="radiogroup"
     >
       {options.map((option) => (
@@ -53,4 +53,3 @@ export function RadioGroup({
     </div>
   );
 }
-

@@ -23,7 +23,11 @@ export function generateSlug(text: string): string {
  * @param highlightClass - CSS class for highlighting (default: 'highlight')
  * @returns Text with highlighted terms
  */
-export function highlightText(text: string, searchTerm: string, highlightClass: string = 'highlight'): string {
+export function highlightText(
+  text: string,
+  searchTerm: string,
+  highlightClass: string = 'highlight'
+): string {
   if (!searchTerm) return text;
   const regex = new RegExp(`(${searchTerm})`, 'gi');
   return text.replace(regex, `<span class="${highlightClass}">$1</span>`);
@@ -48,7 +52,7 @@ export function matchesSearchTerm(text: string, searchTerm: string): boolean {
  * @returns Pluralized string
  */
 export function pluralize(count: number, singular: string, plural?: string): string {
-  return count === 1 ? singular : (plural || `${singular}s`);
+  return count === 1 ? singular : plural || `${singular}s`;
 }
 
 /**
@@ -59,13 +63,13 @@ export function pluralize(count: number, singular: string, plural?: string): str
  */
 export function truncateAtWord(text: string, maxLength: number): string {
   if (!text || text.length <= maxLength) return text;
-  
+
   const truncated = text.slice(0, maxLength);
   const lastSpace = truncated.lastIndexOf(' ');
-  
+
   if (lastSpace > 0) {
     return truncated.slice(0, lastSpace) + '...';
   }
-  
+
   return truncated + '...';
 }

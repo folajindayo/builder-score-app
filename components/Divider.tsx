@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
 interface DividerProps {
-  orientation?: "horizontal" | "vertical";
-  spacing?: "sm" | "md" | "lg";
+  orientation?: 'horizontal' | 'vertical';
+  spacing?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
 const spacingClasses = {
-  sm: "my-2",
-  md: "my-4",
-  lg: "my-6",
+  sm: 'my-2',
+  md: 'my-4',
+  lg: 'my-6',
 };
 
 export function Divider({
-  orientation = "horizontal",
-  spacing = "md",
-  className = "",
+  orientation = 'horizontal',
+  spacing = 'md',
+  className = '',
 }: DividerProps) {
-  if (orientation === "vertical") {
+  if (orientation === 'vertical') {
     return (
       <div
         className={`inline-block w-px h-full bg-gray-200 ${className}`}

@@ -10,7 +10,7 @@ export function createRateLimiter(maxCalls: number, windowMs: number) {
 
   return function rateLimit(): boolean {
     const now = Date.now();
-    
+
     // Remove calls outside the window
     while (calls.length > 0 && calls[0] < now - windowMs) {
       calls.shift();
@@ -28,10 +28,7 @@ export function createRateLimiter(maxCalls: number, windowMs: number) {
 /**
  * Throttles a function to execute at most once per time window
  */
-export function throttleRate<T extends (...args: any[]) => any>(
-  fn: T,
-  windowMs: number
-): T {
+export function throttleRate<T extends (...args: any[]) => any>(fn: T, windowMs: number): T {
   let lastCall = 0;
   let timeoutId: NodeJS.Timeout | null = null;
 
@@ -53,4 +50,3 @@ export function throttleRate<T extends (...args: any[]) => any>(
     }
   }) as T;
 }
-

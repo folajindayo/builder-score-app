@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/Button";
-import { Spinner } from "@/components/Spinner";
+import { Button } from '@/components/Button';
+import { Spinner } from '@/components/Spinner';
 
 interface LoadingButtonProps {
   children: React.ReactNode;
   loading?: boolean;
   disabled?: boolean;
   onClick?: () => void;
-  variant?: "primary" | "secondary" | "ghost" | "danger";
-  size?: "sm" | "md" | "lg";
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
-  type?: "button" | "submit" | "reset";
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export function LoadingButton({
@@ -19,10 +19,10 @@ export function LoadingButton({
   loading = false,
   disabled = false,
   onClick,
-  variant = "primary",
-  size = "md",
-  className = "",
-  type = "button",
+  variant = 'primary',
+  size = 'md',
+  className = '',
+  type = 'button',
 }: LoadingButtonProps) {
   return (
     <Button
@@ -42,4 +42,3 @@ export function LoadingButton({
     </Button>
   );
 }
-

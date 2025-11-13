@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { IconButton } from "@/components/IconButton";
+import { IconButton } from '@/components/IconButton';
 
 interface CollapseButtonProps {
   onClick: () => void;
@@ -8,11 +8,21 @@ interface CollapseButtonProps {
   className?: string;
 }
 
-export function CollapseButton({ onClick, label = "Collapse", className = "" }: CollapseButtonProps) {
+export function CollapseButton({
+  onClick,
+  label = 'Collapse',
+  className = '',
+}: CollapseButtonProps) {
   return (
     <IconButton
       icon={
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
         </svg>
       }
@@ -24,4 +34,3 @@ export function CollapseButton({ onClick, label = "Collapse", className = "" }: 
     />
   );
 }
-

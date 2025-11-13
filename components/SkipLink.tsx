@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 interface SkipLinkProps {
   href: string;
   label?: string;
 }
 
-export function SkipLink({ href, label = "Skip to main content" }: SkipLinkProps) {
+export function SkipLink({ href, label = 'Skip to main content' }: SkipLinkProps) {
   return (
     <a
       href={href}
@@ -15,4 +15,3 @@ export function SkipLink({ href, label = "Skip to main content" }: SkipLinkProps
     </a>
   );
 }
-

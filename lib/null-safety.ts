@@ -12,7 +12,10 @@ export function defaultValue<T>(value: T | null | undefined, defaultValue: T): T
 /**
  * Throws an error if value is null or undefined
  */
-export function assertNotNull<T>(value: T | null | undefined, message?: string): asserts value is T {
+export function assertNotNull<T>(
+  value: T | null | undefined,
+  message?: string
+): asserts value is T {
   if (value === null || value === undefined) {
     throw new Error(message || 'Value is null or undefined');
   }
@@ -28,10 +31,7 @@ export function orDefault<T>(value: T | null | undefined, defaultValue: T): T {
 /**
  * Maps a value if it's not null/undefined, otherwise returns null
  */
-export function mapNullable<T, R>(
-  value: T | null | undefined,
-  mapper: (value: T) => R
-): R | null {
+export function mapNullable<T, R>(value: T | null | undefined, mapper: (value: T) => R): R | null {
   return value !== null && value !== undefined ? mapper(value) : null;
 }
 
@@ -76,4 +76,3 @@ export function allNotNull<T>(array: (T | null | undefined)[]): array is T[] {
 export function anyNotNull<T>(array: (T | null | undefined)[]): boolean {
   return array.some((item) => item !== null && item !== undefined);
 }
-

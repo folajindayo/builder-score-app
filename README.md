@@ -17,7 +17,7 @@ An onchain builder score and searcher application built with Next.js, ReownKit (
 
 - **Framework**: Next.js 14+ (App Router)
 - **Styling**: Tailwind CSS
-- **Wallet Integration**: 
+- **Wallet Integration**:
   - ReownKit (AppKit) with Wagmi adapter
   - WalletConnect Wallet SDK (@reown/walletkit)
 - **API**: Talent Protocol API for builder scores and search

@@ -1,23 +1,20 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
-import { successCheck, successBounce } from "@/lib/micro-interactions";
+import { motion } from 'framer-motion';
+import { successCheck, successBounce } from '@/lib/micro-interactions';
 
 interface SuccessAnimationProps {
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
 const sizeClasses = {
-  sm: "w-8 h-8",
-  md: "w-12 h-12",
-  lg: "w-16 h-16",
+  sm: 'w-8 h-8',
+  md: 'w-12 h-12',
+  lg: 'w-16 h-16',
 };
 
-export function SuccessAnimation({
-  size = "md",
-  className = "",
-}: SuccessAnimationProps) {
+export function SuccessAnimation({ size = 'md', className = '' }: SuccessAnimationProps) {
   return (
     <motion.div
       className={`${sizeClasses[size]} ${className}`}
@@ -44,4 +41,3 @@ export function SuccessAnimation({
     </motion.div>
   );
 }
-

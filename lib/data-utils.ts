@@ -39,17 +39,17 @@ export function normalizeData<T extends Record<string, any>>(obj: T): Partial<T>
  */
 export function flattenObject(obj: Record<string, any>, prefix: string = ''): Record<string, any> {
   const flattened: Record<string, any> = {};
-  
+
   for (const key in obj) {
     const newKey = prefix ? `${prefix}.${key}` : key;
-    
+
     if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
       Object.assign(flattened, flattenObject(obj[key], newKey));
     } else {
       flattened[newKey] = obj[key];
     }
   }
-  
+
   return flattened;
 }
 
@@ -67,14 +67,14 @@ export function getNestedValue<T = any>(
 ): T | undefined {
   const keys = path.split('.');
   let current = obj;
-  
+
   for (const key of keys) {
     if (current?.[key] === undefined) {
       return defaultValue;
     }
     current = current[key];
   }
-  
+
   return current as T;
 }
 
@@ -89,7 +89,7 @@ export function mapData<T extends Record<string, any>, R extends Record<string, 
   mapping: Record<keyof R, keyof T | ((data: T) => any)>
 ): R {
   const result: any = {};
-  
+
   for (const targetKey in mapping) {
     const sourceKey = mapping[targetKey];
     if (typeof sourceKey === 'function') {
@@ -98,7 +98,6 @@ export function mapData<T extends Record<string, any>, R extends Record<string, 
       result[targetKey] = data[sourceKey as keyof T];
     }
   }
-  
+
   return result as R;
 }
-

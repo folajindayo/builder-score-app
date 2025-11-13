@@ -33,7 +33,7 @@ class APICache {
 
     // Create new request
     const promise = fetcher();
-    
+
     // Store promise to deduplicate concurrent requests
     this.cache.set(key, {
       data: null as unknown,
@@ -107,10 +107,7 @@ const pendingRequests = new Map<string, Promise<unknown>>();
 /**
  * Deduplicates concurrent requests with the same key
  */
-export async function deduplicateRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>
-): Promise<T> {
+export async function deduplicateRequest<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
   // If there's already a pending request, return its promise
   if (pendingRequests.has(key)) {
     return pendingRequests.get(key) as Promise<T>;
@@ -125,4 +122,3 @@ export async function deduplicateRequest<T>(
   pendingRequests.set(key, promise);
   return promise;
 }
-

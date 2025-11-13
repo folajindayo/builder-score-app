@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useRef, useState } from "react";
+import { useRef, useState } from 'react';
 
 interface FileUploadProps {
   accept?: string;
@@ -15,7 +15,7 @@ export function FileUpload({
   multiple = false,
   maxSize = 10 * 1024 * 1024, // 10MB default
   onFilesSelected,
-  className = "",
+  className = '',
 }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -23,7 +23,7 @@ export function FileUpload({
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
 
-    const validFiles = Array.from(files).filter(file => file.size <= maxSize);
+    const validFiles = Array.from(files).filter((file) => file.size <= maxSize);
     if (onFilesSelected && validFiles.length > 0) {
       onFilesSelected(validFiles);
     }
@@ -45,7 +45,7 @@ export function FileUpload({
       onDrop={handleDrop}
       onClick={() => inputRef.current?.click()}
       className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-        isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-gray-400"
+        isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
       } ${className}`}
     >
       <input
@@ -59,8 +59,9 @@ export function FileUpload({
       <p className="text-gray-600">
         Drag and drop files here or <span className="text-blue-600">click to browse</span>
       </p>
-      <p className="text-xs text-gray-500 mt-2">Max file size: {(maxSize / 1024 / 1024).toFixed(0)}MB</p>
+      <p className="text-xs text-gray-500 mt-2">
+        Max file size: {(maxSize / 1024 / 1024).toFixed(0)}MB
+      </p>
     </div>
   );
 }
-

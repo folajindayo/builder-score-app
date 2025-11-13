@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 interface QuickActionProps {
   icon: ReactNode;
@@ -10,13 +10,19 @@ interface QuickActionProps {
   className?: string;
 }
 
-export function QuickAction({ icon, label, onClick, disabled = false, className = "" }: QuickActionProps) {
+export function QuickAction({
+  icon,
+  label,
+  onClick,
+  disabled = false,
+  className = '',
+}: QuickActionProps) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       className={`flex flex-col items-center justify-center p-4 rounded-lg border hover:bg-gray-50 transition-colors ${
-        disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+        disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
       } ${className}`}
       aria-label={label}
     >
@@ -25,4 +31,3 @@ export function QuickAction({ icon, label, onClick, disabled = false, className 
     </button>
   );
 }
-

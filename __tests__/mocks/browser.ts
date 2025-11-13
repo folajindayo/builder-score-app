@@ -6,4 +6,3 @@ import { handlers } from './handlers';
  * This can be used for development and browser testing
  */
 export const worker = setupWorker(...handlers);
-

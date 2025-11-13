@@ -50,7 +50,7 @@ export function clearStorage(): void {
   try {
     localStorage.clear();
   } catch (error) {
-    console.error("Error clearing localStorage:", error);
+    console.error('Error clearing localStorage:', error);
   }
 }
 
@@ -77,7 +77,7 @@ export function getAllStorageKeys(): string[] {
   try {
     return Object.keys(localStorage);
   } catch (error) {
-    console.error("Error getting localStorage keys:", error);
+    console.error('Error getting localStorage keys:', error);
     return [];
   }
 }
@@ -94,4 +94,3 @@ export function hasStorageItem(key: string): boolean {
     return false;
   }
 }
-

@@ -27,7 +27,7 @@ export const handlers = [
   // Mock Talent Protocol API - Get user profile
   http.get('/api/talent/profile/:address', ({ params }) => {
     const { address } = params;
-    
+
     return HttpResponse.json({
       address,
       score: mockBuilderScore,
@@ -131,18 +131,11 @@ export const handlers = [
 
   // Mock 404 error
   http.get('/api/notfound', () => {
-    return HttpResponse.json(
-      { error: 'Not found' },
-      { status: 404 }
-    );
+    return HttpResponse.json({ error: 'Not found' }, { status: 404 });
   }),
 
   // Mock 401 unauthorized
   http.get('/api/unauthorized', () => {
-    return HttpResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
+    return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }),
 ];
-

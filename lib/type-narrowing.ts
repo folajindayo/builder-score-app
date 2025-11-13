@@ -58,10 +58,7 @@ export function narrowToShape<T extends Record<string, unknown>>(
 /**
  * Narrow type to literal value
  */
-export function narrowToLiteral<T extends string | number>(
-  value: unknown,
-  literal: T
-): value is T {
+export function narrowToLiteral<T extends string | number>(value: unknown, literal: T): value is T {
   return value === literal;
 }
 
@@ -84,4 +81,3 @@ export function narrowToInstance<T>(
 ): value is T {
   return value instanceof constructor;
 }
-

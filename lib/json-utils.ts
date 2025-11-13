@@ -49,4 +49,3 @@ export function jsonClone<T>(obj: T): T {
 export function jsonEqual(a: unknown, b: unknown): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }
-

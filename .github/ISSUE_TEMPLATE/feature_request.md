@@ -55,9 +55,9 @@ As a [user type], I want to [action] so that [benefit].
 
 <!-- What benefits does this feature provide? -->
 
-- 
-- 
-- 
+-
+-
+-
 
 ## Priority
 
@@ -91,4 +91,3 @@ As a [user type], I want to [action] so that [benefit].
 <!-- Link to related issues or PRs -->
 
 Related to #
-

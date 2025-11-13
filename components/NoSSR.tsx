@@ -1,16 +1,13 @@
-"use client";
+'use client';
 
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, ReactNode } from 'react';
 
 interface NoSSRProps {
   children: ReactNode;
   fallback?: ReactNode;
 }
 
-export function NoSSR({
-  children,
-  fallback = null,
-}: NoSSRProps) {
+export function NoSSR({ children, fallback = null }: NoSSRProps) {
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
@@ -23,4 +20,3 @@ export function NoSSR({
 
   return <>{children}</>;
 }
-

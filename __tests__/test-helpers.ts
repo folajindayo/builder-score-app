@@ -164,11 +164,7 @@ export const mockSessionStorage = mockLocalStorage;
 /**
  * Create a mock file for upload testing
  */
-export function createMockFile(
-  name: string,
-  size: number,
-  type: string
-): File {
+export function createMockFile(name: string, size: number, type: string): File {
   const blob = new Blob(['a'.repeat(size)], { type });
   return new File([blob], name, { type });
 }
@@ -189,4 +185,3 @@ export function triggerResize(width: number, height: number) {
   });
   window.dispatchEvent(new Event('resize'));
 }
-

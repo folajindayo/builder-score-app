@@ -26,9 +26,9 @@ Closes #
 
 <!-- List the key changes made in this PR -->
 
-- 
-- 
-- 
+-
+-
+-
 
 ## Screenshots (if applicable)
 
@@ -101,6 +101,6 @@ Closes #
 
 ---
 
-**Reviewer Notes**: 
-<!-- For reviewers: Add any specific areas you'd like reviewers to focus on -->
+**Reviewer Notes**:
 
+<!-- For reviewers: Add any specific areas you'd like reviewers to focus on -->

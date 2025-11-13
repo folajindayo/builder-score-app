@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Modal } from "@/components/Modal";
-import { Button } from "@/components/Button";
+import { Modal } from '@/components/Modal';
+import { Button } from '@/components/Button';
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
@@ -11,7 +11,7 @@ interface ConfirmationDialogProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  variant?: "default" | "danger" | "warning";
+  variant?: 'default' | 'danger' | 'warning';
   loading?: boolean;
 }
 
@@ -21,9 +21,9 @@ export function ConfirmationDialog({
   onConfirm,
   title,
   message,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  variant = "default",
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  variant = 'default',
   loading = false,
 }: ConfirmationDialogProps) {
   const handleConfirm = () => {
@@ -31,9 +31,9 @@ export function ConfirmationDialog({
   };
 
   const variantClasses = {
-    default: "bg-blue-600 hover:bg-blue-700",
-    danger: "bg-red-600 hover:bg-red-700",
-    warning: "bg-yellow-600 hover:bg-yellow-700",
+    default: 'bg-blue-600 hover:bg-blue-700',
+    danger: 'bg-red-600 hover:bg-red-700',
+    warning: 'bg-yellow-600 hover:bg-yellow-700',
   };
 
   return (
@@ -41,11 +41,7 @@ export function ConfirmationDialog({
       <div className="p-6">
         <p className="text-gray-700 mb-6">{message}</p>
         <div className="flex justify-end gap-3">
-          <Button
-            variant="ghost"
-            onClick={onClose}
-            disabled={loading}
-          >
+          <Button variant="ghost" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
           <Button

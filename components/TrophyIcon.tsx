@@ -1,19 +1,19 @@
-import type { BuilderCategory } from "@/lib/builder-analytics";
+import type { BuilderCategory } from '@/lib/builder-analytics';
 
 interface TrophyIconProps {
   category: BuilderCategory;
   className?: string;
 }
 
-export function TrophyIcon({ category, className = "" }: TrophyIconProps) {
+export function TrophyIcon({ category, className = '' }: TrophyIconProps) {
   if (!category) return null;
 
   const colors = {
-    most_earnings: "text-yellow-500",
-    trending: "text-orange-500",
-    highest_score: "text-blue-500",
-    featured: "text-purple-500",
-    sought_after: "text-green-500",
+    most_earnings: 'text-yellow-500',
+    trending: 'text-orange-500',
+    highest_score: 'text-blue-500',
+    featured: 'text-purple-500',
+    sought_after: 'text-green-500',
   };
 
   return (
@@ -28,4 +28,3 @@ export function TrophyIcon({ category, className = "" }: TrophyIconProps) {
     </svg>
   );
 }
-

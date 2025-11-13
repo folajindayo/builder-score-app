@@ -88,4 +88,3 @@ export enum LoadingState {
   SUCCESS = 'success',
   ERROR = 'error',
 }
-

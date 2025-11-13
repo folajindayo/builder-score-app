@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from 'react';
 
 interface UseVirtualScrollOptions {
   itemHeight: number;
@@ -8,20 +8,14 @@ interface UseVirtualScrollOptions {
   overscan?: number;
 }
 
-export function useVirtualScroll<T>(
-  items: T[],
-  options: UseVirtualScrollOptions
-) {
+export function useVirtualScroll<T>(items: T[], options: UseVirtualScrollOptions) {
   const { itemHeight, containerHeight, overscan = 3 } = options;
   const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const visibleRange = useMemo(() => {
     const start = Math.floor(scrollTop / itemHeight);
-    const end = Math.min(
-      start + Math.ceil(containerHeight / itemHeight) + overscan,
-      items.length
-    );
+    const end = Math.min(start + Math.ceil(containerHeight / itemHeight) + overscan, items.length);
     return { start: Math.max(0, start - overscan), end };
   }, [scrollTop, itemHeight, containerHeight, items.length, overscan]);
 
@@ -43,8 +37,8 @@ export function useVirtualScroll<T>(
       setScrollTop(container.scrollTop);
     };
 
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
   }, []);
 
   return {
@@ -54,4 +48,3 @@ export function useVirtualScroll<T>(
     offsetY,
   };
 }
-

@@ -1,6 +1,6 @@
 /**
  * Landmark region utilities for accessibility
- * 
+ *
  * Landmark regions help screen reader users navigate pages more efficiently
  * by identifying major sections of content.
  */
@@ -74,7 +74,8 @@ export function validateLandmarks(): Array<{
         issues.push({
           element: banner as HTMLElement,
           issue: 'Multiple banner regions found',
-          recommendation: 'Only one banner region should exist per page. Consider using role="region" for additional headers.',
+          recommendation:
+            'Only one banner region should exist per page. Consider using role="region" for additional headers.',
         });
       }
     });
@@ -115,9 +116,7 @@ export function validateLandmarks(): Array<{
   // Check for search regions
   const searches = document.querySelectorAll('[role="search"]');
   searches.forEach((search) => {
-    const hasLabel =
-      search.hasAttribute('aria-label') ||
-      search.hasAttribute('aria-labelledby');
+    const hasLabel = search.hasAttribute('aria-label') || search.hasAttribute('aria-labelledby');
     if (!hasLabel) {
       issues.push({
         element: search as HTMLElement,
@@ -150,7 +149,9 @@ export function getLandmarks(): Map<string, HTMLElement[]> {
 
   roles.forEach((role) => {
     const elements = Array.from(
-      document.querySelectorAll(`[role="${role}"], ${role === 'main' ? 'main' : role === 'navigation' ? 'nav' : role === 'complementary' ? 'aside' : role === 'contentinfo' ? 'footer' : ''}`)
+      document.querySelectorAll(
+        `[role="${role}"], ${role === 'main' ? 'main' : role === 'navigation' ? 'nav' : role === 'complementary' ? 'aside' : role === 'contentinfo' ? 'footer' : ''}`
+      )
     ) as HTMLElement[];
     if (elements.length > 0) {
       landmarks.set(role, elements);
@@ -180,6 +181,3 @@ export function createSkipLinkTarget(
     ...(label && { 'aria-label': label }),
   };
 }
-
-
-

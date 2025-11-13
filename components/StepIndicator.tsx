@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 interface Step {
   label: string;
@@ -11,7 +11,7 @@ interface StepIndicatorProps {
   className?: string;
 }
 
-export function StepIndicator({ steps, currentStep, className = "" }: StepIndicatorProps) {
+export function StepIndicator({ steps, currentStep, className = '' }: StepIndicatorProps) {
   return (
     <div className={`flex items-center ${className}`}>
       {steps.map((step, index) => (
@@ -20,22 +20,21 @@ export function StepIndicator({ steps, currentStep, className = "" }: StepIndica
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                 index < currentStep
-                  ? "bg-green-600 text-white"
+                  ? 'bg-green-600 text-white'
                   : index === currentStep
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-300 text-gray-600"
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-300 text-gray-600'
               }`}
             >
-              {index < currentStep ? "✓" : index + 1}
+              {index < currentStep ? '✓' : index + 1}
             </div>
             <span className="text-xs mt-1 text-center">{step.label}</span>
           </div>
           {index < steps.length - 1 && (
-            <div className={`flex-1 h-1 ${index < currentStep ? "bg-green-600" : "bg-gray-300"}`} />
+            <div className={`flex-1 h-1 ${index < currentStep ? 'bg-green-600' : 'bg-gray-300'}`} />
           )}
         </div>
       ))}
     </div>
   );
 }
-

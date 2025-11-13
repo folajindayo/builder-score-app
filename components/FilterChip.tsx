@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { motion } from "framer-motion";
+import { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 interface FilterChipProps {
   label: string;
   onRemove?: () => void;
   icon?: ReactNode;
-  variant?: "default" | "active" | "highlight";
+  variant?: 'default' | 'active' | 'highlight';
   className?: string;
 }
 
@@ -15,13 +15,13 @@ export function FilterChip({
   label,
   onRemove,
   icon,
-  variant = "default",
-  className = "",
+  variant = 'default',
+  className = '',
 }: FilterChipProps) {
   const variantClasses = {
-    default: "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200",
-    active: "bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200",
-    highlight: "bg-yellow-100 text-yellow-700 border-yellow-300 hover:bg-yellow-200",
+    default: 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200',
+    active: 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200',
+    highlight: 'bg-yellow-100 text-yellow-700 border-yellow-300 hover:bg-yellow-200',
   };
 
   return (
@@ -58,4 +58,3 @@ export function FilterChip({
     </motion.div>
   );
 }
-

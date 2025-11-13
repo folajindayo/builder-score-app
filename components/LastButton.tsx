@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { IconButton } from "@/components/IconButton";
+import { IconButton } from '@/components/IconButton';
 
 interface LastButtonProps {
   onClick: () => void;
@@ -12,14 +12,25 @@ interface LastButtonProps {
 export function LastButton({
   onClick,
   disabled = false,
-  label = "Last",
-  className = "",
+  label = 'Last',
+  className = '',
 }: LastButtonProps) {
   return (
     <IconButton
       icon={
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M13 5l7 7-7 7M5 5l7 7-7 7"
+          />
         </svg>
       }
       label={label}
@@ -31,4 +42,3 @@ export function LastButton({
     />
   );
 }
-

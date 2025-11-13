@@ -38,18 +38,22 @@ function displayCoverageSummary() {
 
   console.log('  Category       Coverage     Covered/Total');
   console.log('  ─────────────────────────────────────────────');
-  console.log(`  Statements     ${formatPercentage(total.statements.pct)}     ${total.statements.covered}/${total.statements.total}`);
-  console.log(`  Branches       ${formatPercentage(total.branches.pct)}     ${total.branches.covered}/${total.branches.total}`);
-  console.log(`  Functions      ${formatPercentage(total.functions.pct)}     ${total.functions.covered}/${total.functions.total}`);
-  console.log(`  Lines          ${formatPercentage(total.lines.pct)}     ${total.lines.covered}/${total.lines.total}`);
+  console.log(
+    `  Statements     ${formatPercentage(total.statements.pct)}     ${total.statements.covered}/${total.statements.total}`
+  );
+  console.log(
+    `  Branches       ${formatPercentage(total.branches.pct)}     ${total.branches.covered}/${total.branches.total}`
+  );
+  console.log(
+    `  Functions      ${formatPercentage(total.functions.pct)}     ${total.functions.covered}/${total.functions.total}`
+  );
+  console.log(
+    `  Lines          ${formatPercentage(total.lines.pct)}     ${total.lines.covered}/${total.lines.total}`
+  );
   console.log('');
 
-  const averageCoverage = (
-    total.statements.pct +
-    total.branches.pct +
-    total.functions.pct +
-    total.lines.pct
-  ) / 4;
+  const averageCoverage =
+    (total.statements.pct + total.branches.pct + total.functions.pct + total.lines.pct) / 4;
 
   console.log(`  Overall Coverage: ${formatPercentage(averageCoverage)}`);
   console.log('');
@@ -77,4 +81,3 @@ try {
   console.error('Error reading coverage summary:', error.message);
   process.exit(1);
 }
-

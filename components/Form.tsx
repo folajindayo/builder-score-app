@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ReactNode, FormEvent } from "react";
+import { ReactNode, FormEvent } from 'react';
 
 interface FormProps {
   children: ReactNode;
@@ -8,11 +8,7 @@ interface FormProps {
   className?: string;
 }
 
-export function Form({
-  children,
-  onSubmit,
-  className = "",
-}: FormProps) {
+export function Form({ children, onSubmit, className = '' }: FormProps) {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSubmit) {
@@ -26,4 +22,3 @@ export function Form({
     </form>
   );
 }
-

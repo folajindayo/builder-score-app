@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 interface ProgressBarProps {
   value: number;
   max?: number;
   label?: string;
   showPercentage?: boolean;
-  color?: "blue" | "green" | "yellow" | "red";
-  size?: "sm" | "md" | "lg";
+  color?: 'blue' | 'green' | 'yellow' | 'red';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export function ProgressBar({
@@ -14,22 +14,22 @@ export function ProgressBar({
   max = 100,
   label,
   showPercentage = false,
-  color = "blue",
-  size = "md",
+  color = 'blue',
+  size = 'md',
 }: ProgressBarProps) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
   const colorClasses = {
-    blue: "bg-blue-600",
-    green: "bg-green-600",
-    yellow: "bg-yellow-600",
-    red: "bg-red-600",
+    blue: 'bg-blue-600',
+    green: 'bg-green-600',
+    yellow: 'bg-yellow-600',
+    red: 'bg-red-600',
   };
 
   const sizeClasses = {
-    sm: "h-1",
-    md: "h-2",
-    lg: "h-3",
+    sm: 'h-1',
+    md: 'h-2',
+    lg: 'h-3',
   };
 
   return (
@@ -55,4 +55,3 @@ export function ProgressBar({
     </div>
   );
 }
-

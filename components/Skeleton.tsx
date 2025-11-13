@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 interface SkeletonProps {
   width?: string;
@@ -8,14 +8,14 @@ interface SkeletonProps {
 }
 
 export function Skeleton({
-  width = "100%",
-  height = "1rem",
-  className = "",
+  width = '100%',
+  height = '1rem',
+  className = '',
   rounded = false,
 }: SkeletonProps) {
   return (
     <div
-      className={`bg-gray-200 animate-pulse ${rounded ? "rounded-full" : "rounded"} relative overflow-hidden ${className}`}
+      className={`bg-gray-200 animate-pulse ${rounded ? 'rounded-full' : 'rounded'} relative overflow-hidden ${className}`}
       style={{ width, height }}
       aria-label="Loading"
     >
@@ -23,4 +23,3 @@ export function Skeleton({
     </div>
   );
 }
-

@@ -29,10 +29,7 @@ export async function withTimeout<T>(
 /**
  * Execute async functions in parallel with concurrency limit
  */
-export async function parallelLimit<T>(
-  tasks: (() => Promise<T>)[],
-  limit: number
-): Promise<T[]> {
+export async function parallelLimit<T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> {
   const results: T[] = [];
   const executing: Promise<void>[] = [];
 
@@ -56,9 +53,7 @@ export async function parallelLimit<T>(
 /**
  * Execute async functions sequentially
  */
-export async function sequential<T>(
-  tasks: (() => Promise<T>)[]
-): Promise<T[]> {
+export async function sequential<T>(tasks: (() => Promise<T>)[]): Promise<T[]> {
   const results: T[] = [];
   for (const task of tasks) {
     const result = await task();
@@ -79,7 +74,7 @@ export async function waitFor(
 
   while (!condition()) {
     if (Date.now() - startTime > timeoutMs) {
-      throw new Error("Condition timeout");
+      throw new Error('Condition timeout');
     }
     await delay(intervalMs);
   }

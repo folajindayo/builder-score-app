@@ -4,11 +4,7 @@ import { LeaderboardResponse, LeaderboardUser, UserProfile } from '@/types/talen
  * Test fixtures for leaderboard data
  */
 
-function createMockUserProfile(
-  id: number,
-  position: number,
-  score: number
-): UserProfile {
+function createMockUserProfile(id: number, position: number, score: number): UserProfile {
   return {
     id: `user-${id}`,
     display_name: `Builder ${id}`,
@@ -39,13 +35,9 @@ function createMockUserProfile(
   };
 }
 
-function createMockLeaderboardUser(
-  id: number,
-  position: number,
-  score: number
-): LeaderboardUser {
+function createMockLeaderboardUser(id: number, position: number, score: number): LeaderboardUser {
   const profile = createMockUserProfile(id, position, score);
-  
+
   return {
     id,
     leaderboard_position: position,
@@ -53,13 +45,8 @@ function createMockLeaderboardUser(
     ranking_change: Math.floor(Math.random() * 10) - 5, // -5 to +5
     reward_amount: position <= 10 ? (1000 - position * 50).toString() : '0',
     reward_transaction_hash:
-      position <= 10
-        ? `0x${Math.random().toString(16).substring(2, 66)}`
-        : null,
-    recipient_wallet:
-      position <= 10
-        ? `0x${Math.random().toString(16).substring(2, 42)}`
-        : null,
+      position <= 10 ? `0x${Math.random().toString(16).substring(2, 66)}` : null,
+    recipient_wallet: position <= 10 ? `0x${Math.random().toString(16).substring(2, 42)}` : null,
     distributed_at: position <= 10 ? new Date().toISOString() : null,
     hall_of_fame: position <= 3,
     summary:
@@ -128,4 +115,3 @@ export const fixtureRisingBuilders = fixtureLeaderboardPage1.users.filter(
 export const fixtureFallingBuilders = fixtureLeaderboardPage1.users.filter(
   (u) => u.ranking_change < 0
 );
-

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 /**
  * Manages focus for modals and dialogs
@@ -47,7 +47,7 @@ export function useFocusTrap(isOpen: boolean) {
     const lastElement = focusableElements[focusableElements.length - 1];
 
     const handleTab = (e: KeyboardEvent) => {
-      if (e.key !== "Tab") return;
+      if (e.key !== 'Tab') return;
 
       if (e.shiftKey) {
         if (document.activeElement === firstElement) {
@@ -62,14 +62,13 @@ export function useFocusTrap(isOpen: boolean) {
       }
     };
 
-    container.addEventListener("keydown", handleTab);
+    container.addEventListener('keydown', handleTab);
     firstElement?.focus();
 
     return () => {
-      container.removeEventListener("keydown", handleTab);
+      container.removeEventListener('keydown', handleTab);
     };
   }, [isOpen]);
 
   return containerRef;
 }
-

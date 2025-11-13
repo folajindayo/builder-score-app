@@ -54,4 +54,3 @@ If your friend is still getting CORS errors, they might be:
 ### Solution: Add CORS Headers
 
 The API route should include CORS headers. See `app/api/builderscore/route.ts` for the implementation with CORS headers added.
-

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState, memo, useMemo, useCallback } from "react";
-import { useAccount } from "wagmi";
-import { getBuilderScore, getBuilderProfile } from "@/lib/talent-api";
-import type { BuilderScore, BuilderProfile } from "@/types/talent";
-import { formatScore, formatNumber, formatDate, copyToClipboard, formatAddress } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { useToastContext } from "@/components/ToastProvider";
+import { useEffect, useState, memo, useMemo, useCallback } from 'react';
+import { useAccount } from 'wagmi';
+import { getBuilderScore, getBuilderProfile } from '@/lib/talent-api';
+import type { BuilderScore, BuilderProfile } from '@/types/talent';
+import { formatScore, formatNumber, formatDate, copyToClipboard, formatAddress } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { useToastContext } from '@/components/ToastProvider';
 
 export const BuilderScore = memo(function BuilderScore() {
   const { address, isConnected } = useAccount();
@@ -26,7 +26,7 @@ export const BuilderScore = memo(function BuilderScore() {
 
     async function fetchData() {
       if (!address) return;
-      
+
       setLoading(true);
       setError(null);
       try {
@@ -38,10 +38,10 @@ export const BuilderScore = memo(function BuilderScore() {
         setScore(scoreData);
         setProfile(profileData);
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to fetch builder score";
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch builder score';
         setError(errorMessage);
         toast.error(errorMessage);
-        console.error("Error fetching builder data:", err);
+        console.error('Error fetching builder data:', err);
       } finally {
         setLoading(false);
       }
@@ -88,9 +88,7 @@ export const BuilderScore = memo(function BuilderScore() {
         className="p-6 bg-red-50 rounded-xl border-2 border-red-200 shadow-sm"
       >
         <p className="text-red-600 font-medium">{error}</p>
-        <p className="text-sm text-red-500 mt-2">
-          Note: API key may need to be configured
-        </p>
+        <p className="text-sm text-red-500 mt-2">Note: API key may need to be configured</p>
       </motion.div>
     );
   }
@@ -102,9 +100,7 @@ export const BuilderScore = memo(function BuilderScore() {
         animate={{ opacity: 1, scale: 1 }}
         className="p-8 bg-white rounded-xl border-2 border-gray-200 shadow-md"
       >
-        <p className="text-gray-600 text-center text-lg">
-          No builder score found for this address
-        </p>
+        <p className="text-gray-600 text-center text-lg">No builder score found for this address</p>
       </motion.div>
     );
   }
@@ -114,10 +110,10 @@ export const BuilderScore = memo(function BuilderScore() {
     const success = await copyToClipboard(address);
     if (success) {
       setCopied(true);
-      toast.success("Address copied to clipboard");
+      toast.success('Address copied to clipboard');
       setTimeout(() => setCopied(false), 2000);
     } else {
-      toast.error("Failed to copy address");
+      toast.error('Failed to copy address');
     }
   }, [address, toast]);
 
@@ -132,12 +128,12 @@ export const BuilderScore = memo(function BuilderScore() {
       ]);
       setScore(scoreData);
       setProfile(profileData);
-      toast.success("Builder score refreshed");
+      toast.success('Builder score refreshed');
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to fetch builder score";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch builder score';
       setError(errorMessage);
       toast.error(errorMessage);
-      console.error("Error fetching builder data:", err);
+      console.error('Error fetching builder data:', err);
     } finally {
       setLoading(false);
     }
@@ -152,9 +148,7 @@ export const BuilderScore = memo(function BuilderScore() {
     >
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Builder Score
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900">Builder Score</h2>
           <div className="flex items-center gap-2">
             {address && (
               <motion.button
@@ -165,12 +159,7 @@ export const BuilderScore = memo(function BuilderScore() {
                 title="Copy address"
               >
                 <span className="font-mono text-xs">{formatAddress(address)}</span>
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {copied ? (
                     <path
                       strokeLinecap="round"
@@ -215,9 +204,7 @@ export const BuilderScore = memo(function BuilderScore() {
             )}
           </div>
         </div>
-        {profile?.profile?.name && (
-          <p className="text-gray-600 text-lg">{profile.profile.name}</p>
-        )}
+        {profile?.profile?.name && <p className="text-gray-600 text-lg">{profile.profile.name}</p>}
       </div>
 
       <motion.div
@@ -231,9 +218,7 @@ export const BuilderScore = memo(function BuilderScore() {
             {formatScore(typeof score.score === 'number' ? score.score : 0)}
           </span>
           {score.rank && (
-            <span className="text-sm text-gray-500">
-              Rank #{formatNumber(score.rank)}
-            </span>
+            <span className="text-sm text-gray-500">Rank #{formatNumber(score.rank)}</span>
           )}
         </div>
         {score.percentile !== undefined && (
@@ -279,26 +264,28 @@ export const BuilderScore = memo(function BuilderScore() {
             Skills ({score.skills.length})
           </h3>
           <div className="flex flex-wrap gap-2">
-            {useMemo(() => score.skills?.map((skill, idx) => (
-              <motion.span
-                key={skill.id}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 + idx * 0.05 }}
-                className="px-3 py-1 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-full text-sm font-medium border border-green-200"
-              >
-                {skill.name}
-              </motion.span>
-            )), [score.skills])}
+            {useMemo(
+              () =>
+                score.skills?.map((skill, idx) => (
+                  <motion.span
+                    key={skill.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 + idx * 0.05 }}
+                    className="px-3 py-1 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-full text-sm font-medium border border-green-200"
+                  >
+                    {skill.name}
+                  </motion.span>
+                )),
+              [score.skills]
+            )}
           </div>
         </motion.div>
       )}
 
       {score.updatedAt && (
         <div className="mt-4 pt-4 border-t border-gray-200">
-          <p className="text-xs text-gray-500">
-            Last updated: {formatDate(score.updatedAt)}
-          </p>
+          <p className="text-xs text-gray-500">Last updated: {formatDate(score.updatedAt)}</p>
         </div>
       )}
 
@@ -312,4 +299,3 @@ export const BuilderScore = memo(function BuilderScore() {
     </motion.div>
   );
 });
-

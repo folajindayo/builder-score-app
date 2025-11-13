@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
 interface RangeSliderProps {
   min: number;
@@ -23,21 +23,27 @@ export function RangeSlider({
   disabled = false,
   label,
   showValues = false,
-  className = "",
+  className = '',
 }: RangeSliderProps) {
   const [localValue, setLocalValue] = useState(value);
 
-  const handleMinChange = useCallback((newMin: number) => {
-    const newValue: [number, number] = [Math.min(newMin, localValue[1]), localValue[1]];
-    setLocalValue(newValue);
-    onChange(newValue);
-  }, [localValue, onChange]);
+  const handleMinChange = useCallback(
+    (newMin: number) => {
+      const newValue: [number, number] = [Math.min(newMin, localValue[1]), localValue[1]];
+      setLocalValue(newValue);
+      onChange(newValue);
+    },
+    [localValue, onChange]
+  );
 
-  const handleMaxChange = useCallback((newMax: number) => {
-    const newValue: [number, number] = [localValue[0], Math.max(newMax, localValue[0])];
-    setLocalValue(newValue);
-    onChange(newValue);
-  }, [localValue, onChange]);
+  const handleMaxChange = useCallback(
+    (newMax: number) => {
+      const newValue: [number, number] = [localValue[0], Math.max(newMax, localValue[0])];
+      setLocalValue(newValue);
+      onChange(newValue);
+    },
+    [localValue, onChange]
+  );
 
   return (
     <div className={className}>
@@ -105,4 +111,3 @@ export function RangeSlider({
     </div>
   );
 }
-

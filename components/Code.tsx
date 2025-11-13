@@ -1,26 +1,19 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 interface CodeProps {
   children: ReactNode;
-  variant?: "inline" | "block";
+  variant?: 'inline' | 'block';
   language?: string;
   className?: string;
 }
 
-export function Code({
-  children,
-  variant = "inline",
-  language,
-  className = "",
-}: CodeProps) {
-  if (variant === "block") {
+export function Code({ children, variant = 'inline', language, className = '' }: CodeProps) {
+  if (variant === 'block') {
     return (
       <pre className={`bg-gray-100 rounded-lg p-4 overflow-x-auto ${className}`}>
-        <code className={`text-sm ${language ? `language-${language}` : ""}`}>
-          {children}
-        </code>
+        <code className={`text-sm ${language ? `language-${language}` : ''}`}>{children}</code>
       </pre>
     );
   }
@@ -33,4 +26,3 @@ export function Code({
     </code>
   );
 }
-

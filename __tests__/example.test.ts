@@ -22,4 +22,3 @@ describe('Jest Configuration', () => {
     expect(obj.value).toBe(42);
   });
 });
-

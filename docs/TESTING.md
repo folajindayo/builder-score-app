@@ -226,10 +226,10 @@ describe('MyComponent', () => {
   it('should handle user interaction', async () => {
     const user = userEvent.setup();
     renderWithProviders(<MyComponent />);
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     await user.click(button);
-    
+
     expect(screen.getByText('Clicked')).toBeInTheDocument();
   });
 });
@@ -249,11 +249,11 @@ describe('useMyHook', () => {
 
   it('should update value', async () => {
     const { result } = renderHook(() => useMyHook());
-    
+
     act(() => {
       result.current.setValue('new value');
     });
-    
+
     await waitFor(() => {
       expect(result.current.value).toBe('new value');
     });
@@ -271,7 +271,7 @@ describe('API Integration', () => {
   it('should fetch data successfully', async () => {
     const response = await fetch('/api/data');
     const data = await response.json();
-    
+
     expect(response.ok).toBe(true);
     expect(data).toHaveProperty('results');
   });
@@ -282,7 +282,7 @@ describe('API Integration', () => {
         return HttpResponse.json({ error: 'Not found' }, { status: 404 });
       })
     );
-    
+
     const response = await fetch('/api/data');
     expect(response.status).toBe(404);
   });
@@ -385,4 +385,3 @@ afterEach(() => {
 - [Playwright Documentation](https://playwright.dev/docs/intro)
 - [Testing Best Practices](https://testingjavascript.com/)
 - [MSW Documentation](https://mswjs.io/docs/)
-

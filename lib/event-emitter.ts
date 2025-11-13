@@ -46,4 +46,3 @@ export class EventEmitter<T extends Record<string, unknown> = Record<string, unk
     this.handlers.clear();
   }
 }
-

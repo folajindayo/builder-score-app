@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { RenderIf } from "@/components/RenderIf";
-import { ReactNode } from "react";
+import { RenderIf } from '@/components/RenderIf';
+import { ReactNode } from 'react';
 
 interface HideProps {
   when: boolean;
@@ -9,15 +9,6 @@ interface HideProps {
   fallback?: ReactNode;
 }
 
-export function Hide({
-  when,
-  children,
-  fallback,
-}: HideProps) {
-  return (
-    <RenderIf condition={!when}>
-      {children}
-    </RenderIf>
-  );
+export function Hide({ when, children, fallback }: HideProps) {
+  return <RenderIf condition={!when}>{children}</RenderIf>;
 }
-

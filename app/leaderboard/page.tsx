@@ -1,16 +1,20 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { WalletButton } from "@/components/WalletButton";
-import dynamic from "next/dynamic";
-import type { LeaderboardFilters as LeaderboardFiltersType } from "@/types/talent";
-import Link from "next/link";
-import { LoadingProgressBar } from "@/components/LoadingProgressBar";
-import { Breadcrumb } from "@/components/Breadcrumb";
-import { ScrollToTop } from "@/components/ScrollToTop";
+import { useState, useEffect } from 'react';
+import { WalletButton } from '@/components/WalletButton';
+import dynamic from 'next/dynamic';
+import type { LeaderboardFilters as LeaderboardFiltersType } from '@/types/talent';
+import Link from 'next/link';
+import { LoadingProgressBar } from '@/components/LoadingProgressBar';
+import { Breadcrumb } from '@/components/Breadcrumb';
+import { ScrollToTop } from '@/components/ScrollToTop';
 
-const Leaderboard = dynamic(() => import("@/components/Leaderboard").then(mod => ({ default: mod.Leaderboard })));
-const LeaderboardFilters = dynamic(() => import("@/components/LeaderboardFilters").then(mod => ({ default: mod.LeaderboardFilters })));
+const Leaderboard = dynamic(() =>
+  import('@/components/Leaderboard').then((mod) => ({ default: mod.Leaderboard }))
+);
+const LeaderboardFilters = dynamic(() =>
+  import('@/components/LeaderboardFilters').then((mod) => ({ default: mod.LeaderboardFilters }))
+);
 
 export default function LeaderboardPage() {
   const [filters, setFilters] = useState<LeaderboardFiltersType>({
@@ -24,7 +28,7 @@ export default function LeaderboardPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    document.title = "Leaderboard - Builder Score";
+    document.title = 'Leaderboard - Builder Score';
   }, []);
 
   const handleFilterChange = (newFilters: LeaderboardFiltersType) => {
@@ -39,9 +43,7 @@ export default function LeaderboardPage() {
       <header className="bg-white border-b border-gray-200" role="banner">
         <nav className="mx-[200px] px-6 py-4" role="navigation" aria-label="Main navigation">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-gray-900">
-              Builder Score
-            </h1>
+            <h1 className="text-xl font-semibold text-gray-900">Builder Score</h1>
             <div className="flex items-center gap-6">
               <Link
                 href="/"
@@ -63,11 +65,9 @@ export default function LeaderboardPage() {
 
       <main className="mx-[200px] px-6 py-8" role="main" aria-label="Leaderboard main content">
         <div className="mb-6">
-          <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Leaderboard" }]} />
+          <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Leaderboard' }]} />
           <div className="flex items-center gap-2 mb-2 mt-4">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Leaderboard
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-900">Leaderboard</h2>
           </div>
           <p className="text-sm text-gray-500">
             Top builders ranked by their onchain reputation score
@@ -86,15 +86,16 @@ export default function LeaderboardPage() {
           <Leaderboard filters={filters} />
         </section>
       </main>
-      <footer role="contentinfo" aria-label="Site footer" className="bg-white border-t border-gray-200 mt-12">
+      <footer
+        role="contentinfo"
+        aria-label="Site footer"
+        className="bg-white border-t border-gray-200 mt-12"
+      >
         <div className="mx-[200px] px-6 py-4">
-          <p className="text-sm text-gray-500 text-center">
-            Powered by Talent Protocol
-          </p>
+          <p className="text-sm text-gray-500 text-center">Powered by Talent Protocol</p>
         </div>
       </footer>
       <ScrollToTop />
     </div>
   );
 }
-

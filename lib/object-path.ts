@@ -58,4 +58,3 @@ export function hasPath(obj: unknown, path: string): boolean {
 
   return true;
 }
-

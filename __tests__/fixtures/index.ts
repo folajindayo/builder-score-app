@@ -28,14 +28,6 @@ export {
   fixtureEmptySearchResponse,
 } from './search-results';
 
-export {
-  fixtureLeaderboardPage1,
-  fixtureHallOfFameUsers,
-} from './leaderboard';
+export { fixtureLeaderboardPage1, fixtureHallOfFameUsers } from './leaderboard';
 
-export {
-  fixtureError404,
-  fixtureError500,
-  fixtureNetworkError,
-} from './api-errors';
-
+export { fixtureError404, fixtureError500, fixtureNetworkError } from './api-errors';

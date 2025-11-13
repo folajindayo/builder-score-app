@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
@@ -10,14 +10,14 @@ export function ScrollToTop() {
     const handleScroll = () => {
       setIsVisible(window.scrollY > 300);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   };
 
@@ -51,4 +51,3 @@ export function ScrollToTop() {
     </AnimatePresence>
   );
 }
-

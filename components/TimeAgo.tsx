@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 interface TimeAgoProps {
   date: string | Date;
   className?: string;
 }
 
-export function TimeAgo({ date, className = "" }: TimeAgoProps) {
-  const [timeAgo, setTimeAgo] = useState("");
+export function TimeAgo({ date, className = '' }: TimeAgoProps) {
+  const [timeAgo, setTimeAgo] = useState('');
 
   useEffect(() => {
     const updateTimeAgo = () => {
-      const dateObj = typeof date === "string" ? new Date(date) : date;
+      const dateObj = typeof date === 'string' ? new Date(date) : date;
       const now = new Date();
       const seconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
 
@@ -41,7 +41,7 @@ export function TimeAgo({ date, className = "" }: TimeAgoProps) {
         setTimeAgo(`${Math.floor(interval)}m ago`);
         return;
       }
-      setTimeAgo("just now");
+      setTimeAgo('just now');
     };
 
     updateTimeAgo();
@@ -52,4 +52,3 @@ export function TimeAgo({ date, className = "" }: TimeAgoProps) {
 
   return <span className={className}>{timeAgo}</span>;
 }
-

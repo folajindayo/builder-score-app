@@ -1,10 +1,6 @@
 // Service Worker for caching and offline support
 const CACHE_NAME = 'builder-score-v1';
-const urlsToCache = [
-  '/',
-  '/leaderboard',
-  '/search',
-];
+const urlsToCache = ['/', '/leaderboard', '/search'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -21,4 +17,3 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
-

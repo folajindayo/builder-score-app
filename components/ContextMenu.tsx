@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect, ReactNode } from "react";
+import { useState, useRef, useEffect, ReactNode } from 'react';
 
 export interface MenuItem {
   label: string;
@@ -27,11 +27,11 @@ export function ContextMenu({ items, children }: ContextMenuProps) {
     };
 
     if (visible) {
-      document.addEventListener("click", handleClickOutside);
+      document.addEventListener('click', handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   }, [visible]);
 
@@ -62,8 +62,8 @@ export function ContextMenu({ items, children }: ContextMenuProps) {
               disabled={item.disabled}
               className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 ${
                 item.disabled
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:bg-gray-100 text-gray-700"
+                  ? 'text-gray-400 cursor-not-allowed'
+                  : 'hover:bg-gray-100 text-gray-700'
               }`}
             >
               {item.icon}
@@ -75,4 +75,3 @@ export function ContextMenu({ items, children }: ContextMenuProps) {
     </div>
   );
 }
-

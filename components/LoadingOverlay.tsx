@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 interface LoadingOverlayProps {
   isLoading: boolean;
@@ -8,11 +8,7 @@ interface LoadingOverlayProps {
   className?: string;
 }
 
-export function LoadingOverlay({
-  isLoading,
-  text,
-  className = "",
-}: LoadingOverlayProps) {
+export function LoadingOverlay({ isLoading, text, className = '' }: LoadingOverlayProps) {
   if (!isLoading) {
     return null;
   }
@@ -29,4 +25,3 @@ export function LoadingOverlay({
     </div>
   );
 }
-

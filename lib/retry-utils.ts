@@ -43,7 +43,7 @@ export async function retryWithLinearBackoff<T>(
     } catch (error) {
       lastError = error;
       if (attempt < maxRetries) {
-        const delay = initialDelay + (increment * attempt);
+        const delay = initialDelay + increment * attempt;
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
@@ -51,4 +51,3 @@ export async function retryWithLinearBackoff<T>(
 
   throw lastError;
 }
-

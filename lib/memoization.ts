@@ -13,7 +13,7 @@ export function memoize<T extends (...args: any[]) => any>(
 
   return ((...args: Parameters<T>) => {
     const key = keyFn ? keyFn(...args) : JSON.stringify(args);
-    
+
     if (cache.has(key)) {
       return cache.get(key);
     }
@@ -36,20 +36,19 @@ export function memoizeWithLimit<T extends (...args: any[]) => any>(
 
   return ((...args: Parameters<T>) => {
     const key = keyFn ? keyFn(...args) : JSON.stringify(args);
-    
+
     if (cache.has(key)) {
       return cache.get(key);
     }
 
     const result = fn(...args);
-    
+
     if (cache.size >= limit) {
       const firstKey = cache.keys().next().value;
       cache.delete(firstKey);
     }
-    
+
     cache.set(key, result);
     return result;
   }) as T;
 }
-

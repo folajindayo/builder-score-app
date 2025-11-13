@@ -1,8 +1,8 @@
-import { cookieStorage, createStorage } from "@wagmi/core";
-import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
-import { mainnet, sepolia } from "@reown/appkit/networks";
+import { cookieStorage, createStorage } from '@wagmi/core';
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import { mainnet, sepolia } from '@reown/appkit/networks';
 
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || "placeholder-project-id";
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'placeholder-project-id';
 
 export const networks = [mainnet, sepolia];
 
@@ -16,4 +16,3 @@ export const wagmiAdapter = new WagmiAdapter({
 });
 
 export const config = wagmiAdapter.wagmiConfig;
-

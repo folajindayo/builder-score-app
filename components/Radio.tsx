@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 interface RadioProps {
   value: string;
@@ -17,10 +17,12 @@ export function Radio({
   label,
   disabled = false,
   name,
-  className = "",
+  className = '',
 }: RadioProps) {
   return (
-    <label className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}>
+    <label
+      className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+    >
       <input
         type="radio"
         value={value}

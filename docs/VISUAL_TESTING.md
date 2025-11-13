@@ -57,7 +57,7 @@ import { test, expect } from '@playwright/test';
 
 test('should match component snapshot', async ({ page }) => {
   await page.goto('/');
-  
+
   const component = page.locator('.my-component');
   await expect(component).toHaveScreenshot('component.png', {
     animations: 'disabled',
@@ -71,7 +71,7 @@ test('should match component snapshot', async ({ page }) => {
 test('should match full page', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
-  
+
   await expect(page).toHaveScreenshot('full-page.png', {
     fullPage: true,
     animations: 'disabled',
@@ -85,7 +85,7 @@ test('should match full page', async ({ page }) => {
 test('should match mobile view', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await page.goto('/');
-  
+
   await expect(page).toHaveScreenshot('mobile.png', {
     fullPage: true,
   });
@@ -185,6 +185,7 @@ Visual tests run automatically on:
 ### Playwright Snapshots
 
 Snapshots are stored in:
+
 - Baselines: `visual-tests/**/*-snapshots/`
 - Actual: `visual-test-results/`
 - Diff: `visual-test-results/`
@@ -192,6 +193,7 @@ Snapshots are stored in:
 ### Chromatic
 
 Snapshots are stored in Chromatic cloud:
+
 - Accessible via Chromatic dashboard
 - Linked to commits and PRs
 - Retained based on plan limits
@@ -253,4 +255,3 @@ Edit `chromatic.config.json`:
 - [Playwright Screenshots](https://playwright.dev/docs/screenshots)
 - [Chromatic Documentation](https://www.chromatic.com/docs/)
 - [Visual Testing Best Practices](https://www.chromatic.com/blog/visual-testing-best-practices)
-

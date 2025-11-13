@@ -53,7 +53,8 @@ function toBeValidISODate(received: string) {
 function toBeValidBuilderProfile(received: any) {
   const requiredProps = ['address', 'score'];
   const hasAllProps = requiredProps.every((prop) => prop in received);
-  const hasValidAddress = typeof received.address === 'string' && /^0x[a-fA-F0-9]{40}$/.test(received.address);
+  const hasValidAddress =
+    typeof received.address === 'string' && /^0x[a-fA-F0-9]{40}$/.test(received.address);
   const hasValidScore = typeof received.score === 'object' && 'score' in received.score;
 
   const pass = hasAllProps && hasValidAddress && hasValidScore;
@@ -131,4 +132,3 @@ expect.extend({
   toBeValidSkill,
   toBeValidCredential,
 });
-

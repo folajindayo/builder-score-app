@@ -75,7 +75,7 @@ export function isValidEmailAddress(value: string): boolean {
  * Validates if a value is a valid number
  */
 export function isValidNumber(value: unknown): value is number {
-  return typeof value === "number" && !isNaN(value) && isFinite(value);
+  return typeof value === 'number' && !isNaN(value) && isFinite(value);
 }
 
 /**
@@ -123,4 +123,3 @@ export function validateEmail(email: string): { valid: boolean; error?: string }
   }
   return { valid: true };
 }
-

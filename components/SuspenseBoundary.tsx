@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Suspense, ReactNode } from "react";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { Suspense, ReactNode } from 'react';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 interface SuspenseBoundaryProps {
   children: ReactNode;
@@ -9,19 +9,10 @@ interface SuspenseBoundaryProps {
   loadingText?: string;
 }
 
-export function SuspenseBoundary({
-  children,
-  fallback,
-  loadingText,
-}: SuspenseBoundaryProps) {
+export function SuspenseBoundary({ children, fallback, loadingText }: SuspenseBoundaryProps) {
   return (
-    <Suspense
-      fallback={
-        fallback || <LoadingSpinner text={loadingText || "Loading..."} />
-      }
-    >
+    <Suspense fallback={fallback || <LoadingSpinner text={loadingText || 'Loading...'} />}>
       {children}
     </Suspense>
   );
 }
-

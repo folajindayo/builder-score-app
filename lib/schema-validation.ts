@@ -51,11 +51,13 @@ export function isBoolean(value: unknown): value is boolean {
 /**
  * Creates an array validator
  */
-export function isArray<T>(value: unknown, itemValidator?: (item: unknown) => item is T): value is T[] {
+export function isArray<T>(
+  value: unknown,
+  itemValidator?: (item: unknown) => item is T
+): value is T[] {
   if (!Array.isArray(value)) return false;
   if (itemValidator) {
     return value.every(itemValidator);
   }
   return true;
 }
-

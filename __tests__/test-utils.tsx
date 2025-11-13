@@ -5,10 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 /**
  * Custom render function that wraps components with necessary providers
  */
-export function renderWithProviders(
-  ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
-) {
+export function renderWithProviders(ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -18,11 +15,7 @@ export function renderWithProviders(
   });
 
   function Wrapper({ children }: { children: React.ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
 
   return render(ui, { wrapper: Wrapper, ...options });
@@ -77,17 +70,13 @@ export const mockSearchResults = {
       address: '0x1234567890123456789012345678901234567890',
       ensName: 'builder1.eth',
       score: 920,
-      skills: [
-        { id: '1', name: 'Solidity', category: 'Programming' },
-      ],
+      skills: [{ id: '1', name: 'Solidity', category: 'Programming' }],
     },
     {
       address: '0x0987654321098765432109876543210987654321',
       ensName: 'builder2.eth',
       score: 875,
-      skills: [
-        { id: '2', name: 'Rust', category: 'Programming' },
-      ],
+      skills: [{ id: '2', name: 'Rust', category: 'Programming' }],
     },
   ],
   total: 2,
@@ -113,4 +102,3 @@ export const waitForAsync = () => new Promise((resolve) => setTimeout(resolve, 0
 // Re-export everything from React Testing Library
 export * from '@testing-library/react';
 export { default as userEvent } from '@testing-library/user-event';
-

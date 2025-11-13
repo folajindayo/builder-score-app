@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Shortcut {
   keys: string[];
@@ -23,9 +23,7 @@ export function KeyboardShortcuts({ shortcuts }: KeyboardShortcutsProps) {
         title="Keyboard shortcuts (?)"
         aria-label="Show keyboard shortcuts"
       >
-        <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs font-mono">
-          ?
-        </kbd>
+        <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs font-mono">?</kbd>
       </button>
 
       <AnimatePresence>
@@ -52,7 +50,12 @@ export function KeyboardShortcuts({ shortcuts }: KeyboardShortcutsProps) {
                   aria-label="Close"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -80,4 +83,3 @@ export function KeyboardShortcuts({ shortcuts }: KeyboardShortcutsProps) {
     </>
   );
 }
-

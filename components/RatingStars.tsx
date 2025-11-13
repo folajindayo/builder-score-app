@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
 interface RatingStarsProps {
   rating: number; // 0-5
   maxRating?: number;
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
   interactive?: boolean;
   onChange?: (rating: number) => void;
 }
@@ -11,14 +11,14 @@ interface RatingStarsProps {
 export function RatingStars({
   rating,
   maxRating = 5,
-  size = "md",
+  size = 'md',
   interactive = false,
   onChange,
 }: RatingStarsProps) {
   const sizes = {
-    sm: "w-4 h-4",
-    md: "w-6 h-6",
-    lg: "w-8 h-8",
+    sm: 'w-4 h-4',
+    md: 'w-6 h-6',
+    lg: 'w-8 h-8',
   };
 
   const handleClick = (index: number) => {
@@ -38,11 +38,11 @@ export function RatingStars({
             key={index}
             onClick={() => handleClick(index)}
             disabled={!interactive}
-            className={`${sizes[size]} ${interactive ? "cursor-pointer hover:scale-110 transition-transform" : ""}`}
-            aria-label={`${index + 1} star${index !== 0 ? "s" : ""}`}
+            className={`${sizes[size]} ${interactive ? 'cursor-pointer hover:scale-110 transition-transform' : ''}`}
+            aria-label={`${index + 1} star${index !== 0 ? 's' : ''}`}
           >
             <svg
-              className={filled ? "text-yellow-400" : "text-gray-300"}
+              className={filled ? 'text-yellow-400' : 'text-gray-300'}
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -54,4 +54,3 @@ export function RatingStars({
     </div>
   );
 }
-

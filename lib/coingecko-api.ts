@@ -1,6 +1,6 @@
 // CoinGecko API utility for token price conversion
 
-const COINGECKO_API_BASE = "https://api.coingecko.com/api/v3";
+const COINGECKO_API_BASE = 'https://api.coingecko.com/api/v3';
 
 export interface TokenPrice {
   usd: number;
@@ -19,33 +19,33 @@ export interface TokenInfo {
 // Token mapping by sponsor slug
 export const SPONSOR_TOKENS: Record<string, TokenInfo> = {
   walletconnect: {
-    symbol: "WCT",
-    name: "WalletConnect Token",
+    symbol: 'WCT',
+    name: 'WalletConnect Token',
     fallbackPrice: 0.1249,
   },
   celo: {
-    symbol: "CELO",
-    name: "Celo",
+    symbol: 'CELO',
+    name: 'Celo',
     fallbackPrice: 0.5, // Approximate fallback
   },
   base: {
-    symbol: "ETH",
-    name: "Ethereum",
+    symbol: 'ETH',
+    name: 'Ethereum',
     fallbackPrice: 3000, // Approximate fallback
   },
-  "base-summer": {
-    symbol: "ETH",
-    name: "Ethereum",
+  'base-summer': {
+    symbol: 'ETH',
+    name: 'Ethereum',
     fallbackPrice: 3000,
   },
-  "talent-protocol": {
-    symbol: "TALENT",
-    name: "Talent Protocol",
+  'talent-protocol': {
+    symbol: 'TALENT',
+    name: 'Talent Protocol',
     fallbackPrice: 0.1, // Approximate fallback
   },
   syndicate: {
-    symbol: "SYND",
-    name: "Syndicate",
+    symbol: 'SYND',
+    name: 'Syndicate',
     fallbackPrice: 0.24, // Approximate fallback based on current price
   },
 };
@@ -54,7 +54,7 @@ export const SPONSOR_TOKENS: Record<string, TokenInfo> = {
 async function getTokenPriceById(coinId: string, fallbackPrice: number): Promise<number> {
   try {
     const url = `${COINGECKO_API_BASE}/simple/price?ids=${coinId}&vs_currencies=usd`;
-    
+
     const response = await fetch(url, {
       next: { revalidate: 300 }, // Cache for 5 minutes
     });
@@ -65,7 +65,7 @@ async function getTokenPriceById(coinId: string, fallbackPrice: number): Promise
 
     const data = await response.json();
     const price = data[coinId]?.usd;
-    
+
     if (!price) {
       throw new Error(`${coinId} price not found`);
     }
@@ -85,7 +85,7 @@ async function getTokenPriceByContract(
 ): Promise<number> {
   try {
     const url = `${COINGECKO_API_BASE}/simple/token_price/${chain}?contract_addresses=${contractAddress}&vs_currencies=usd`;
-    
+
     const response = await fetch(url, {
       next: { revalidate: 300 }, // Cache for 5 minutes
     });
@@ -96,9 +96,9 @@ async function getTokenPriceByContract(
 
     const data = await response.json();
     const price = data[contractAddress.toLowerCase()]?.usd;
-    
+
     if (!price) {
-      throw new Error("Token price not found");
+      throw new Error('Token price not found');
     }
 
     return price;
@@ -125,34 +125,34 @@ export async function getTokenPrice(sponsorSlug: string | undefined): Promise<{
   let price: number;
 
   switch (sponsorSlug) {
-    case "walletconnect":
+    case 'walletconnect':
       // WCT contract: 0x6a39909e805A3eaDd2b61fFf61147796ca6abb47
       price = await getTokenPriceByContract(
-        "0x6a39909e805A3eaDd2b61fFf61147796ca6abb47",
-        "ethereum",
+        '0x6a39909e805A3eaDd2b61fFf61147796ca6abb47',
+        'ethereum',
         tokenInfo.fallbackPrice
       );
       break;
-    case "celo":
+    case 'celo':
       // CELO native token
-      price = await getTokenPriceById("celo", tokenInfo.fallbackPrice);
+      price = await getTokenPriceById('celo', tokenInfo.fallbackPrice);
       break;
-    case "base":
-    case "base-summer":
+    case 'base':
+    case 'base-summer':
       // ETH price
-      price = await getTokenPriceById("ethereum", tokenInfo.fallbackPrice);
+      price = await getTokenPriceById('ethereum', tokenInfo.fallbackPrice);
       break;
-            case "talent-protocol":
-              // TALENT token - try to find by contract or use fallback
-              // Note: Update with actual TALENT contract address if available
-              price = tokenInfo.fallbackPrice;
-              break;
-            case "syndicate":
-              // SYND token - Syndicate Network
-              price = await getTokenPriceById("syndicate", tokenInfo.fallbackPrice);
-              break;
-            default:
-              price = tokenInfo.fallbackPrice;
+    case 'talent-protocol':
+      // TALENT token - try to find by contract or use fallback
+      // Note: Update with actual TALENT contract address if available
+      price = tokenInfo.fallbackPrice;
+      break;
+    case 'syndicate':
+      // SYND token - Syndicate Network
+      price = await getTokenPriceById('syndicate', tokenInfo.fallbackPrice);
+      break;
+    default:
+      price = tokenInfo.fallbackPrice;
   }
 
   return { price, tokenInfo };
@@ -160,7 +160,6 @@ export async function getTokenPrice(sponsorSlug: string | undefined): Promise<{
 
 // Legacy function for backward compatibility
 export async function getWCTPrice(): Promise<number> {
-  const result = await getTokenPrice("walletconnect");
+  const result = await getTokenPrice('walletconnect');
   return result.price;
 }
-

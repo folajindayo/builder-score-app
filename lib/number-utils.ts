@@ -12,7 +12,11 @@ export function formatWithSeparators(num: number, separator: string = ','): stri
 /**
  * Formats number as currency with symbol
  */
-export function formatAsCurrency(num: number, currency: string = 'USD', locale: string = 'en-US'): string {
+export function formatAsCurrency(
+  num: number,
+  currency: string = 'USD',
+  locale: string = 'en-US'
+): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
@@ -148,4 +152,3 @@ export function formatDuration(seconds: number): string {
   }
   return '0 seconds';
 }
-

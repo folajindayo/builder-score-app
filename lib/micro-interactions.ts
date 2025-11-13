@@ -2,7 +2,7 @@
  * Micro-interaction utilities and presets
  */
 
-import { Variants } from "framer-motion";
+import { Variants } from 'framer-motion';
 
 /**
  * Button press animation
@@ -17,11 +17,11 @@ export const buttonPress: Variants = {
  * Card lift animation
  */
 export const cardLift: Variants = {
-  initial: { y: 0, boxShadow: "0 1px 3px rgba(0,0,0,0.1)" },
-  hover: { 
-    y: -4, 
-    boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-    transition: { duration: 0.2 }
+  initial: { y: 0, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' },
+  hover: {
+    y: -4,
+    boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+    transition: { duration: 0.2 },
   },
 };
 
@@ -65,13 +65,13 @@ export const rotate: Variants = {
  */
 export const pulse: Variants = {
   initial: { scale: 1 },
-  animate: { 
+  animate: {
     scale: [1, 1.05, 1],
-    transition: { 
-      duration: 2, 
+    transition: {
+      duration: 2,
       repeat: Infinity,
-      ease: "easeInOut"
-    }
+      ease: 'easeInOut',
+    },
   },
 };
 
@@ -80,9 +80,9 @@ export const pulse: Variants = {
  */
 export const shake: Variants = {
   initial: { x: 0 },
-  animate: { 
+  animate: {
     x: [0, -10, 10, -10, 10, 0],
-    transition: { duration: 0.5 }
+    transition: { duration: 0.5 },
   },
 };
 
@@ -91,13 +91,13 @@ export const shake: Variants = {
  */
 export const bounce: Variants = {
   initial: { y: 0 },
-  animate: { 
+  animate: {
     y: [0, -10, 0],
-    transition: { 
+    transition: {
       duration: 0.6,
       repeat: Infinity,
-      repeatDelay: 1
-    }
+      repeatDelay: 1,
+    },
   },
 };
 
@@ -126,13 +126,13 @@ export const staggerItem: Variants = {
  */
 export const successCheck: Variants = {
   initial: { scale: 0, opacity: 0 },
-  animate: { 
+  animate: {
     scale: [0, 1.2, 1],
     opacity: 1,
-    transition: { 
+    transition: {
       duration: 0.5,
-      ease: "easeOut"
-    }
+      ease: 'easeOut',
+    },
   },
 };
 
@@ -141,12 +141,12 @@ export const successCheck: Variants = {
  */
 export const successBounce: Variants = {
   initial: { scale: 0 },
-  animate: { 
+  animate: {
     scale: [0, 1.2, 1],
-    transition: { 
+    transition: {
       duration: 0.6,
-      ease: "easeOut"
-    }
+      ease: 'easeOut',
+    },
   },
 };
 
@@ -155,20 +155,19 @@ export const successBounce: Variants = {
  */
 export const successSlide: Variants = {
   initial: { opacity: 0, y: -20, scale: 0.8 },
-  animate: { 
-    opacity: 1, 
-    y: 0, 
+  animate: {
+    opacity: 1,
+    y: 0,
     scale: 1,
-    transition: { 
+    transition: {
       duration: 0.4,
-      ease: "easeOut"
-    }
+      ease: 'easeOut',
+    },
   },
-  exit: { 
-    opacity: 0, 
-    y: 20, 
+  exit: {
+    opacity: 0,
+    y: 20,
     scale: 0.8,
-    transition: { duration: 0.3 }
+    transition: { duration: 0.3 },
   },
 };
-

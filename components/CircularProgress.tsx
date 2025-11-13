@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 interface CircularProgressProps {
   value: number; // 0-100
@@ -13,8 +13,8 @@ export function CircularProgress({
   value,
   size = 100,
   strokeWidth = 8,
-  color = "#3b82f6",
-  backgroundColor = "#e5e7eb",
+  color = '#3b82f6',
+  backgroundColor = '#e5e7eb',
   showValue = true,
 }: CircularProgressProps) {
   const radius = (size - strokeWidth) / 2;
@@ -53,4 +53,3 @@ export function CircularProgress({
     </div>
   );
 }
-

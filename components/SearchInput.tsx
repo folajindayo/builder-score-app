@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
-import { Input } from "@/components/Input";
+import { useState, useCallback } from 'react';
+import { Input } from '@/components/Input';
 
 interface SearchInputProps {
   value: string;
@@ -16,39 +16,45 @@ interface SearchInputProps {
 export function SearchInput({
   value,
   onChange,
-  placeholder = "Search...",
+  placeholder = 'Search...',
   onSearch,
   debounceMs = 300,
-  className = "",
+  className = '',
   disabled = false,
 }: SearchInputProps) {
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    onChange(newValue);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      onChange(newValue);
 
-    if (onSearch) {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
+      if (onSearch) {
+        if (debounceTimer) {
+          clearTimeout(debounceTimer);
+        }
+
+        const timer = setTimeout(() => {
+          onSearch(newValue);
+        }, debounceMs);
+
+        setDebounceTimer(timer);
       }
+    },
+    [onChange, onSearch, debounceMs, debounceTimer]
+  );
 
-      const timer = setTimeout(() => {
-        onSearch(newValue);
-      }, debounceMs);
-
-      setDebounceTimer(timer);
-    }
-  }, [onChange, onSearch, debounceMs, debounceTimer]);
-
-  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && onSearch) {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter' && onSearch) {
+        if (debounceTimer) {
+          clearTimeout(debounceTimer);
+        }
+        onSearch(value);
       }
-      onSearch(value);
-    }
-  }, [onSearch, value, debounceTimer]);
+    },
+    [onSearch, value, debounceTimer]
+  );
 
   return (
     <div className={`relative ${className}`}>
@@ -79,4 +85,3 @@ export function SearchInput({
     </div>
   );
 }
-

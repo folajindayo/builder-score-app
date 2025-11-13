@@ -86,4 +86,3 @@ describe('MSW API Mocking', () => {
     expect(data.pagination.current_page).toBe(1);
   });
 });
-

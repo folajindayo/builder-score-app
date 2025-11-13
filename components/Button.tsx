@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { ButtonHTMLAttributes, ReactNode, useState, useRef } from "react";
-import { motion } from "framer-motion";
-import { buttonPress } from "@/lib/micro-interactions";
+import { ButtonHTMLAttributes, ReactNode, useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { buttonPress } from '@/lib/micro-interactions';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button style variant */
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
   /** Button size */
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
   /** Button content */
   children: ReactNode;
   /** Whether the button is in loading state */
@@ -20,14 +20,14 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export function Button({
-  variant = "primary",
-  size = "md",
+  variant = 'primary',
+  size = 'md',
   children,
   loading = false,
   disabled,
-  className = "",
+  className = '',
   ariaLabel,
-  rippleColor = "white",
+  rippleColor = 'white',
   ...props
 }: ButtonProps) {
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
@@ -35,26 +35,27 @@ export function Button({
   const rippleIdRef = useRef(0);
 
   const variantClasses = {
-    primary: "bg-blue-600 hover:bg-blue-700 text-white",
-    secondary: "bg-gray-200 hover:bg-gray-300 text-gray-900",
-    outline: "border-2 border-blue-600 text-blue-700 hover:bg-blue-50",
-    ghost: "text-gray-900 hover:bg-gray-100",
-    danger: "bg-red-600 hover:bg-red-700 text-white",
+    primary: 'bg-blue-600 hover:bg-blue-700 text-white',
+    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',
+    outline: 'border-2 border-blue-600 text-blue-700 hover:bg-blue-50',
+    ghost: 'text-gray-900 hover:bg-gray-100',
+    danger: 'bg-red-600 hover:bg-red-700 text-white',
   };
-  
+
   // Ensure WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
 
   const sizeClasses = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2 text-base",
-    lg: "px-6 py-3 text-lg",
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg',
   };
 
-  const baseClasses = "font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden";
+  const baseClasses =
+    'font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden';
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled || loading) return;
-    
+
     const button = buttonRef.current;
     if (!button) return;
 
@@ -101,7 +102,14 @@ export function Button({
       {loading ? (
         <span className="flex items-center gap-2" aria-live="polite" aria-busy="true">
           <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
             <path
               className="opacity-75"
               fill="currentColor"
@@ -117,4 +125,3 @@ export function Button({
     </motion.button>
   );
 }
-

@@ -105,9 +105,7 @@ export const fixtureEmptySearchResponse: SearchResponse = {
 };
 
 export const fixtureFilteredBySkillResponse: SearchResponse = {
-  results: fixtureSearchResults.filter((r) =>
-    r.skills?.some((s) => s.name === 'Solidity')
-  ),
+  results: fixtureSearchResults.filter((r) => r.skills?.some((s) => s.name === 'Solidity')),
   total: 3,
   page: 1,
   pageSize: 10,
@@ -131,4 +129,3 @@ export const fixtureFilteredByCredentialResponse: SearchResponse = {
   pageSize: 10,
   hasMore: false,
 };
-

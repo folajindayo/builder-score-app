@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 interface AnimatedCounterProps {
   value: number;
@@ -8,7 +8,7 @@ interface AnimatedCounterProps {
   className?: string;
 }
 
-export function AnimatedCounter({ value, duration = 1000, className = "" }: AnimatedCounterProps) {
+export function AnimatedCounter({ value, duration = 1000, className = '' }: AnimatedCounterProps) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -36,4 +36,3 @@ export function AnimatedCounter({ value, duration = 1000, className = "" }: Anim
 
   return <span className={className}>{count.toLocaleString()}</span>;
 }
-

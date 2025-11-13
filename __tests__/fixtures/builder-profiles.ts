@@ -166,4 +166,3 @@ export const fixtureBuilderProfiles = [
   fixtureNewBuilderProfile,
   fixtureTopBuilderProfile,
 ];
-

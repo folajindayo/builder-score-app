@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, ReactNode } from "react";
+import { useState, ReactNode } from 'react';
 
 interface CollapsibleProps {
   title: string | ReactNode;
@@ -9,7 +9,12 @@ interface CollapsibleProps {
   className?: string;
 }
 
-export function Collapsible({ title, children, defaultOpen = false, className = "" }: CollapsibleProps) {
+export function Collapsible({
+  title,
+  children,
+  defaultOpen = false,
+  className = '',
+}: CollapsibleProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
@@ -21,7 +26,7 @@ export function Collapsible({ title, children, defaultOpen = false, className = 
       >
         <span className="font-medium">{title}</span>
         <svg
-          className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -33,4 +38,3 @@ export function Collapsible({ title, children, defaultOpen = false, className = 
     </div>
   );
 }
-

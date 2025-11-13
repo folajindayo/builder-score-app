@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ReactNode } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Tab {
   id: string;
@@ -16,7 +16,7 @@ interface TabsProps {
   className?: string;
 }
 
-export function Tabs({ tabs, activeTab, onChange, className = "" }: TabsProps) {
+export function Tabs({ tabs, activeTab, onChange, className = '' }: TabsProps) {
   const activeTabContent = tabs.find((tab) => tab.id === activeTab)?.content;
 
   return (
@@ -27,9 +27,7 @@ export function Tabs({ tabs, activeTab, onChange, className = "" }: TabsProps) {
             key={tab.id}
             onClick={() => onChange(tab.id)}
             className={`px-6 py-3 font-semibold transition-colors relative ${
-              activeTab === tab.id
-                ? "text-blue-600"
-                : "text-gray-600 hover:text-gray-900"
+              activeTab === tab.id ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'
             }`}
             aria-label={`Switch to ${tab.label} tab`}
             aria-selected={activeTab === tab.id}
@@ -41,7 +39,7 @@ export function Tabs({ tabs, activeTab, onChange, className = "" }: TabsProps) {
                 layoutId="activeTab"
                 className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"
                 initial={false}
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               />
             )}
           </button>
@@ -63,4 +61,3 @@ export function Tabs({ tabs, activeTab, onChange, className = "" }: TabsProps) {
     </div>
   );
 }
-

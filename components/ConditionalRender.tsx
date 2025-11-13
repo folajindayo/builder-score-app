@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 interface ConditionalRenderProps {
   condition: boolean;
@@ -15,4 +15,3 @@ export function ConditionalRender({
 }: ConditionalRenderProps) {
   return condition ? <>{children}</> : <>{fallback}</>;
 }
-

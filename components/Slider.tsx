@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 interface SliderProps {
   value: number;
@@ -21,16 +21,14 @@ export function Slider({
   disabled = false,
   label,
   showValue = false,
-  className = "",
+  className = '',
 }: SliderProps) {
   return (
     <div className={className}>
       {label && (
         <div className="flex items-center justify-between mb-2">
           <label className="text-sm font-medium text-gray-700">{label}</label>
-          {showValue && (
-            <span className="text-sm text-gray-600">{value}</span>
-          )}
+          {showValue && <span className="text-sm text-gray-600">{value}</span>}
         </div>
       )}
       <input

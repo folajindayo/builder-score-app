@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, ReactNode } from "react";
+import { useEffect, useRef, ReactNode } from 'react';
 
 interface ClickOutsideProps {
   children: ReactNode;
@@ -8,26 +8,19 @@ interface ClickOutsideProps {
   className?: string;
 }
 
-export function ClickOutside({
-  children,
-  onClickOutside,
-  className = "",
-}: ClickOutsideProps) {
+export function ClickOutside({ children, onClickOutside, className = '' }: ClickOutsideProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         onClickOutside();
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onClickOutside]);
 
@@ -37,4 +30,3 @@ export function ClickOutside({
     </div>
   );
 }
-

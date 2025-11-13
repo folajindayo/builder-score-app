@@ -22,9 +22,7 @@ export class Cache<K, V> {
    * Set a value in the cache
    */
   set(key: K, value: V, ttl?: number): void {
-    const expiresAt = ttl || this.defaultTTL
-      ? Date.now() + (ttl || this.defaultTTL!)
-      : undefined;
+    const expiresAt = ttl || this.defaultTTL ? Date.now() + (ttl || this.defaultTTL!) : undefined;
 
     this.cache.set(key, { value, expiresAt });
   }
@@ -72,4 +70,3 @@ export class Cache<K, V> {
     return this.cache.size;
   }
 }
-

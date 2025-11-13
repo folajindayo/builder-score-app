@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 interface LabelProps {
   children: ReactNode;
@@ -9,12 +9,7 @@ interface LabelProps {
   className?: string;
 }
 
-export function Label({
-  children,
-  htmlFor,
-  required = false,
-  className = "",
-}: LabelProps) {
+export function Label({ children, htmlFor, required = false, className = '' }: LabelProps) {
   return (
     <label
       htmlFor={htmlFor}

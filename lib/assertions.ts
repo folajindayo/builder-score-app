@@ -14,7 +14,10 @@ export function assert(condition: boolean, message?: string): asserts condition 
 /**
  * Asserts that a value is not null or undefined
  */
-export function assertDefined<T>(value: T | null | undefined, message?: string): asserts value is T {
+export function assertDefined<T>(
+  value: T | null | undefined,
+  message?: string
+): asserts value is T {
   if (value === null || value === undefined) {
     throw new Error(message || 'Value is null or undefined');
   }
@@ -50,7 +53,10 @@ export function assertArray<T>(value: unknown, message?: string): asserts value 
 /**
  * Asserts that a value is an object
  */
-export function assertObject(value: unknown, message?: string): asserts value is Record<string, unknown> {
+export function assertObject(
+  value: unknown,
+  message?: string
+): asserts value is Record<string, unknown> {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
     throw new Error(message || 'Value is not an object');
   }
@@ -82,4 +88,3 @@ export function assertNonNegative(value: number, message?: string): void {
     throw new Error(message || 'Value must be non-negative');
   }
 }
-

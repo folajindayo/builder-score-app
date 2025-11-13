@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 interface CheckboxProps {
   checked: boolean;
@@ -15,10 +15,12 @@ export function Checkbox({
   label,
   disabled = false,
   indeterminate = false,
-  className = "",
+  className = '',
 }: CheckboxProps) {
   return (
-    <label className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}>
+    <label
+      className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+    >
       <input
         type="checkbox"
         checked={checked}

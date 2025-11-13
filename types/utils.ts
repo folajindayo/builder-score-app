@@ -89,4 +89,3 @@ export type Predicate<T> = (value: T) => boolean;
  * Async function
  */
 export type AsyncFunction<T extends any[] = any[], R = any> = (...args: T) => Promise<R>;
-

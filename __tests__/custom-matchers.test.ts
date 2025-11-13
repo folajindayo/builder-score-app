@@ -1,4 +1,9 @@
-import { generateMockAddress, generateMockBuilderScore, generateMockCredential, generateMockSkill } from './test-helpers';
+import {
+  generateMockAddress,
+  generateMockBuilderScore,
+  generateMockCredential,
+  generateMockSkill,
+} from './test-helpers';
 
 describe('Custom Matchers', () => {
   describe('toBeValidEthereumAddress', () => {
@@ -115,4 +120,3 @@ describe('Custom Matchers', () => {
     });
   });
 });
-

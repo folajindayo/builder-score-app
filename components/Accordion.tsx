@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, ReactNode } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, ReactNode } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface AccordionItem {
   id: string;
@@ -15,7 +15,7 @@ interface AccordionProps {
   className?: string;
 }
 
-export function Accordion({ items, allowMultiple = false, className = "" }: AccordionProps) {
+export function Accordion({ items, allowMultiple = false, className = '' }: AccordionProps) {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
 
   const toggleItem = (id: string) => {
@@ -47,12 +47,17 @@ export function Accordion({ items, allowMultiple = false, className = "" }: Acco
             >
               <span className="font-semibold text-gray-900">{item.title}</span>
               <svg
-                className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? "transform rotate-180" : ""}`}
+                className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? 'transform rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
             <AnimatePresence>
@@ -60,9 +65,9 @@ export function Accordion({ items, allowMultiple = false, className = "" }: Acco
                 <motion.div
                   id={`accordion-content-${item.id}`}
                   initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
+                  animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
                   className="overflow-hidden"
                 >
                   <motion.div
@@ -83,4 +88,3 @@ export function Accordion({ items, allowMultiple = false, className = "" }: Acco
     </div>
   );
 }
-

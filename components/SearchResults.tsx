@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect, memo } from "react";
-import { searchBuilders } from "@/lib/talent-api";
-import type { SearchFilters, SearchResult } from "@/types/talent";
-import { formatAddress, formatScore } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { useState, useEffect, memo } from 'react';
+import { searchBuilders } from '@/lib/talent-api';
+import type { SearchFilters, SearchResult } from '@/types/talent';
+import { formatAddress, formatScore } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface SearchResultsProps {
   filters: SearchFilters;
@@ -37,8 +37,8 @@ export const SearchResults = memo(function SearchResults({ filters }: SearchResu
       setHasMore(response.hasMore);
       setTotal(response.total);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to search builders");
-      console.error("Error searching builders:", err);
+      setError(err instanceof Error ? err.message : 'Failed to search builders');
+      console.error('Error searching builders:', err);
     } finally {
       setLoading(false);
     }
@@ -79,9 +79,7 @@ export const SearchResults = memo(function SearchResults({ filters }: SearchResu
         className="p-6 bg-red-50 rounded-xl border-2 border-red-200 shadow-sm"
       >
         <p className="text-red-600 font-medium">{error}</p>
-        <p className="text-sm text-red-500 mt-2">
-          Note: API key may need to be configured
-        </p>
+        <p className="text-sm text-red-500 mt-2">Note: API key may need to be configured</p>
       </motion.div>
     );
   }
@@ -108,7 +106,7 @@ export const SearchResults = memo(function SearchResults({ filters }: SearchResu
           animate={{ opacity: 1 }}
           className="text-sm text-gray-600 font-medium mb-4"
         >
-          Found {total} builder{total !== 1 ? "s" : ""}
+          Found {total} builder{total !== 1 ? 's' : ''}
         </motion.div>
       )}
 
@@ -141,9 +139,7 @@ export const SearchResults = memo(function SearchResults({ filters }: SearchResu
             </div>
 
             {result.profile?.bio && (
-              <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                {result.profile.bio}
-              </p>
+              <p className="text-sm text-gray-600 mb-4 line-clamp-2">{result.profile.bio}</p>
             )}
 
             {result.skills && result.skills.length > 0 && (
@@ -198,12 +194,10 @@ export const SearchResults = memo(function SearchResults({ filters }: SearchResu
             disabled={loading}
             className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
           >
-            {loading ? "Loading..." : "Load More"}
+            {loading ? 'Loading...' : 'Load More'}
           </motion.button>
         </div>
       )}
     </div>
   );
 });
-
-

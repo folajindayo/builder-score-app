@@ -19,14 +19,7 @@ const config: Config = {
       statements: 70,
     },
   },
-  coverageReporters: [
-    'text',
-    'text-summary',
-    'html',
-    'lcov',
-    'json',
-    'json-summary',
-  ],
+  coverageReporters: ['text', 'text-summary', 'html', 'lcov', 'json', 'json-summary'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
@@ -40,21 +33,11 @@ const config: Config = {
     '!**/coverage/**',
     '!**/jest.config.ts',
   ],
-  testMatch: [
-    '**/__tests__/**/*.[jt]s?(x)',
-    '**/?(*.)+(spec|test).[jt]s?(x)',
-  ],
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/.next/',
-  ],
-  transformIgnorePatterns: [
-    '/node_modules/',
-    '^.+\\.module\\.(css|sass|scss)$',
-  ],
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+  testPathIgnorePatterns: ['/node_modules/', '/.next/'],
+  transformIgnorePatterns: ['/node_modules/', '^.+\\.module\\.(css|sass|scss)$'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
 export default createJestConfig(config);
-

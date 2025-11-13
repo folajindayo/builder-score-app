@@ -31,4 +31,3 @@ export function getEnabledFeatures(): string[] {
     .filter(([, enabled]) => enabled)
     .map(([feature]) => feature);
 }
-

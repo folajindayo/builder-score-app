@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Spinner } from "@/components/Spinner";
+import { motion, AnimatePresence } from 'framer-motion';
+import { Spinner } from '@/components/Spinner';
 
 interface InfiniteScrollIndicatorProps {
   isLoading: boolean;
@@ -12,7 +12,7 @@ interface InfiniteScrollIndicatorProps {
 export function InfiniteScrollIndicator({
   isLoading,
   hasMore,
-  className = "",
+  className = '',
 }: InfiniteScrollIndicatorProps) {
   if (!hasMore && !isLoading) {
     return (
@@ -38,4 +38,3 @@ export function InfiniteScrollIndicator({
     </AnimatePresence>
   );
 }
-

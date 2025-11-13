@@ -5,10 +5,7 @@
 /**
  * Deep merges two objects
  */
-export function deepMerge<T extends Record<string, unknown>>(
-  target: T,
-  source: Partial<T>
-): T {
+export function deepMerge<T extends Record<string, unknown>>(target: T, source: Partial<T>): T {
   const output = { ...target };
 
   for (const key in source) {
@@ -40,9 +37,6 @@ export function deepMerge<T extends Record<string, unknown>>(
 /**
  * Deep merges multiple objects
  */
-export function deepMergeAll<T extends Record<string, unknown>>(
-  ...objects: Array<Partial<T>>
-): T {
+export function deepMergeAll<T extends Record<string, unknown>>(...objects: Array<Partial<T>>): T {
   return objects.reduce((acc, obj) => deepMerge(acc, obj), {} as T);
 }
-

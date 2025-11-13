@@ -39,17 +39,20 @@ By participating in this project, you agree to maintain a respectful and inclusi
 ## Development Setup
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/builder-score-app.git
 cd builder-score-app
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Copy environment variables:
+
 ```bash
 cp .env.local.example .env.local
 ```
@@ -57,6 +60,7 @@ cp .env.local.example .env.local
 4. Update `.env.local` with your API keys
 
 5. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -85,6 +89,7 @@ npm run dev
 ## Commit Messages
 
 Use clear, descriptive commit messages:
+
 - `feat: Add leaderboard component`
 - `fix: Resolve wallet connection issue`
 - `docs: Update README with new API info`
@@ -96,4 +101,3 @@ Use clear, descriptive commit messages:
 Feel free to open an issue for any questions or concerns.
 
 Thank you for contributing! 🚀
-

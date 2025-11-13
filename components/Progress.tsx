@@ -1,38 +1,38 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 interface ProgressProps {
   value: number;
   max?: number;
-  size?: "sm" | "md" | "lg";
-  variant?: "default" | "success" | "warning" | "error";
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'success' | 'warning' | 'error';
   showLabel?: boolean;
   animated?: boolean;
   className?: string;
 }
 
 const sizeClasses = {
-  sm: "h-1",
-  md: "h-2",
-  lg: "h-4",
+  sm: 'h-1',
+  md: 'h-2',
+  lg: 'h-4',
 };
 
 const variantClasses = {
-  default: "bg-blue-600",
-  success: "bg-green-600",
-  warning: "bg-yellow-600",
-  error: "bg-red-600",
+  default: 'bg-blue-600',
+  success: 'bg-green-600',
+  warning: 'bg-yellow-600',
+  error: 'bg-red-600',
 };
 
 export function Progress({
   value,
   max = 100,
-  size = "md",
-  variant = "default",
+  size = 'md',
+  variant = 'default',
   showLabel = false,
   animated = true,
-  className = "",
+  className = '',
 }: ProgressProps) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
@@ -50,7 +50,7 @@ export function Progress({
             className={`${variantClasses[variant]} h-full rounded-full`}
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
           />
         ) : (
           <div
@@ -62,4 +62,3 @@ export function Progress({
     </div>
   );
 }
-

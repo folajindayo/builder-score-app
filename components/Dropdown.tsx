@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface DropdownOption {
   value: string;
@@ -22,9 +22,9 @@ export function Dropdown({
   options,
   value,
   onChange,
-  placeholder = "Select...",
+  placeholder = 'Select...',
   disabled = false,
-  className = "",
+  className = '',
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -36,8 +36,8 @@ export function Dropdown({
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const selectedOption = options.find((opt) => opt.value === value);
@@ -52,11 +52,11 @@ export function Dropdown({
         aria-label={selectedOption?.label || placeholder}
       >
         <div className="flex items-center justify-between">
-          <span className={selectedOption ? "text-gray-900" : "text-gray-500"}>
+          <span className={selectedOption ? 'text-gray-900' : 'text-gray-500'}>
             {selectedOption?.label || placeholder}
           </span>
           <svg
-            className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? "transform rotate-180" : ""}`}
+            className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'transform rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -72,7 +72,7 @@ export function Dropdown({
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
             className="absolute z-50 w-full mt-1 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
             {options.map((option, index) => (
@@ -88,8 +88,8 @@ export function Dropdown({
                 }}
                 disabled={option.disabled}
                 className={`w-full px-4 py-2 text-left hover:bg-gray-100 transition-colors ${
-                  value === option.value ? "bg-blue-50 text-blue-900" : "text-gray-900"
-                } ${option.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                  value === option.value ? 'bg-blue-50 text-blue-900' : 'text-gray-900'
+                } ${option.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {option.label}
               </motion.button>
@@ -100,4 +100,3 @@ export function Dropdown({
     </div>
   );
 }
-

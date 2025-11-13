@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { ReactNode, useState, useRef, TouchEvent } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useSwipe } from "@/lib/use-swipe";
+import { ReactNode, useState, useRef, TouchEvent } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useSwipe } from '@/lib/use-swipe';
 
 interface PullToRefreshProps {
   children: ReactNode;
@@ -17,7 +17,7 @@ export function PullToRefresh({
   onRefresh,
   threshold = 80,
   disabled = false,
-  className = "",
+  className = '',
 }: PullToRefreshProps) {
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -33,10 +33,10 @@ export function PullToRefresh({
 
   const handleTouchMove = (e: TouchEvent) => {
     if (disabled || isRefreshing || startY.current === null) return;
-    
+
     const currentY = e.touches[0].clientY;
     const distance = currentY - startY.current;
-    
+
     if (distance > 0 && containerRef.current?.scrollTop === 0) {
       setPullDistance(Math.min(distance, threshold * 1.5));
       e.preventDefault();
@@ -45,7 +45,7 @@ export function PullToRefresh({
 
   const handleTouchEnd = async () => {
     if (disabled || isRefreshing || startY.current === null) return;
-    
+
     if (pullDistance >= threshold) {
       setIsRefreshing(true);
       try {
@@ -83,8 +83,19 @@ export function PullToRefresh({
             {isRefreshing ? (
               <div className="flex items-center gap-2 text-blue-600">
                 <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
                 </svg>
                 <span className="text-sm font-medium">Refreshing...</span>
               </div>
@@ -97,7 +108,12 @@ export function PullToRefresh({
                   viewBox="0 0 24 24"
                   animate={{ rotate: progress * 180 }}
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
                 </motion.svg>
                 <span className="text-xs text-gray-600">Pull to refresh</span>
               </div>
@@ -111,4 +127,3 @@ export function PullToRefresh({
     </div>
   );
 }
-

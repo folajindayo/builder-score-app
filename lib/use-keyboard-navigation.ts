@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback } from 'react';
 
 interface UseKeyboardNavigationOptions {
   onEnter?: () => void;
@@ -28,25 +28,25 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
       if (!enabled) return;
 
       switch (event.key) {
-        case "Enter":
+        case 'Enter':
           onEnter?.();
           break;
-        case "Escape":
+        case 'Escape':
           onEscape?.();
           break;
-        case "ArrowUp":
+        case 'ArrowUp':
           event.preventDefault();
           onArrowUp?.();
           break;
-        case "ArrowDown":
+        case 'ArrowDown':
           event.preventDefault();
           onArrowDown?.();
           break;
-        case "ArrowLeft":
+        case 'ArrowLeft':
           event.preventDefault();
           onArrowLeft?.();
           break;
-        case "ArrowRight":
+        case 'ArrowRight':
           event.preventDefault();
           onArrowRight?.();
           break;
@@ -57,11 +57,10 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
 
   useEffect(() => {
     if (enabled) {
-      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener('keydown', handleKeyDown);
       return () => {
-        window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener('keydown', handleKeyDown);
       };
     }
   }, [enabled, handleKeyDown]);
 }
-

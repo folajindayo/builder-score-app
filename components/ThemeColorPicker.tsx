@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useTheme, ThemeVariant } from "@/lib/use-theme";
-import { themes } from "@/lib/theme";
+import { useTheme, ThemeVariant } from '@/lib/use-theme';
+import { themes } from '@/lib/theme';
 
 export function ThemeColorPicker() {
   const { theme, setTheme } = useTheme();
@@ -19,8 +19,8 @@ export function ThemeColorPicker() {
               onClick={() => setTheme(themeVariant)}
               className={`w-10 h-10 rounded-full border-2 transition-all ${
                 theme === variant
-                  ? "border-gray-900 scale-110"
-                  : "border-gray-300 hover:border-gray-400"
+                  ? 'border-gray-900 scale-110'
+                  : 'border-gray-300 hover:border-gray-400'
               }`}
               style={{
                 backgroundColor: `var(--color-${themeColors.primary})`,
@@ -34,4 +34,3 @@ export function ThemeColorPicker() {
     </div>
   );
 }
-

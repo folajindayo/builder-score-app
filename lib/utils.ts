@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 /**
  * Merges class names using clsx and tailwind-merge
@@ -16,7 +16,7 @@ export function cn(...inputs: ClassValue[]) {
  * @returns Formatted address string (e.g., "0x1234...5678")
  */
 export function formatAddress(address: string): string {
-  if (!address) return "";
+  if (!address) return '';
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
@@ -35,7 +35,7 @@ export function formatScore(score: number): string {
  * @returns Formatted number string
  */
 export function formatNumber(num: number): string {
-  return new Intl.NumberFormat("en-US").format(num);
+  return new Intl.NumberFormat('en-US').format(num);
 }
 
 /**
@@ -46,12 +46,12 @@ export function formatNumber(num: number): string {
 export function formatDate(dateString: string): string {
   try {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     }).format(date);
   } catch {
     return dateString;
@@ -101,19 +101,27 @@ export function getInitials(name: string): string {
 
 // Convert string to camelCase
 export function toCamelCase(str: string): string {
-  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
-    return index === 0 ? word.toLowerCase() : word.toUpperCase();
-  }).replace(/\s+/g, '');
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    })
+    .replace(/\s+/g, '');
 }
 
 // Convert string to kebab-case
 export function toKebabCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
+  return str
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    .replace(/\s+/g, '-')
+    .toLowerCase();
 }
 
 // Convert string to snake_case
 export function toSnakeCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1_$2').replace(/\s+/g, '_').toLowerCase();
+  return str
+    .replace(/([a-z])([A-Z])/g, '$1_$2')
+    .replace(/\s+/g, '_')
+    .toLowerCase();
 }
 
 // Convert first letter to uppercase
@@ -154,7 +162,7 @@ export function generateId(prefix: string = ''): string {
 
 // Sleep/delay utility
 export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -326,8 +334,8 @@ export function clamp(value: number, min: number, max: number): number {
  * @returns A random alphanumeric string
  */
 export function randomString(length: number = 8): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -341,14 +349,17 @@ export function randomString(length: number = 8): string {
  * @returns An object with keys and arrays of items
  */
 export function groupBy<T>(array: T[], keyFn: (item: T) => string): Record<string, T[]> {
-  return array.reduce((result, item) => {
-    const key = keyFn(item);
-    if (!result[key]) {
-      result[key] = [];
-    }
-    result[key].push(item);
-    return result;
-  }, {} as Record<string, T[]>);
+  return array.reduce(
+    (result, item) => {
+      const key = keyFn(item);
+      if (!result[key]) {
+        result[key] = [];
+      }
+      result[key].push(item);
+      return result;
+    },
+    {} as Record<string, T[]>
+  );
 }
 
 /**
@@ -406,12 +417,16 @@ export function filterByRange<T>(
  * @param order - 'asc' for ascending, 'desc' for descending
  * @returns A new sorted array
  */
-export function sortBy<T>(array: T[], keyFn: (item: T) => number | string, order: "asc" | "desc" = "asc"): T[] {
+export function sortBy<T>(
+  array: T[],
+  keyFn: (item: T) => number | string,
+  order: 'asc' | 'desc' = 'asc'
+): T[] {
   return [...array].sort((a, b) => {
     const aVal = keyFn(a);
     const bVal = keyFn(b);
-    if (aVal < bVal) return order === "asc" ? -1 : 1;
-    if (aVal > bVal) return order === "asc" ? 1 : -1;
+    if (aVal < bVal) return order === 'asc' ? -1 : 1;
+    if (aVal > bVal) return order === 'asc' ? 1 : -1;
     return 0;
   });
 }
@@ -424,14 +439,14 @@ export function sortBy<T>(array: T[], keyFn: (item: T) => number | string, order
  */
 export function sortByMultiple<T>(
   array: T[],
-  sortFns: Array<{ keyFn: (item: T) => number | string; order?: "asc" | "desc" }>
+  sortFns: Array<{ keyFn: (item: T) => number | string; order?: 'asc' | 'desc' }>
 ): T[] {
   return [...array].sort((a, b) => {
-    for (const { keyFn, order = "asc" } of sortFns) {
+    for (const { keyFn, order = 'asc' } of sortFns) {
       const aVal = keyFn(a);
       const bVal = keyFn(b);
-      if (aVal < bVal) return order === "asc" ? -1 : 1;
-      if (aVal > bVal) return order === "asc" ? 1 : -1;
+      if (aVal < bVal) return order === 'asc' ? -1 : 1;
+      if (aVal > bVal) return order === 'asc' ? 1 : -1;
     }
     return 0;
   });
@@ -443,8 +458,8 @@ export function sortByMultiple<T>(
  * @param order - 'asc' for ascending, 'desc' for descending
  * @returns A new sorted array
  */
-export function sortNumbers(array: number[], order: "asc" | "desc" = "asc"): number[] {
-  return [...array].sort((a, b) => (order === "asc" ? a - b : b - a));
+export function sortNumbers(array: number[], order: 'asc' | 'desc' = 'asc'): number[] {
+  return [...array].sort((a, b) => (order === 'asc' ? a - b : b - a));
 }
 
 /**
@@ -588,7 +603,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     await navigator.clipboard.writeText(text);
     return true;
   } catch (err) {
-    console.error("Failed to copy to clipboard:", err);
+    console.error('Failed to copy to clipboard:', err);
     return false;
   }
 }
@@ -625,7 +640,7 @@ export function formatRelativeTime(dateString: string): string {
     const date = new Date(dateString);
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
+
     if (diffInSeconds < 60) return 'just now';
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
@@ -648,19 +663,19 @@ export function formatDateRange(startDate: string, endDate: string): string {
     const end = new Date(endDate);
     const startYear = start.getFullYear();
     const endYear = end.getFullYear();
-    
-    const startFormatted = new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: startYear !== endYear ? "numeric" : undefined,
+
+    const startFormatted = new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: startYear !== endYear ? 'numeric' : undefined,
     }).format(start);
-    
-    const endFormatted = new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+
+    const endFormatted = new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     }).format(end);
-    
+
     return `${startFormatted} - ${endFormatted}`;
   } catch {
     return `${startDate} - ${endDate}`;
@@ -676,14 +691,14 @@ export function formatDateRange(startDate: string, endDate: string): string {
 export function convertToTimezone(dateString: string, timezone: string): string {
   try {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
       timeZone: timezone,
-      timeZoneName: "short",
+      timeZoneName: 'short',
     }).format(date);
   } catch {
     return dateString;
@@ -802,5 +817,3 @@ export function formatDecimalPrecision(value: number, precision: number): string
 export function formatScientific(value: number, precision: number = 2): string {
   return value.toExponential(precision);
 }
-
-

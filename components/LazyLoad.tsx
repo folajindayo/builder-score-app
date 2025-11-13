@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef, ReactNode } from "react";
+import { useState, useEffect, useRef, ReactNode } from 'react';
 
 interface LazyLoadProps {
   children: ReactNode;
@@ -14,8 +14,8 @@ export function LazyLoad({
   children,
   placeholder,
   threshold = 0.1,
-  rootMargin = "50px",
-  className = "",
+  rootMargin = '50px',
+  className = '',
 }: LazyLoadProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
@@ -60,4 +60,3 @@ export function LazyLoad({
     </div>
   );
 }
-

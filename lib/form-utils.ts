@@ -37,7 +37,10 @@ export function getFormValues(form: HTMLFormElement): Record<string, string> {
  */
 export function setFormValues(form: HTMLFormElement, values: Record<string, string>): void {
   for (const [key, value] of Object.entries(values)) {
-    const input = form.elements.namedItem(key) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+    const input = form.elements.namedItem(key) as
+      | HTMLInputElement
+      | HTMLTextAreaElement
+      | HTMLSelectElement;
     if (input) {
       input.value = value;
     }
@@ -50,4 +53,3 @@ export function setFormValues(form: HTMLFormElement, values: Record<string, stri
 export function resetForm(form: HTMLFormElement): void {
   form.reset();
 }
-

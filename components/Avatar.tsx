@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Image } from "@/components/Image";
-import { generateProfileAltText } from "@/lib/alt-text-utils";
+import { Image } from '@/components/Image';
+import { generateProfileAltText } from '@/lib/alt-text-utils';
 
 /**
  * Avatar component for displaying user profile pictures.
  * Automatically generates meaningful alt text when not provided.
- * 
+ *
  * @example
  * <Avatar src="/avatar.jpg" alt="John Doe" size="lg" />
  * <Avatar alt="Jane Smith" fallback="JS" size="md" />
@@ -18,7 +18,7 @@ interface AvatarProps {
    * For better accessibility, always provide a meaningful alt text.
    */
   alt?: string;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   /**
    * Fallback text to display when image is not available.
    * Also used to generate alt text if alt prop is not provided.
@@ -32,11 +32,11 @@ interface AvatarProps {
 }
 
 const sizeClasses = {
-  xs: "w-6 h-6 text-xs",
-  sm: "w-8 h-8 text-sm",
-  md: "w-10 h-10 text-base",
-  lg: "w-12 h-12 text-lg",
-  xl: "w-16 h-16 text-xl",
+  xs: 'w-6 h-6 text-xs',
+  sm: 'w-8 h-8 text-sm',
+  md: 'w-10 h-10 text-base',
+  lg: 'w-12 h-12 text-lg',
+  xl: 'w-16 h-16 text-xl',
 };
 
 const sizePixels = {
@@ -47,24 +47,11 @@ const sizePixels = {
   xl: 64,
 };
 
-export function Avatar({
-  src,
-  alt,
-  size = "md",
-  fallback,
-  className = "",
-  position,
-}: AvatarProps) {
+export function Avatar({ src, alt, size = 'md', fallback, className = '', position }: AvatarProps) {
   // Generate alt text if not provided
-  const altText =
-    alt ||
-    generateProfileAltText(
-      fallback,
-      fallback,
-      position
-    );
+  const altText = alt || generateProfileAltText(fallback, fallback, position);
 
-  const displayFallback = fallback || (alt ? alt.charAt(0).toUpperCase() : "?");
+  const displayFallback = fallback || (alt ? alt.charAt(0).toUpperCase() : '?');
 
   return (
     <div

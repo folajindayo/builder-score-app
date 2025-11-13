@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 interface TextHighlightProps {
   text: string;
@@ -10,14 +10,14 @@ interface TextHighlightProps {
 export function TextHighlight({
   text,
   highlight,
-  className = "",
-  highlightClassName = "bg-yellow-200 font-semibold",
+  className = '',
+  highlightClassName = 'bg-yellow-200 font-semibold',
 }: TextHighlightProps) {
   if (!highlight.trim()) {
     return <span className={className}>{text}</span>;
   }
 
-  const regex = new RegExp(`(${highlight})`, "gi");
+  const regex = new RegExp(`(${highlight})`, 'gi');
   const parts = text.split(regex);
 
   return (
@@ -34,4 +34,3 @@ export function TextHighlight({
     </span>
   );
 }
-

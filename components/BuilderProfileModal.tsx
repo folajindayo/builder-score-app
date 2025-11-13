@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { getBuilderAcrossSponsors } from "@/lib/builderscore-api";
-import { getTokenPrice } from "@/lib/coingecko-api";
-import type { LeaderboardUser } from "@/types/talent";
-import { formatNumber } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from 'react';
+import { getBuilderAcrossSponsors } from '@/lib/builderscore-api';
+import { getTokenPrice } from '@/lib/coingecko-api';
+import type { LeaderboardUser } from '@/types/talent';
+import { formatNumber } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface BuilderProfileModalProps {
   builder: LeaderboardUser;
@@ -35,31 +35,32 @@ export function BuilderProfileModal({ builder, isOpen, onClose }: BuilderProfile
     setLoading(true);
     try {
       const results = await getBuilderAcrossSponsors(builder.id);
-      
+
       const data = await Promise.all(
         results.map(async (result) => {
           if (!result.data || result.data.users.length === 0) return null;
-          
+
           const user = result.data.users[0];
-          const rewardAmount = typeof user.reward_amount === 'string' 
-            ? parseFloat(user.reward_amount) 
-            : user.reward_amount;
-          
+          const rewardAmount =
+            typeof user.reward_amount === 'string'
+              ? parseFloat(user.reward_amount)
+              : user.reward_amount;
+
           const { price, tokenInfo } = await getTokenPrice(result.sponsor);
-          
+
           return {
             sponsor: result.sponsor,
             position: user.leaderboard_position,
             earnings: rewardAmount,
             earningsUSD: rewardAmount * price,
-            tokenSymbol: tokenInfo?.symbol || "TOKEN",
+            tokenSymbol: tokenInfo?.symbol || 'TOKEN',
           };
         })
       );
-      
+
       setSponsorData(data.filter((item): item is SponsorData => item !== null));
     } catch (error) {
-      console.error("Error fetching sponsor data:", error);
+      console.error('Error fetching sponsor data:', error);
     } finally {
       setLoading(false);
     }
@@ -67,12 +68,12 @@ export function BuilderProfileModal({ builder, isOpen, onClose }: BuilderProfile
 
   const getSponsorLabel = (slug: string): string => {
     const labels: Record<string, string> = {
-      walletconnect: "WalletConnect",
-      celo: "Celo",
-      base: "Base",
-      "base-summer": "Base Summer",
-      syndicate: "Syndicate",
-      "talent-protocol": "Talent Protocol",
+      walletconnect: 'WalletConnect',
+      celo: 'Celo',
+      base: 'Base',
+      'base-summer': 'Base Summer',
+      syndicate: 'Syndicate',
+      'talent-protocol': 'Talent Protocol',
     };
     return labels[slug] || slug;
   };
@@ -98,7 +99,7 @@ export function BuilderProfileModal({ builder, isOpen, onClose }: BuilderProfile
           <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                {builder.profile.display_name || builder.profile.name || "Anonymous"}
+                {builder.profile.display_name || builder.profile.name || 'Anonymous'}
               </h2>
               <p className="text-sm text-gray-500 mt-1">Multi-Sponsor Profile</p>
             </div>
@@ -107,7 +108,12 @@ export function BuilderProfileModal({ builder, isOpen, onClose }: BuilderProfile
               className="text-gray-400 hover:text-gray-600 transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -150,9 +156,7 @@ export function BuilderProfileModal({ builder, isOpen, onClose }: BuilderProfile
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Leaderboard Position</p>
-                          <p className="text-sm font-medium text-gray-700">
-                            #{data.position}
-                          </p>
+                          <p className="text-sm font-medium text-gray-700">#{data.position}</p>
                         </div>
                       </div>
                     </div>
@@ -166,4 +170,3 @@ export function BuilderProfileModal({ builder, isOpen, onClose }: BuilderProfile
     </AnimatePresence>
   );
 }
-

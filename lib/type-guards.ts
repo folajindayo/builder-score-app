@@ -6,28 +6,28 @@
  * Type guard for checking if a value is a string
  */
 export function isString(value: unknown): value is string {
-  return typeof value === "string";
+  return typeof value === 'string';
 }
 
 /**
  * Type guard for checking if a value is a number
  */
 export function isNumber(value: unknown): value is number {
-  return typeof value === "number" && !isNaN(value);
+  return typeof value === 'number' && !isNaN(value);
 }
 
 /**
  * Type guard for checking if a value is a boolean
  */
 export function isBoolean(value: unknown): value is boolean {
-  return typeof value === "boolean";
+  return typeof value === 'boolean';
 }
 
 /**
  * Type guard for checking if a value is an object (not null, not array)
  */
 export function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 /**
@@ -48,7 +48,7 @@ export function isNullOrUndefined(value: unknown): value is null | undefined {
  * Type guard for checking if a value is a function
  */
 export function isFunction(value: unknown): value is Function {
-  return typeof value === "function";
+  return typeof value === 'function';
 }
 
 /**
@@ -106,4 +106,3 @@ export function isPositiveNumber(value: unknown): value is number {
 export function isNonNegativeNumber(value: unknown): value is number {
   return isNumber(value) && value >= 0;
 }
-

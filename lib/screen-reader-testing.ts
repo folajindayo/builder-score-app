@@ -1,6 +1,6 @@
 /**
  * Screen reader testing utilities
- * 
+ *
  * Provides utilities for testing and validating screen reader compatibility
  * and accessibility features.
  */
@@ -104,7 +104,8 @@ export function validateAnnouncements(): Array<{
       issues.push({
         element,
         issue: 'Dynamic content missing aria-live attribute',
-        recommendation: 'Add aria-live="polite" or aria-live="assertive" to ensure screen readers announce updates',
+        recommendation:
+          'Add aria-live="polite" or aria-live="assertive" to ensure screen readers announce updates',
       });
     }
   });
@@ -144,7 +145,8 @@ export function testKeyboardNavigation(): {
       issues.push({
         element,
         issue: `Tab order may be broken: tabindex ${tabIndex} comes after tabindex ${previousTabIndex}`,
-        recommendation: 'Use natural tab order (tabindex="0" or no tabindex) or ensure positive tabindex values are sequential',
+        recommendation:
+          'Use natural tab order (tabindex="0" or no tabindex) or ensure positive tabindex values are sequential',
       });
     }
 
@@ -160,7 +162,8 @@ export function testKeyboardNavigation(): {
       issues.push({
         element,
         issue: 'Interactive element not keyboard accessible',
-        recommendation: 'Add tabindex="0" and keyboard event handlers, or use semantic HTML elements',
+        recommendation:
+          'Add tabindex="0" and keyboard event handlers, or use semantic HTML elements',
       });
     }
   });
@@ -255,15 +258,12 @@ export function runAccessibilityAudit(): {
   const keyboardNavigation = testKeyboardNavigation();
   const ariaLabels = validateARIALabels();
 
-  const allIssues = [
-    ...announcements,
-    ...keyboardNavigation.issues,
-    ...ariaLabels,
-  ];
+  const allIssues = [...announcements, ...keyboardNavigation.issues, ...ariaLabels];
 
-  const criticalIssues = allIssues.filter((issue) =>
-    issue.issue.toLowerCase().includes('missing') ||
-    issue.issue.toLowerCase().includes('not accessible')
+  const criticalIssues = allIssues.filter(
+    (issue) =>
+      issue.issue.toLowerCase().includes('missing') ||
+      issue.issue.toLowerCase().includes('not accessible')
   ).length;
 
   const warnings = allIssues.length - criticalIssues;
@@ -307,6 +307,3 @@ export function logAccessibilityAudit(): void {
     console.log('✅ No accessibility issues found!');
   }
 }
-
-
-

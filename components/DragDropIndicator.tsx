@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { motion } from "framer-motion";
+import { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 interface DragDropIndicatorProps {
   isDragging?: boolean;
@@ -14,7 +14,7 @@ export function DragDropIndicator({
   isDragging = false,
   isOver = false,
   children,
-  className = "",
+  className = '',
 }: DragDropIndicatorProps) {
   return (
     <motion.div
@@ -35,4 +35,3 @@ export function DragDropIndicator({
     </motion.div>
   );
 }
-
