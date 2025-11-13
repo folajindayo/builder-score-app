@@ -1,0 +1,1 @@
+export function useMutation() { return { mutate: async () => {}, isLoading: false }; }
