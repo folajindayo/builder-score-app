@@ -1,0 +1,1 @@
+describe('Input', () => { it('handles change', () => { const onChange = jest.fn(); render(<Input onChange={onChange} />); }); });
