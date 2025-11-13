@@ -1,0 +1,1 @@
+export function useQuery(key: string) { return { data: null, isLoading: false, error: null }; }
