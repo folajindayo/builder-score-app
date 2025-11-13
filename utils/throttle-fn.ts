@@ -1,0 +1,1 @@
+export function throttleFn<T>(fn: T, ms: number): T { return fn; }
