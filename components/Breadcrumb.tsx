@@ -1,49 +1,64 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { ReactNode } from 'react';
 
-interface BreadcrumbItem {
+export interface BreadcrumbItem {
   label: string;
   href?: string;
+  icon?: ReactNode;
 }
 
 interface BreadcrumbProps {
   items: BreadcrumbItem[];
+  separator?: ReactNode;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
-export function Breadcrumb({ items }: BreadcrumbProps) {
-  return (
-    <nav className="flex items-center space-x-2 text-sm text-gray-600" aria-label="Breadcrumb">
-      {items.map((item, index) => {
-        const isLast = index === items.length - 1;
+export function Breadcrumb({ items, separator = '/', size = 'md', className = '' }: BreadcrumbProps) {
+  const sizeClasses = {
+    sm: 'text-sm',
+    md: 'text-base',
+    lg: 'text-lg',
+  };
 
-        return (
-          <div key={index} className="flex items-center">
-            {index > 0 && (
-              <svg
-                className="w-4 h-4 mx-2 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            )}
-            {isLast || !item.href ? (
-              <span className={`${isLast ? 'text-gray-900 font-medium' : ''}`}>{item.label}</span>
-            ) : (
-              <Link href={item.href} className="hover:text-gray-900 transition-colors">
-                {item.label}
-              </Link>
-            )}
-          </div>
-        );
-      })}
+  return (
+    <nav aria-label="Breadcrumb" className={`${sizeClasses[size]} ${className}`}>
+      <ol className="flex items-center gap-2 flex-wrap">
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
+          
+          return (
+            <li key={index} className="flex items-center gap-2">
+              {item.href && !isLast ? (
+                <Link
+                  href={item.href}
+                  className="text-blue-600 hover:text-blue-800 hover:underline transition-colors flex items-center gap-1"
+                >
+                  {item.icon && <span className="shrink-0">{item.icon}</span>}
+                  <motion.span whileHover={{ scale: 1.05 }}>{item.label}</motion.span>
+                </Link>
+              ) : (
+                <span
+                  className={`flex items-center gap-1 ${isLast ? 'text-gray-900 font-medium' : 'text-gray-600'}`}
+                  aria-current={isLast ? 'page' : undefined}
+                >
+                  {item.icon && <span className="shrink-0">{item.icon}</span>}
+                  {item.label}
+                </span>
+              )}
+              
+              {!isLast && (
+                <span className="text-gray-400" aria-hidden="true">
+                  {separator}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </nav>
   );
 }
