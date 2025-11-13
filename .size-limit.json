@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Client Bundle",
+    "path": ".next/static/**/*.js",
+    "limit": "300 KB"
+  },
+  {
+    "name": "Homepage",
+    "path": ".next/static/chunks/app/page*.js",
+    "limit": "50 KB"
+  },
+  {
+    "name": "Search Page",
+    "path": ".next/static/chunks/app/search/page*.js",
+    "limit": "50 KB"
+  },
+  {
+    "name": "Leaderboard Page",
+    "path": ".next/static/chunks/app/leaderboard/page*.js",
+    "limit": "50 KB"
+  }
+]
+
