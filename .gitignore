@@ -11,8 +11,10 @@
 *.lcov
 /playwright-report
 /test-results
+/visual-test-results
 /.nyc_output
 .coverage
+*-snapshots/
 
 # next.js
 /.next/

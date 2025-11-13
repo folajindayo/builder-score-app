@@ -1,0 +1,14 @@
+{
+  "projectToken": "chromatic_project_token_placeholder",
+  "buildScriptName": "build",
+  "exitZeroOnChanges": false,
+  "exitOnceUploaded": false,
+  "autoAcceptChanges": false,
+  "ignoreLastBuildOnBranch": "main",
+  "skip": "dependabot/**",
+  "externals": [
+    "public/**"
+  ],
+  "debug": false
+}
+
