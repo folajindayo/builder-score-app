@@ -1,96 +1,86 @@
 /**
- * LocalStorage wrapper with type safety and error handling
+ * Storage Utilities
+ * Unified interface for localStorage and sessionStorage
  */
 
-/**
- * Get an item from localStorage
- * @param key - The storage key
- * @returns The parsed value or null if not found
- */
-export function getStorageItem<T>(key: string): T | null {
-  try {
-    const item = localStorage.getItem(key);
-    if (item === null) return null;
-    return JSON.parse(item) as T;
-  } catch (error) {
-    console.error(`Error reading from localStorage key "${key}":`, error);
-    return null;
+type StorageType = "local" | "session";
+
+class StorageManager {
+  private getStorage(type: StorageType): Storage {
+    return type === "local" ? localStorage : sessionStorage;
+  }
+
+  /**
+   * Set item in storage
+   */
+  set(key: string, value: any, type: StorageType = "local"): void {
+    try {
+      const storage = this.getStorage(type);
+      const serialized = JSON.stringify(value);
+      storage.setItem(key, serialized);
+    } catch (error) {
+      console.error(`Error setting storage key "${key}":`, error);
+    }
+  }
+
+  /**
+   * Get item from storage
+   */
+  get<T>(key: string, type: StorageType = "local"): T | null {
+    try {
+      const storage = this.getStorage(type);
+      const item = storage.getItem(key);
+      return item ? JSON.parse(item) : null;
+    } catch (error) {
+      console.error(`Error getting storage key "${key}":`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Remove item from storage
+   */
+  remove(key: string, type: StorageType = "local"): void {
+    try {
+      const storage = this.getStorage(type);
+      storage.removeItem(key);
+    } catch (error) {
+      console.error(`Error removing storage key "${key}":`, error);
+    }
+  }
+
+  /**
+   * Clear all items from storage
+   */
+  clear(type: StorageType = "local"): void {
+    try {
+      const storage = this.getStorage(type);
+      storage.clear();
+    } catch (error) {
+      console.error("Error clearing storage:", error);
+    }
+  }
+
+  /**
+   * Check if key exists
+   */
+  has(key: string, type: StorageType = "local"): boolean {
+    return this.get(key, type) !== null;
+  }
+
+  /**
+   * Get all keys
+   */
+  keys(type: StorageType = "local"): string[] {
+    try {
+      const storage = this.getStorage(type);
+      return Object.keys(storage);
+    } catch (error) {
+      console.error("Error getting storage keys:", error);
+      return [];
+    }
   }
 }
 
-/**
- * Set an item in localStorage
- * @param key - The storage key
- * @param value - The value to store
- */
-export function setStorageItem<T>(key: string, value: T): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.error(`Error writing to localStorage key "${key}":`, error);
-  }
-}
-
-/**
- * Remove an item from localStorage
- * @param key - The storage key
- */
-export function removeStorageItem(key: string): void {
-  try {
-    localStorage.removeItem(key);
-  } catch (error) {
-    console.error(`Error removing from localStorage key "${key}":`, error);
-  }
-}
-
-/**
- * Clear all items from localStorage
- */
-export function clearStorage(): void {
-  try {
-    localStorage.clear();
-  } catch (error) {
-    console.error('Error clearing localStorage:', error);
-  }
-}
-
-/**
- * Check if localStorage is available
- * @returns True if localStorage is available, false otherwise
- */
-export function isStorageAvailable(): boolean {
-  try {
-    const test = '__storage_test__';
-    localStorage.setItem(test, test);
-    localStorage.removeItem(test);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Get all keys from localStorage
- * @returns Array of all storage keys
- */
-export function getAllStorageKeys(): string[] {
-  try {
-    return Object.keys(localStorage);
-  } catch (error) {
-    console.error('Error getting localStorage keys:', error);
-    return [];
-  }
-}
-
-/**
- * Check if a key exists in localStorage
- * @param key - The storage key
- * @returns True if key exists, false otherwise
- */
-export function hasStorageItem(key: string): boolean {
-  try {
-    return localStorage.getItem(key) !== null;
-  } catch {
-    return false;
-  }
-}
+export const storage = new StorageManager();
+export { StorageManager };
