@@ -1,91 +1,89 @@
-// Performance optimizations (commits 161-180)
-export function lazyLoadComponent<T>(factory: () => Promise<{ default: T }>): T {
-  // Dynamic import wrapper
-  return factory().then(module => module.default) as any;
-}
+/**
+ * Performance Monitoring Utilities
+ * For tracking and optimizing application performance
+ */
 
-export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number): (...args: Parameters<T>) => void {
-  let timeoutId: NodeJS.Timeout;
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn(...args), delay);
-  };
-}
-
-export function throttle<T extends (...args: any[]) => any>(fn: T, limit: number): (...args: Parameters<T>) => void {
-  let inThrottle: boolean;
-  return (...args: Parameters<T>) => {
-    if (!inThrottle) {
-      fn(...args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
-    }
-  };
-}
-
-export function memoize<T extends (...args: any[]) => any>(fn: T): T {
-  const cache = new Map();
-  return ((...args: Parameters<T>) => {
-    const key = JSON.stringify(args);
-    if (cache.has(key)) return cache.get(key);
-    const result = fn(...args);
-    cache.set(key, result);
+/**
+ * Measure function execution time
+ */
+export async function measureAsync<T>(
+  name: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log(`[Performance] ${name}: ${duration.toFixed(2)}ms`);
     return result;
-  }) as T;
-}
-
-export class VirtualList {
-  private itemHeight: number;
-  private visibleCount: number;
-  private scrollTop = 0;
-
-  constructor(itemHeight: number, containerHeight: number) {
-    this.itemHeight = itemHeight;
-    this.visibleCount = Math.ceil(containerHeight / itemHeight);
-  }
-
-  getVisibleRange(totalItems: number): { start: number; end: number } {
-    const start = Math.floor(this.scrollTop / this.itemHeight);
-    const end = Math.min(start + this.visibleCount, totalItems);
-    return { start, end };
-  }
-
-  onScroll(scrollTop: number): void {
-    this.scrollTop = scrollTop;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error(`[Performance] ${name} failed after ${duration.toFixed(2)}ms`);
+    throw error;
   }
 }
 
-export function deduplicateRequests<T>(fn: () => Promise<T>): () => Promise<T> {
-  let pending: Promise<T> | null = null;
-  return () => {
-    if (pending) return pending;
-    pending = fn().finally(() => (pending = null));
-    return pending;
-  };
+/**
+ * Measure synchronous function execution time
+ */
+export function measure<T>(name: string, fn: () => T): T {
+  const start = performance.now();
+  try {
+    const result = fn();
+    const duration = performance.now() - start;
+    console.log(`[Performance] ${name}: ${duration.toFixed(2)}ms`);
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error(`[Performance] ${name} failed after ${duration.toFixed(2)}ms`);
+    throw error;
+  }
 }
 
-export function prefetchResource(url: string): void {
-  const link = document.createElement('link');
-  link.rel = 'prefetch';
-  link.href = url;
-  document.head.appendChild(link);
+/**
+ * Performance mark and measure
+ */
+export class PerformanceTracker {
+  private marks: Map<string, number> = new Map();
+
+  mark(name: string): void {
+    this.marks.set(name, performance.now());
+  }
+
+  measure(startMark: string, endMark?: string): number {
+    const start = this.marks.get(startMark);
+    if (!start) {
+      console.warn(`Mark "${startMark}" not found`);
+      return 0;
+    }
+
+    const end = endMark ? this.marks.get(endMark) : performance.now();
+    if (endMark && !end) {
+      console.warn(`Mark "${endMark}" not found`);
+      return 0;
+    }
+
+    return (end as number) - start;
+  }
+
+  clear(name?: string): void {
+    if (name) {
+      this.marks.delete(name);
+    } else {
+      this.marks.clear();
+    }
+  }
 }
 
-export function optimizeImage(src: string, width: number, quality: number = 75): string {
-  return `${src}?w=${width}&q=${quality}`;
+/**
+ * Debounced performance logger
+ */
+export function logPerformance(
+  metric: string,
+  value: number,
+  unit = "ms"
+): void {
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[Performance] ${metric}: ${value.toFixed(2)}${unit}`);
+  }
 }
-
-export const performanceBudget = {
-  maxBundleSize: 200 * 1024, // 200KB
-  maxInitialLoad: 3000, // 3s
-  maxTTI: 5000, // 5s
-  maxFCP: 1800, // 1.8s
-  maxLCP: 2500, // 2.5s
-};
-
-export function checkPerformanceBudget(): boolean {
-  if (typeof window === 'undefined') return true;
-  const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-  return navigation.loadEventEnd - navigation.fetchStart < performanceBudget.maxInitialLoad;
-}
-
