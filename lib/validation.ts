@@ -1,62 +1,22 @@
 /**
- * Validation utilities for form inputs and data
+ * Validation utilities
+ * Common validation functions
  */
 
 /**
- * Validates if a string is not empty
+ * Validate email address
  */
-export function isNotEmpty(value: string): boolean {
-  return value.trim().length > 0;
+export function isValidEmail(email: string): boolean {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
 }
 
 /**
- * Validates if a number is within a range
+ * Validate URL
  */
-export function isInRange(value: number, min: number, max: number): boolean {
-  return value >= min && value <= max;
-}
-
-/**
- * Validates if a string matches a pattern
- */
-export function matchesPattern(value: string, pattern: RegExp): boolean {
-  return pattern.test(value);
-}
-
-/**
- * Validates if a string has minimum length
- */
-export function hasMinLength(value: string, minLength: number): boolean {
-  return value.length >= minLength;
-}
-
-/**
- * Validates if a string has maximum length
- */
-export function hasMaxLength(value: string, maxLength: number): boolean {
-  return value.length <= maxLength;
-}
-
-/**
- * Validates if a value is a positive number
- */
-export function isPositive(value: number): boolean {
-  return value > 0;
-}
-
-/**
- * Validates if a value is a non-negative number
- */
-export function isNonNegative(value: number): boolean {
-  return value >= 0;
-}
-
-/**
- * Validates if a string is a valid URL
- */
-export function isValidURL(value: string): boolean {
+export function isValidUrl(url: string): boolean {
   try {
-    new URL(value);
+    new URL(url);
     return true;
   } catch {
     return false;
@@ -64,62 +24,129 @@ export function isValidURL(value: string): boolean {
 }
 
 /**
- * Validates if a string is a valid email address
+ * Validate Ethereum address
  */
-export function isValidEmailAddress(value: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(value);
+export function isValidEthAddress(address: string): boolean {
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
 }
 
 /**
- * Validates if a value is a valid number
+ * Validate phone number (basic)
  */
-export function isValidNumber(value: unknown): value is number {
-  return typeof value === 'number' && !isNaN(value) && isFinite(value);
+export function isValidPhone(phone: string): boolean {
+  const regex = /^[\d\s\-\+\(\)]{10,}$/;
+  return regex.test(phone);
 }
 
 /**
- * Validates if a value is a valid integer
+ * Validate password strength
  */
-export function isValidInteger(value: unknown): value is number {
-  return isValidNumber(value) && Number.isInteger(value);
+export function validatePassword(
+  password: string
+): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  if (password.length < 8) {
+    errors.push("Password must be at least 8 characters");
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must contain at least one uppercase letter");
+  }
+
+  if (!/[a-z]/.test(password)) {
+    errors.push("Password must contain at least one lowercase letter");
+  }
+
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must contain at least one number");
+  }
+
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    errors.push("Password must contain at least one special character");
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
 }
 
 /**
- * Validates wallet address format and returns result with error message
+ * Validate username
  */
-export function validateWalletAddress(address: string): { valid: boolean; error?: string } {
-  if (!address) {
-    return { valid: false, error: 'Wallet address is required' };
-  }
-  if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
-    return { valid: false, error: 'Invalid wallet address format' };
-  }
-  return { valid: true };
+export function isValidUsername(username: string): boolean {
+  return /^[a-zA-Z0-9_]{3,20}$/.test(username);
 }
 
 /**
- * Validates score range
+ * Validate credit card number (Luhn algorithm)
  */
-export function validateScoreRange(min: number, max: number): { valid: boolean; error?: string } {
-  if (min < 0 || max < 0) {
-    return { valid: false, error: 'Scores must be non-negative' };
+export function isValidCreditCard(cardNumber: string): boolean {
+  const cleaned = cardNumber.replace(/\D/g, "");
+
+  if (cleaned.length < 13 || cleaned.length > 19) {
+    return false;
   }
-  if (min > max) {
-    return { valid: false, error: 'Minimum score must be less than or equal to maximum score' };
+
+  let sum = 0;
+  let isEven = false;
+
+  for (let i = cleaned.length - 1; i >= 0; i--) {
+    let digit = parseInt(cleaned[i], 10);
+
+    if (isEven) {
+      digit *= 2;
+      if (digit > 9) {
+        digit -= 9;
+      }
+    }
+
+    sum += digit;
+    isEven = !isEven;
   }
-  return { valid: true };
+
+  return sum % 10 === 0;
 }
 
 /**
- * Validates email format and returns result with error message
+ * Validate date range
  */
-export function validateEmail(email: string): { valid: boolean; error?: string } {
-  if (!email) {
-    return { valid: false, error: 'Email is required' };
+export function isValidDateRange(startDate: Date, endDate: Date): boolean {
+  return startDate < endDate;
+}
+
+/**
+ * Validate required field
+ */
+export function isRequired(value: any): boolean {
+  if (typeof value === "string") {
+    return value.trim().length > 0;
   }
-  if (!isValidEmailAddress(email)) {
-    return { valid: false, error: 'Invalid email format' };
-  }
-  return { valid: true };
+
+  return value !== null && value !== undefined;
+}
+
+/**
+ * Validate min/max length
+ */
+export function hasValidLength(
+  value: string,
+  min?: number,
+  max?: number
+): boolean {
+  if (min !== undefined && value.length < min) return false;
+  if (max !== undefined && value.length > max) return false;
+
+  return true;
+}
+
+/**
+ * Validate numeric range
+ */
+export function isInRange(value: number, min?: number, max?: number): boolean {
+  if (min !== undefined && value < min) return false;
+  if (max !== undefined && value > max) return false;
+
+  return true;
 }
