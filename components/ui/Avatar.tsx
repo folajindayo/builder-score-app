@@ -1,53 +1,28 @@
-"use client";
-
-import React from "react";
-
-interface AvatarProps {
-  src?: string;
-  alt: string;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
-  fallback?: string;
-  className?: string;
-}
-
 /**
  * Avatar Component
- * Displays user avatar with fallback support
  */
-export function Avatar({
-  src,
-  alt,
-  size = "md",
-  fallback,
-  className = "",
-}: AvatarProps) {
-  const sizeClasses = {
-    xs: "h-6 w-6 text-xs",
-    sm: "h-8 w-8 text-sm",
-    md: "h-10 w-10 text-base",
-    lg: "h-12 w-12 text-lg",
-    xl: "h-16 w-16 text-xl",
-  };
 
-  const [imageError, setImageError] = React.useState(false);
+'use client';
 
-  if (!src || imageError) {
-    return (
-      <div
-        className={`inline-flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 font-medium text-white ${sizeClasses[size]} ${className}`}
-      >
-        {fallback || alt[0]?.toUpperCase() || "?"}
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={src}
-      alt={alt}
-      onError={() => setImageError(true)}
-      className={`inline-block rounded-full object-cover ${sizeClasses[size]} ${className}`}
-    />
-  );
+interface AvatarProps {
+  address: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
+export function Avatar({ address, size = 'md' }: AvatarProps) {
+  const sizes = {
+    sm: 'w-8 h-8 text-xs',
+    md: 'w-12 h-12 text-sm',
+    lg: 'w-16 h-16 text-base',
+  };
+
+  const shortAddress = `${address.slice(0, 4)}...${address.slice(-4)}`;
+
+  return (
+    <div
+      className={`${sizes[size]} rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold`}
+    >
+      {shortAddress}
+    </div>
+  );
+}
