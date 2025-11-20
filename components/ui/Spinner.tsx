@@ -1,41 +1,24 @@
-"use client";
-
-import React from "react";
-
-interface SpinnerProps {
-  size?: "sm" | "md" | "lg";
-  color?: string;
-  text?: string;
-  className?: string;
-}
-
 /**
  * Spinner Component
- * Loading spinner with customizable size and color
  */
-export default function Spinner({
-  size = "md",
-  color = "blue-600",
-  text,
-  className = "",
-}: SpinnerProps) {
-  const sizeClasses = {
-    sm: "h-4 w-4 border-2",
-    md: "h-8 w-8 border-3",
-    lg: "h-12 w-12 border-4",
+
+'use client';
+
+interface SpinnerProps {
+  size?: 'sm' | 'md' | 'lg';
+  color?: string;
+}
+
+export function Spinner({ size = 'md', color = 'blue' }: SpinnerProps) {
+  const sizes = {
+    sm: 'w-4 h-4',
+    md: 'w-8 h-8',
+    lg: 'w-12 h-12',
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center gap-3 ${className}`}>
-      <div
-        className={`animate-spin rounded-full border-gray-300 border-t-${color} ${sizeClasses[size]}`}
-        role="status"
-        aria-label="Loading"
-      >
-        <span className="sr-only">Loading...</span>
-      </div>
-      {text && <p className="text-sm text-gray-600">{text}</p>}
-    </div>
+    <div
+      className={`${sizes[size]} animate-spin rounded-full border-2 border-gray-200 border-t-${color}-600`}
+    />
   );
 }
-
