@@ -2,31 +2,34 @@
  * useLeaderboard Hook
  */
 
-'use client';
-
 import { useState, useEffect } from 'react';
 
-interface LeaderboardEntry {
-  address: string;
-  score: number;
-  rank: number;
-}
-
 export function useLeaderboard(limit: number = 100) {
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [builders, setBuilders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    setIsLoading(true);
-    
-    fetch(`/api/leaderboard?limit=${limit}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setEntries(data.entries || []);
-      })
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
+    const fetchLeaderboard = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/builders/leaderboard?limit=${limit}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          setBuilders(data.data);
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
   }, [limit]);
 
-  return { entries, isLoading };
+  return { builders, loading, error };
 }
