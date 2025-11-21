@@ -1,49 +1,29 @@
+/**
+ * Root Layout
+ */
+
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
-import { Providers } from './providers';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Builder Score - Onchain Builder Reputation',
-  description: 'View and search onchain builder scores powered by Talent Protocol',
+  title: 'Builder Score - Measure Your Web3 Reputation',
+  description: 'Track and showcase your builder reputation score',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://api.talentprotocol.com" />
-        <link rel="dns-prefetch" href="https://api.talentprotocol.com" />
-        {typeof window !== 'undefined' && 'serviceWorker' in navigator && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                if ('serviceWorker' in navigator) {
-                  window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js');
-                  });
-                }
-              `,
-            }}
-          />
-        )}
-      </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>{children}</Providers>
+      <body className={inter.className}>
+        <main className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
+          {children}
+        </main>
       </body>
     </html>
   );
