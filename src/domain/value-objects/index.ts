@@ -1,9 +1,5 @@
 /**
- * Domain Value Objects Export
+ * Value Objects Barrel Export
  */
 
-export * from './ValueObject';
-export * from './Score';
-export * from './Email';
-export * from './Address';
-
+export { Score } from './score.vo';
