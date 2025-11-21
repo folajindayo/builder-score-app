@@ -1,8 +1,5 @@
 /**
- * Domain Repositories Export
+ * Repositories Barrel Export
  */
 
-export * from './IRepository';
-export * from './IBuilderRepository';
-export * from './IScoreRepository';
-
+export type { IBuilderProfileRepository } from './builder-profile.repository';
