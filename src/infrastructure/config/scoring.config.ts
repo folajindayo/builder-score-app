@@ -2,25 +2,63 @@
  * Scoring Configuration
  */
 
-export interface ScoringConfig {
+export const scoringConfig = {
   weights: {
-    reputation: number;
-    activity: number;
-    skills: number;
-    contributions: number;
-  };
-  updateInterval: number;
-  cacheTimeout: number;
-}
-
-export const scoringConfig: ScoringConfig = {
-  weights: {
-    reputation: 0.3,
-    activity: 0.25,
-    skills: 0.25,
-    contributions: 0.2,
+    github: 0.4,       // 40%
+    credentials: 0.3,  // 30%
+    activity: 0.2,     // 20%
+    reputation: 0.1,   // 10%
   },
-  updateInterval: 3600000, // 1 hour
-  cacheTimeout: 300000, // 5 minutes
+  
+  github: {
+    repoStars: 5,
+    repoForks: 3,
+    commits: 1,
+    pullRequests: 2,
+    issues: 1,
+    followers: 0.5,
+  },
+  
+  credentials: {
+    verified: 50,
+    unverified: 10,
+    maxCredentials: 10,
+  },
+  
+  activity: {
+    recentCommitBonus: 10,
+    consistencyBonus: 20,
+    inactivePenalty: -5,
+    recencyThresholdDays: 30,
+  },
+  
+  reputation: {
+    endorsements: 5,
+    reviews: 3,
+    awards: 10,
+  },
+  
+  thresholds: {
+    beginner: 0,
+    intermediate: 100,
+    advanced: 250,
+    expert: 500,
+    master: 1000,
+  },
+  
+  cache: {
+    enabled: true,
+    duration: 3600, // 1 hour
+  },
+  
+  api: {
+    githubTimeout: 15000,
+    talentProtocolTimeout: 10000,
+  },
 };
 
+export const leaderboardConfig = {
+  defaultPageSize: 10,
+  maxPageSize: 100,
+  refreshInterval: 300000, // 5 minutes
+};
