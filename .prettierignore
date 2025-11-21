@@ -1,41 +1,6 @@
-# Dependencies
-node_modules/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# Build output
-.next/
-out/
-build/
-dist/
-
-# Coverage
-coverage/
-
-# Test artifacts
-playwright-report/
-test-results/
-visual-test-results/
-*-snapshots/
-
-# Logs
-*.log
-
-# Environment files
-.env
-.env.*
-!.env.example
-
-# IDE
-.vscode/
-.idea/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Generated files
-*.tsbuildinfo
-next-env.d.ts
-
+node_modules
+.next
+dist
+build
+coverage
+*.min.js
