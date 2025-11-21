@@ -1,12 +1,16 @@
-"use client";
+/**
+ * Tabs Component
+ */
 
-import React, { useState, ReactNode } from "react";
+'use client';
+
+import React, { useState } from 'react';
+import { View, Text, Pressable } from 'react-native';
 
 interface Tab {
   id: string;
   label: string;
-  content: ReactNode;
-  icon?: ReactNode;
+  content: React.ReactNode;
 }
 
 interface TabsProps {
@@ -15,11 +19,11 @@ interface TabsProps {
   onChange?: (tabId: string) => void;
 }
 
-/**
- * Tabs Component
- * Tabbed interface for content organization
- */
-export default function Tabs({ tabs, defaultTab, onChange }: TabsProps) {
+export const Tabs: React.FC<TabsProps> = ({
+  tabs,
+  defaultTab,
+  onChange,
+}) => {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
 
   const handleTabChange = (tabId: string) => {
@@ -27,34 +31,28 @@ export default function Tabs({ tabs, defaultTab, onChange }: TabsProps) {
     onChange?.(tabId);
   };
 
-  const activeContent = tabs.find((tab) => tab.id === activeTab)?.content;
+  const activeTabContent = tabs.find(tab => tab.id === activeTab)?.content;
 
   return (
-    <div className="w-full">
-      {/* Tab Headers */}
-      <div className="border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id)}
-              className={`group inline-flex items-center gap-2 border-b-2 px-1 py-4 text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-              }`}
-              aria-current={activeTab === tab.id ? "page" : undefined}
-            >
-              {tab.icon && <span>{tab.icon}</span>}
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-      </div>
-
-      {/* Tab Content */}
-      <div className="mt-6">{activeContent}</div>
-    </div>
+    <View className="w-full">
+      <View className="flex flex-row border-b border-gray-200">
+        {tabs.map(tab => (
+          <Pressable
+            key={tab.id}
+            onPress={() => handleTabChange(tab.id)}
+            className={`px-4 py-2 font-medium border-b-2 ${
+              activeTab === tab.id
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <Text>{tab.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+      <View className="py-4">
+        {activeTabContent}
+      </View>
+    </View>
   );
-}
-
+};
