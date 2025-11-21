@@ -4,47 +4,41 @@
 
 export interface BuilderProfileDTO {
   id: string;
-  walletAddress: string;
-  username?: string;
-  displayName: string;
-  bio?: string;
-  avatarUrl?: string;
-  score: BuilderScoreDTO;
+  githubUsername: string;
+  score: number;
   credentials: CredentialDTO[];
-  socialLinks: SocialLinksDTO;
-  hasVerifiedCredentials: boolean;
-  isTopBuilder: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface BuilderScoreDTO {
-  overall: number;
-  reputation: number;
-  activity: number;
-  skills: number;
-  contributions: number;
+  activity: ActivityDTO;
+  rank?: number;
 }
 
 export interface CredentialDTO {
   id: string;
   type: string;
   issuer: string;
-  issuedAt: string;
+  issuedAt: Date;
   verified: boolean;
-  metadata?: Record<string, any>;
 }
 
-export interface SocialLinksDTO {
-  github?: string;
-  twitter?: string;
-  website?: string;
-  linkedin?: string;
+export interface ActivityDTO {
+  commits: number;
+  pullRequests: number;
+  issues: number;
+  contributions: number;
+  lastActive: Date;
 }
 
-export interface LeaderboardEntryDTO {
-  rank: number;
-  profile: BuilderProfileDTO;
-  percentile: number;
+export interface LeaderboardDTO {
+  builders: BuilderProfileDTO[];
+  total: number;
+  page: number;
 }
 
+export interface ScoreBreakdownDTO {
+  totalScore: number;
+  components: {
+    github: number;
+    credentials: number;
+    activity: number;
+    reputation: number;
+  };
+}
