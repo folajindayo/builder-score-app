@@ -2,33 +2,34 @@
  * Builder Profile Mapper
  */
 
-import { BuilderProfileEntity } from '../../domain/entities/builder-profile.entity';
+import { BuilderProfile } from '../../domain/entities/builder-profile.entity';
 import { BuilderProfileDTO } from '../dtos/builder-profile.dto';
 
 export class BuilderProfileMapper {
-  static toDTO(entity: BuilderProfileEntity): BuilderProfileDTO {
+  static toDTO(entity: BuilderProfile): BuilderProfileDTO {
     return {
       id: entity.id,
-      walletAddress: entity.walletAddress,
-      username: entity.username,
-      displayName: entity.displayName,
-      bio: entity.bio,
-      avatarUrl: entity.avatarUrl,
+      githubUsername: entity.githubUsername,
       score: entity.score,
-      credentials: entity.credentials.map((c) => ({
-        ...c,
-        issuedAt: c.issuedAt.toISOString(),
-      })),
-      socialLinks: entity.socialLinks,
-      hasVerifiedCredentials: entity.hasVerifiedCredentials(),
-      isTopBuilder: entity.isTopBuilder(),
-      createdAt: entity.createdAt.toISOString(),
-      updatedAt: entity.updatedAt.toISOString(),
+      credentials: entity.credentials,
+      activity: entity.activity,
     };
   }
 
-  static toDTOList(entities: BuilderProfileEntity[]): BuilderProfileDTO[] {
-    return entities.map((entity) => this.toDTO(entity));
+  static toDTOList(entities: BuilderProfile[]): BuilderProfileDTO[] {
+    return entities.map((entity, index) => ({
+      ...this.toDTO(entity),
+      rank: index + 1,
+    }));
+  }
+
+  static toEntity(dto: BuilderProfileDTO): BuilderProfile {
+    return new BuilderProfile(
+      dto.id,
+      dto.githubUsername,
+      dto.score,
+      dto.credentials,
+      dto.activity
+    );
   }
 }
-
