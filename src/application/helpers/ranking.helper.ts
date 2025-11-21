@@ -1,42 +1,29 @@
 /**
- * Ranking Helper
+ * Ranking Helper Functions
  */
 
-export interface RankableItem {
-  id: string;
-  score: number;
+export function calculateRank(score: number, allScores: number[]): number {
+  const sortedScores = [...allScores].sort((a, b) => b - a);
+  return sortedScores.indexOf(score) + 1;
 }
 
-export interface RankedItem<T> extends RankableItem {
-  rank: number;
-  percentile: number;
-  data: T;
+export function getPercentileRank(score: number, allScores: number[]): number {
+  const belowScore = allScores.filter(s => s < score).length;
+  return (belowScore / allScores.length) * 100;
 }
 
-export class RankingHelper {
-  static rank<T extends RankableItem>(items: T[]): RankedItem<T>[] {
-    const sorted = [...items].sort((a, b) => b.score - a.score);
-    const total = sorted.length;
-
-    return sorted.map((item, index) => ({
-      ...item,
-      data: item as any,
-      rank: index + 1,
-      percentile: ((total - index) / total) * 100,
-    }));
-  }
-
-  static getRankForScore(score: number, allScores: number[]): number {
-    const sorted = [...allScores].sort((a, b) => b - a);
-    return sorted.findIndex((s) => s === score) + 1;
-  }
-
-  static getPercentile(rank: number, total: number): number {
-    return ((total - rank + 1) / total) * 100;
-  }
-
-  static isTopTier(percentile: number, threshold = 20): boolean {
-    return percentile >= 100 - threshold;
-  }
+export function getTier(percentile: number): string {
+  if (percentile >= 95) return 'Elite';
+  if (percentile >= 80) return 'Expert';
+  if (percentile >= 60) return 'Advanced';
+  if (percentile >= 40) return 'Intermediate';
+  return 'Beginner';
 }
 
+export function getBadge(score: number): string {
+  if (score >= 90) return '🏆';
+  if (score >= 80) return '🥇';
+  if (score >= 70) return '🥈';
+  if (score >= 60) return '🥉';
+  return '⭐';
+}
