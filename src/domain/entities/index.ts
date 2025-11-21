@@ -1,9 +1,5 @@
 /**
- * Domain Entities Export
+ * Domain Entities Barrel Export
  */
 
-export * from './Entity';
-export * from './Builder';
-export * from './Achievement';
-export * from './Transaction';
-
+export { BuilderProfile } from './builder-profile.entity';
